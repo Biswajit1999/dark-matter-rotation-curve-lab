@@ -239,6 +239,21 @@ browser validation. See `data/reference.json`.
   dark matter halos. The Astrophysical Journal, 462, p.563.
 - Sofue, Y., 2020. Rotation curve of the Milky Way and the dark matter
   density. Galaxies, 8(2), p.37.
+- Lelli, F., McGaugh, S.S. and Schombert, J.M., 2016. SPARC: Mass models
+  for 175 disk galaxies with Spitzer photometry and accurate rotation
+  curves. The Astronomical Journal, 152(6), p.157.
+
+## Reference Data: A Real Galaxy, Not a Milky Way Sketch
+
+`data/reference.json` no longer holds five illustrative Milky-Way-like points -- it holds the
+**actual 43-point observed rotation curve of NGC 3198**, a textbook flat-rotation-curve spiral
+galaxy, pulled directly from the public **SPARC** (Spitzer Photometry and Accurate Rotation
+Curves) database mass-models table (`MassModels_Lelli2016c.mrt`, Lelli, McGaugh & Schombert
+2016). Each point carries its real measured velocity uncertainty, rendered as an error bar on
+the plot. The worker's radius axis now extends to 46 kpc to cover NGC 3198's full observed
+range, and the `data_rms_kms` telemetry metric reports the live RMS of the disk+bulge+halo
+model against these real data points (replacing the previous Milky-Way-specific
+`solar_residual_kms`, which no longer applies to an external galaxy).
 
 ## Research Quality Upgrade
 
