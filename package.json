@@ -1,0 +1,18 @@
+{
+  "name": "dark-matter-rotation-curve-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Disk, bulge and halo decomposition for spiral-galaxy rotation curves.",
+  "scripts": {
+    "check": "node --check app.js && node --check physicsWorker.js && node --check scripts/validate.js && node scripts/validate.js"
+  },
+  "keywords": [
+    "astrophysics",
+    "simulation",
+    "canvas",
+    "web-worker",
+    "rotation"
+  ],
+  "author": "Biswajit Jana",
+  "license": "MIT"
+}

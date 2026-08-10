@@ -1,0 +1,38 @@
+{
+  "dataset": "Milky-Way-like rotation-curve anchors",
+  "source": "Representative circular-speed anchors for a flat Galactic rotation curve used for browser validation.",
+  "citation": "Sofue, Y., 2020. Rotation curve of the Milky Way and the dark matter density. Galaxies, 8(2), p.37.",
+  "x_label": "Galactocentric radius [kpc]",
+  "y_label": "Circular velocity [km/s]",
+  "points": [
+    {
+      "x": 2,
+      "y": 185,
+      "label": "inner Galaxy"
+    },
+    {
+      "x": 5,
+      "y": 220,
+      "label": "solar-neighbourhood rise"
+    },
+    {
+      "x": 8.2,
+      "y": 232,
+      "label": "solar circle"
+    },
+    {
+      "x": 15,
+      "y": 226,
+      "label": "outer disk"
+    },
+    {
+      "x": 25,
+      "y": 214,
+      "label": "halo-supported outer curve"
+    }
+  ],
+  "requiredCitations": [
+    "Rubin, V.C., Ford Jr, W.K. and Thonnard, N., 1980. Rotational properties of 21 Sc galaxies with a large range of luminosities and radii. The Astrophysical Journal, 238, pp.471-487.",
+    "Sofue, Y., 2020. Rotation curve of the Milky Way and the dark matter density. Galaxies, 8(2), p.37."
+  ]
+}

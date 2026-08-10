@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Disk, bulge and halo decomposition for spiral-galaxy rotation curves.">
+  <title>Dark Matter Rotation Curve Lab</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Research Console</p>
+        <h1>Dark Matter Rotation Curve Lab</h1>
+      </div>
+      <div class="status-card">
+        <span id="workerStatus">Worker booting</span>
+        <strong id="frameRate">-- fps</strong>
+      </div>
+    </header>
+
+    <section class="grid">
+      <aside class="panel controls">
+        <div class="panel-title">
+          <span>Controls</span>
+          <b id="referenceLabel">Reference loading</b>
+        </div>
+        <div id="controls"></div>
+        <button id="reset">Reset model</button>
+      </aside>
+
+      <section class="panel plot-panel">
+        <div class="panel-title">
+          <span>Reference Data + Simulation</span>
+          <b id="seriesLabel">Galactocentric radius [kpc]</b>
+        </div>
+        <canvas id="seriesCanvas" width="1200" height="620"></canvas>
+      </section>
+
+      <section class="panel heat-panel">
+        <div class="panel-title">
+          <span>Parameter Response Field</span>
+          <b>worker heatmap</b>
+        </div>
+        <canvas id="heatCanvas" width="620" height="620"></canvas>
+      </section>
+
+      <section class="panel telemetry">
+        <div class="panel-title">
+          <span>Telemetry</span>
+          <b id="runId">run --</b>
+        </div>
+        <div id="metrics" class="metrics"></div>
+        <pre id="notes"></pre>
+      </section>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
