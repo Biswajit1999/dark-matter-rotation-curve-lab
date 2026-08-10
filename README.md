@@ -41,3 +41,7 @@ Representative circular-speed anchors for a flat Galactic rotation curve used fo
 
 - Rubin, V.C., Ford Jr, W.K. and Thonnard, N., 1980. Rotational properties of 21 Sc galaxies with a large range of luminosities and radii. The Astrophysical Journal, 238, pp.471-487.
 - Sofue, Y., 2020. Rotation curve of the Milky Way and the dark matter density. Galaxies, 8(2), p.37.
+
+## Research Quality Upgrade
+
+See [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md) for the validation layer, reference anchors, equations and research boundaries added to this repository.

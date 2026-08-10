@@ -4,7 +4,8 @@
   "private": true,
   "description": "Disk, bulge and halo decomposition for spiral-galaxy rotation curves.",
   "scripts": {
-    "check": "node --check app.js && node --check physicsWorker.js && node --check scripts/validate.js && node scripts/validate.js"
+    "check": "node --check app.js && node --check physicsWorker.js && node --check scripts/validate.js && node scripts/validate.js",
+    "validate:research": "node scripts/validate_repository.mjs"
   },
   "keywords": [
     "astrophysics",
