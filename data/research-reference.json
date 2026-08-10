@@ -1,6 +1,6 @@
 {
   "title": "dark matter rotation curve lab",
-  "description": "dark-matter-rotation-curve-lab upgraded with reproducibility metadata and validation.",
+  "description": "Private dark-matter rotation-curve lab for disk, bulge and halo decomposition with reference anchors.",
   "equations": [
     "Repository metadata completeness",
     "Reference-data finite anchor validation",

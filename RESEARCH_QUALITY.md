@@ -4,7 +4,7 @@ This repository has been upgraded with a compact research-quality layer: referen
 
 ## Scope
 
-dark-matter-rotation-curve-lab upgraded with reproducibility metadata and validation.
+Private dark-matter rotation-curve lab for disk, bulge and halo decomposition with reference anchors.
 
 ## Equations And Models
 
