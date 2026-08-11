@@ -255,6 +255,28 @@ range, and the `data_rms_kms` telemetry metric reports the live RMS of the disk+
 model against these real data points (replacing the previous Milky-Way-specific
 `solar_residual_kms`, which no longer applies to an external galaxy).
 
+## What the Flat Curve Actually Weighs: Dynamical Mass and Dark Matter Fraction
+
+Two more metrics turn the rotation curve into an actual galaxy weighing: `dynamical_mass_1e10_Msun`
+and `dark_matter_fraction` apply `M(R) = v^2 R / G` (the standard technique for weighing a
+galaxy from its rotation curve, e.g. Sofue, 2020, *Galaxies*, 8(2), p.37) at NGC 3198's
+outermost observed radius (`~44 kpc`).
+
+At the default parameters this gives a dynamical mass of roughly `3.2 x 10^11 Msun` enclosed
+within `44 kpc` -- and comparing that to the disk+bulge (baryonic) velocity contribution's own
+share of the total (mass scales with `v^2` in a roughly spherical potential, so
+`(v_baryon/v_total)^2` approximates the baryonic mass fraction) gives a dark matter fraction of
+roughly **80%** at that radius. This is the actual historical result: Rubin, Ford & Thonnard
+(1980) found spiral-galaxy rotation curves staying flat far beyond where the visible disk light
+falls off, meaning most of a galaxy's *mass* lies in an extended, invisible halo -- not a
+qualitative claim, but a number you can read directly off this plot.
+
+**Caveat stated deliberately:** the `(v_baryon/v_total)^2` mass-fraction approximation is a
+standard textbook shortcut, not an exact deprojection -- it assumes a simplified spherical mass
+distribution and ignores the different radial profiles of disk, bulge and halo components. A
+real mass decomposition uses the full Poisson-equation relation between each component's
+density profile and its rotation-curve contribution.
+
 ## Research Quality Upgrade
 
 See [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md) for the validation layer,
