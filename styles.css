@@ -15,7 +15,7 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: "Roboto Mono", "Fira Code", Consolas, monospace; }
 body { overflow: hidden; }
-.shell { width: 100vw; height: 100vh; display: grid; grid-template-rows: 86px 1fr; }
+.shell { width: 100vw; height: calc(100vh - 30px); display: grid; grid-template-rows: 86px 1fr; }
 .topbar { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--line); background: linear-gradient(90deg, rgba(71,217,255,.08), transparent 45%), #0b0f19; }
 .eyebrow { margin: 0 0 6px; color: var(--cyan); text-transform: uppercase; letter-spacing: .2em; font-size: 11px; }
 h1 { margin: 0; font-size: clamp(22px, 3vw, 42px); letter-spacing: -0.04em; }
@@ -48,3 +48,8 @@ pre { margin: 12px 0 0; white-space: pre-wrap; color: var(--muted); line-height:
   .controls, .plot-panel, .heat-panel, .telemetry { grid-column: auto; grid-row: auto; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+.site-footer { height: 30px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; border-top: 1px solid var(--line); background: #0b0f19; font-size: 11px; color: var(--muted); }
+.site-footer nav { display: flex; gap: 16px; }
+.site-footer a { color: var(--muted); text-decoration: none; }
+.site-footer a:hover { color: var(--cyan); }
