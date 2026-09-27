@@ -6,9 +6,8 @@ component is required by galaxy dynamics, how does cluster lensing locate mass
 relative to hot gas, what does cosmology measure, and which technologies could
 identify the underlying particle or field?
 
-The interactive workbench fits **411 published measurements across ten SPARC
-galaxies**: NGC 3198, NGC 2403, NGC 6503, NGC 6946, NGC 7331, NGC 5055,
-NGC 2841, DDO 154, IC 2574 and NGC 7793. It displays quoted random
+The interactive workbench fits **3,391 published measurements across all 175
+SPARC galaxies**. It displays quoted random
 uncertainties, published gas and stellar contributions, a selected halo
 profile, the total model, standardised residuals and a two-parameter Δχ²
 surface. Real observatory imagery then connects this galaxy-scale evidence to
@@ -35,8 +34,12 @@ active application now:
   supports reduced motion, visible focus and responsive layouts;
 - pins the upstream table checksum and supplies a deterministic ingestion
   script and analytic tests.
-- lets the same tested model run across ten galaxies rather than presenting one
-  system as representative of a population;
+- lets the same tested model run across the complete 175-galaxy SPARC sample;
+- preserves morphology, distance and inclination errors, luminosity, surface
+  brightness, H I mass, flat velocity, quality flags, original column names
+  and source references in a normalized, checksum-pinned schema;
+- adds a linked Population Lab with name, quality, surface-brightness and
+  gas-dominance filters, BTFR and RAR views, accessible data and CSV/JSON export;
 - replaces generic generated-looking hero media with credited Hubble, Webb,
   Chandra, Planck and Rubin products stored in the repository;
 - adds a 2026–2076 capability roadmap with explicit validation gates and labels
@@ -54,12 +57,14 @@ active application now:
 | Phase | Scope | Status |
 |---|---|---|
 | A | Scientific correctness and repository cleanup | Complete |
-| B | SPARC multi-galaxy laboratory | Complete |
+| B | Complete 175-galaxy SPARC workbench and normalized catalogue | Complete |
 | C | Bayesian inference workspace | Complete |
-| D | Multiwavelength and archive infrastructure | Next |
-| E | Dwarf dynamics, lensing and X-ray laboratories | Pending |
-| F | CMB, particle-search and future-sensitivity laboratories | Pending |
-| G | Publication mode, educator material and public release | Pending |
+| D | Population, BTFR and radial-acceleration laboratory | Complete |
+| E | Alternative-hypothesis residual and assumption laboratory | Next |
+| F | Quantitative lensing, Bullet Cluster and archive infrastructure | Pending |
+| G | CMB, particle-search and future-sensitivity laboratories | Pending |
+| H | Scale explorer, research frontier and constrained-futures laboratory | Pending |
+| I | Evidence graph, educator/research modes and publication polish | Pending |
 
 Overview imagery does not count as completion of a scientific module. A phase
 is marked complete only when its data, computation, provenance, interface and
@@ -82,11 +87,13 @@ Web Workers or the JSON dataset in modern browsers.
 npm run data:refresh
 ```
 
-`scripts/import_sparc.mjs` downloads the official SPARC
-`MassModels_Lelli2016c.mrt` table, verifies SHA-256
-`9108994b12cc401b94a1768beca61c53ec354779385c9c9cc571049f3043244c`,
-selects 411 rows belonging to the ten named galaxies and renames columns
-without changing values. It writes `data/galaxies.json` plus the NGC 3198
+`scripts/import_sparc.mjs` downloads the official SPARC galaxy-sample and
+Newtonian mass-model tables. It verifies SHA-256
+`5aa0501f6b0d881fa579030e315e7b5b6ef561a5bd3a07472f9929c7e5728243`
+for `SPARC_Lelli2016c.mrt` and
+`9108994b12cc401b94a1768beca61c53ec354779385c9c9cc571049f3043244c`
+for `MassModels_Lelli2016c.mrt`. It preserves all 175 catalogue records and
+3,391 mass-model rows without interpolation. It writes `data/galaxies.json` plus the NGC 3198
 compatibility fixture in `data/reference.json`. A checksum mismatch stops the
 import so an upstream change cannot silently alter the fixtures.
 
@@ -101,8 +108,26 @@ The table defines:
 
 The quoted random errors do **not** include systematic uncertainty from the
 inclination correction. The current browser fit also fixes SPARC's adopted
-distance of 13.8 Mpc. These limitations are displayed in the interface and are
+distance for the selected galaxy. These limitations are displayed in the interface and are
 the next nuisance parameters to implement.
+
+## Population laboratory
+
+The population view applies one shared selection to the accessible catalogue,
+BTFR and RAR panels. The BTFR uses published positive `Vflat` values and the
+explicit illustrative assumption:
+
+```text
+Mbar = 0.5 L3.6 + 1.33 MHI
+```
+
+The RAR evaluates each resolved radius using `g = v²/R`, fixed disc and bulge
+mass-to-light ratios of 0.5 and 0.7, and the sign-preserving SPARC gas
+contribution. Its violet reference is the McGaugh et al. (2016)
+phenomenological relation with `g† = 1.2e-10 m/s²`. Neither panel performs a
+hierarchical fit or propagates all distance, inclination and stellar-population
+systematics. The interface labels these assumptions and does not interpret a
+correlation as proof of a unique physical cause.
 
 ## Model equations
 
@@ -169,8 +194,8 @@ npm run verify
 
 The verification chain performs JavaScript syntax checks, validates the data
 schema/provenance/citations/accessibility hooks, tests analytic profile limits
-and verifies that every halo family produces finite values for all 411
-observations across the ten selected systems.
+and verifies that every halo family produces finite values for all 3,391
+observations across all 175 systems.
 
 ## Repository map
 
@@ -181,7 +206,7 @@ observations across the ten selected systems.
 | `app.js` | UI state, high-DPI plotting, exports and Worker request ordering |
 | `rotationPhysics.js` | Tested halo profiles, SPARC decomposition and likelihood |
 | `physicsWorker.js` | Off-thread evaluation and deterministic grid fit |
-| `data/galaxies.json` | Ten-galaxy SPARC catalogue with 411 observations |
+| `data/galaxies.json` | Complete SPARC catalogue with 175 galaxies and 3,391 observations |
 | `data/reference.json` | NGC 3198 compatibility fixture |
 | `assets/observations/` | Real Hubble, Chandra/Webb, Planck and Rubin imagery |
 | `scripts/import_sparc.mjs` | Checksum-pinned SPARC ingestion |
@@ -193,8 +218,9 @@ observations across the ten selected systems.
 - SPARC random uncertainties are not the complete error budget.
 - `v_halo²/v_total²` at one radius is a force decomposition, not an exact
   three-dimensional enclosed dark-matter mass fraction for a flattened disc.
-- Ten hand-selected systems demonstrate cross-galaxy comparison but are not a
-  statistically complete population and do not define a selection function.
+- The catalogue is complete relative to the published SPARC sample, but SPARC
+  itself is not a volume-limited or statistically complete galaxy survey. Each
+  population view therefore exposes its selection and quality criteria.
 - Rotation curves constrain the gravitational field. They do not establish
   the microscopic identity of dark matter.
 
@@ -217,6 +243,9 @@ image in the application.
 - Burkert, A. (1995), “The Structure of Dark Matter Halos in Dwarf
   Galaxies”, *The Astrophysical Journal Letters* 447, L25.
   https://doi.org/10.1086/309560
+- McGaugh, S. S., Lelli, F. and Schombert, J. M. (2016), “Radial Acceleration
+  Relation in Rotationally Supported Galaxies”, *Physical Review Letters* 117,
+  201101. https://doi.org/10.1103/PhysRevLett.117.201101
 - NASA/CXC/SAO et al. (2025), “New Image from NASA's Webb and Chandra
   'Pierces' Bullet Cluster”.
   https://chandra.harvard.edu/photo/2025/bullet/more.html

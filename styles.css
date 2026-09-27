@@ -167,6 +167,7 @@ h2 {
 
 .observation-panel,
 .inference-section,
+.population-section,
 .roadmap-section {
   margin-bottom: 28px;
   overflow: hidden;
@@ -349,6 +350,19 @@ select {
   padding: 8px 36px 8px 11px;
 }
 
+input[type="search"] {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface-raised);
+  color: var(--text);
+  padding: 8px 11px;
+}
+
+input[type="search"]::placeholder { color: #8290a6; }
+
 .field-help,
 .method-note {
   margin: 7px 0 0;
@@ -453,7 +467,62 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
 .provenance-grid code { display: block; color: var(--text); font-size: 0.76rem; overflow-wrap: anywhere; }
 .citation-note { margin: 0; padding: 13px 16px 16px; color: var(--text-muted); font-size: 0.76rem; }
 
+.population-section,
 .inference-section { margin-top: 28px; }
+
+.population-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  align-items: end;
+  gap: 12px;
+  border-block: 1px solid var(--border);
+  padding: 14px 18px;
+  background: var(--surface-raised);
+}
+
+.population-controls label { display: block; color: var(--text); font-size: 0.74rem; font-weight: 700; }
+.population-controls select,
+.population-controls input { margin-top: 5px; }
+.population-actions { display: flex; gap: 8px; }
+
+.population-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--border);
+}
+
+.population-metric { min-width: 0; padding: 12px 16px; background: var(--surface); }
+.population-metric span { display: block; color: var(--text-muted); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.population-metric strong { display: block; margin-top: 3px; color: var(--accent-strong); font: 650 1rem var(--mono); }
+
+.population-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border-block: 1px solid var(--border);
+  background: var(--border);
+}
+
+.population-chart-card { min-width: 0; background: #091725; }
+.population-chart-card canvas { height: 430px; }
+.population-chart-heading {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.population-chart-heading h3 { margin: 7px 0 0; font-size: 0.92rem; }
+.population-chart-heading > span { color: var(--text-muted); font: 0.68rem var(--mono); }
+.population-method { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; padding: 4px 18px 16px; }
+.population-method p { margin: 0; color: var(--text-muted); font-size: 0.76rem; }
+.population-citation { display: flex; align-items: center; gap: 14px; padding: 14px 18px; }
+.population-citation p { flex: 1; margin: 0; color: var(--text-muted); font-size: 0.74rem; }
+.population-citation a { font-size: 0.74rem; font-weight: 700; white-space: nowrap; }
 
 .inference-layout {
   display: grid;
@@ -683,6 +752,7 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
   .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .provenance-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .inference-layout { grid-template-columns: minmax(280px, 0.8fr) minmax(440px, 1.2fr); }
+  .population-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 800px) {
@@ -708,6 +778,10 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
   .provenance-grid { grid-template-columns: 1fr; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .inference-layout { grid-template-columns: 1fr; }
+  .population-charts { grid-template-columns: 1fr; }
+  .population-method { grid-template-columns: 1fr; }
+  .population-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .population-citation { align-items: flex-start; flex-direction: column; }
   .posterior-panel { min-height: 520px; }
   .model-check-note { grid-template-columns: 1fr; }
   .site-footer { align-items: flex-start; flex-direction: column; }
@@ -724,6 +798,10 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
   .metrics { grid-template-columns: 1fr; }
   .inference-actions,
   .posterior-metrics { grid-template-columns: 1fr; }
+  .population-controls,
+  .population-metrics { grid-template-columns: 1fr; }
+  .population-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .population-chart-card canvas { height: 360px; }
   .observation-card,
   .observation-card-wide { height: 390px; }
   .observation-card figcaption { padding-inline: 14px; }

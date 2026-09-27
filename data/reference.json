@@ -1,6 +1,6 @@
 {
-  "schema_version": "2.0.0",
-  "source": "SPARC Newtonian Mass Models table from Lelli, McGaugh & Schombert (2016).",
+  "schema_version": "3.0.0",
+  "source": "SPARC galaxy sample and Newtonian mass models from Lelli, McGaugh & Schombert (2016).",
   "source_url": "https://astroweb.case.edu/SPARC/MassModels_Lelli2016c.mrt",
   "citation": "Lelli, F., McGaugh, S. S. and Schombert, J. M. (2016), The Astronomical Journal, 152, 157. DOI: 10.3847/0004-6256/152/6/157.",
   "columns": {
@@ -13,16 +13,32 @@
     "sb_disk": "Disc surface brightness [Lsun/pc^2]",
     "sb_bulge": "Bulge surface brightness [Lsun/pc^2]"
   },
+  "metadata_columns": {
+    "morphology": "Hubble type decoded from original T column",
+    "distance_mpc": "Distance [Mpc]",
+    "inclination_deg": "Inclination [deg]",
+    "luminosity_3p6_1e9_lsun": "Total 3.6 micron luminosity [10^9 Lsun]",
+    "effective_surface_brightness_lsun_pc2": "Effective surface brightness at 3.6 micron [Lsun/pc^2]",
+    "hi_mass_1e9_msun": "Total neutral-hydrogen mass [10^9 Msun]",
+    "flat_velocity_kms": "Asymptotically flat velocity [km/s]",
+    "quality_flag": "SPARC quality flag: 1 high, 2 medium, 3 low"
+  },
   "provenance": {
     "upstream_sha256": "9108994b12cc401b94a1768beca61c53ec354779385c9c9cc571049f3043244c",
+    "source_checksums": {
+      "galaxy_sample": "5aa0501f6b0d881fa579030e315e7b5b6ef561a5bd3a07472f9929c7e5728243",
+      "mass_models": "9108994b12cc401b94a1768beca61c53ec354779385c9c9cc571049f3043244c"
+    },
     "retrieved_utc": "2026-09-27T00:00:00Z",
-    "selection": "Rows with ID in NGC3198, NGC2403, NGC6503, NGC6946, NGC7331, NGC5055, NGC2841, DDO154, IC2574, NGC7793",
+    "selection": "All 175 galaxies in the public SPARC sample table with their mass-model rows",
     "parser": "scripts/import_sparc.mjs",
     "transformations": [
-      "Fixed-width table tokenisation",
+      "Fixed-width catalogue parsing",
+      "Mass-model table tokenisation",
       "Column renaming only",
       "No interpolation or fitting"
-    ]
+    ],
+    "derived_quantities": "Population stellar masses assume M/L_3.6=0.5; gas masses multiply MHI by 1.33 for helium; these assumptions are stored with each record."
   },
   "requiredCitations": [
     "Lelli, F., McGaugh, S. S. and Schombert, J. M. (2016)",
@@ -31,8 +47,54 @@
   "galaxy_id": "NGC3198",
   "galaxy": "NGC 3198",
   "dataset": "NGC 3198 SPARC Newtonian mass model",
+  "hubble_type_code": 5,
+  "morphology": "Sc",
   "distance_mpc": 13.8,
+  "distance_error_mpc": 1.4,
+  "distance_method_code": 3,
+  "inclination_deg": 73,
+  "inclination_error_deg": 3,
+  "luminosity_3p6_1e9_lsun": 38.279,
+  "luminosity_3p6_error_1e9_lsun": 0.212,
+  "effective_radius_kpc": 5.84,
+  "effective_surface_brightness_lsun_pc2": 178.99,
+  "disk_scale_length_kpc": 3.14,
+  "central_surface_brightness_lsun_pc2": 1602.62,
+  "hi_mass_1e9_msun": 10.869,
+  "hi_radius_kpc": 35.66,
+  "flat_velocity_kms": 150.1,
+  "flat_velocity_error_kms": 3.9,
+  "quality_flag": 1,
+  "rotation_curve_references": "Da06,Be91,Be87",
+  "derived": {
+    "stellar_mass_1e9_msun_at_ml_0p5": 19.1395,
+    "gas_mass_1e9_msun_with_helium": 14.455770000000001,
+    "baryonic_mass_1e9_msun_at_ml_0p5": 33.59527,
+    "gas_fraction_at_ml_0p5": 0.430291823819246
+  },
+  "original_columns": {
+    "Galaxy": "NGC3198",
+    "T": 5,
+    "D": 13.8,
+    "e_D": 1.4,
+    "f_D": 3,
+    "Inc": 73,
+    "e_Inc": 3,
+    "L[3.6]": 38.279,
+    "e_L[3.6]": 0.212,
+    "Reff": 5.84,
+    "SBeff": 178.99,
+    "Rdisk": 3.14,
+    "SBdisk": 1602.62,
+    "MHI": 10.869,
+    "RHI": 35.66,
+    "Vflat": 150.1,
+    "e_Vflat": 3.9,
+    "Q": 1,
+    "Ref": "Da06,Be91,Be87"
+  },
   "n_points": 43,
+  "maximum_observed_velocity_kms": 157,
   "points": [
     {
       "x": 0.32,

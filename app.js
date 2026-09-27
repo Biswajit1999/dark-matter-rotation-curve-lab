@@ -1,6 +1,6 @@
 'use strict';
 
-const BUILD_VERSION = '2.0.0-beta.2';
+const BUILD_VERSION = '2.0.0-beta.3';
 
 const CONTROL_DEFINITIONS = [
   { key: 'massToLightDisk', label: 'Disc mass-to-light ratio', unit: 'M☉/L☉ at 3.6 μm', value: 0.5, min: 0.1, max: 1, step: 0.01 },
@@ -38,7 +38,8 @@ const state = {
   posterior: null,
   worker: null,
   requestId: 0,
-  pendingFrame: null
+  pendingFrame: null,
+  population: { galaxies: [], highlightedGalaxyId: null, plotPoints: { btfrCanvas: [], rarCanvas: [] } }
 };
 
 const $ = id => document.getElementById(id);
@@ -111,15 +112,25 @@ async function loadCatalog() {
   const response = await fetch(`data/galaxies.json?v=${BUILD_VERSION}`, { cache: 'no-cache' });
   if (!response.ok) throw new Error(`Galaxy catalogue request failed with HTTP ${response.status}.`);
   state.catalog = await response.json();
-  const options = state.catalog.galaxies.map(galaxy => {
+  renderGalaxyOptions();
+  $('galaxySelect').value = 'NGC3198';
+  selectReference('NGC3198');
+  renderPopulation();
+}
+
+function renderGalaxyOptions(query = '') {
+  const normalised = query.trim().toLowerCase();
+  const matches = state.catalog.galaxies.filter(galaxy => (
+    !normalised || `${galaxy.galaxy} ${galaxy.galaxy_id} ${galaxy.morphology}`.toLowerCase().includes(normalised)
+  ));
+  const options = matches.map(galaxy => {
     const option = document.createElement('option');
     option.value = galaxy.galaxy_id;
-    option.textContent = `${galaxy.galaxy} · ${galaxy.n_points} points · ${galaxy.distance_mpc} Mpc`;
+    option.textContent = `${galaxy.galaxy} · ${galaxy.morphology} · Q${galaxy.quality_flag} · ${galaxy.n_points} points`;
     return option;
   });
   $('galaxySelect').replaceChildren(...options);
-  $('galaxySelect').value = 'NGC3198';
-  selectReference('NGC3198');
+  $('galaxyHelp').textContent = `${matches.length} of ${state.catalog.galaxies.length} galaxies match this search.`;
 }
 
 function getWorker() {
@@ -693,11 +704,210 @@ function exportSvg() {
   download(`${state.reference.galaxy_id.toLowerCase()}-${state.params.haloModel}-fit.svg`, 'image/svg+xml;charset=utf-8', svg);
 }
 
+function median(values) {
+  if (!values.length) return NaN;
+  const sorted = [...values].sort((a, b) => a - b);
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+}
+
+function filteredPopulation() {
+  const query = $('populationSearch').value.trim().toLowerCase();
+  const quality = $('qualityFilter').value;
+  const subset = $('populationClass').value;
+  const surfaceMedian = median(state.catalog.galaxies.map(galaxy => galaxy.effective_surface_brightness_lsun_pc2));
+  return state.catalog.galaxies.filter(galaxy => {
+    if (query && !`${galaxy.galaxy} ${galaxy.galaxy_id}`.toLowerCase().includes(query)) return false;
+    if (quality === '1' && galaxy.quality_flag !== 1) return false;
+    if (quality === '2' && galaxy.quality_flag > 2) return false;
+    if (subset === 'low-sb' && galaxy.effective_surface_brightness_lsun_pc2 >= surfaceMedian) return false;
+    if (subset === 'high-sb' && galaxy.effective_surface_brightness_lsun_pc2 < surfaceMedian) return false;
+    if (subset === 'gas-rich' && galaxy.derived.gas_fraction_at_ml_0p5 <= 0.5) return false;
+    return true;
+  });
+}
+
+function drawPopulationAxes(context, width, height, bounds, labels) {
+  const plot = { left: 70, top: 24, right: width - 20, bottom: height - 58 };
+  context.font = '11px ui-monospace, SFMono-Regular, Consolas, monospace';
+  context.textBaseline = 'middle';
+  for (let index = 0; index <= 5; index += 1) {
+    const fraction = index / 5;
+    const x = plot.left + (plot.right - plot.left) * fraction;
+    const y = plot.bottom - (plot.bottom - plot.top) * fraction;
+    context.strokeStyle = 'rgba(149, 166, 190, 0.15)';
+    context.beginPath();
+    context.moveTo(x, plot.top); context.lineTo(x, plot.bottom);
+    context.moveTo(plot.left, y); context.lineTo(plot.right, y); context.stroke();
+    context.fillStyle = '#a8b4c8';
+    context.textAlign = 'center';
+    context.fillText(formatNumber(bounds.minX + (bounds.maxX - bounds.minX) * fraction, 1), x, plot.bottom + 20);
+    context.textAlign = 'right';
+    context.fillText(formatNumber(bounds.minY + (bounds.maxY - bounds.minY) * fraction, 1), plot.left - 9, y);
+  }
+  context.strokeStyle = '#4b6b86';
+  context.strokeRect(plot.left, plot.top, plot.right - plot.left, plot.bottom - plot.top);
+  context.fillStyle = '#d7e0eb';
+  context.textAlign = 'center';
+  context.fillText(labels.x, (plot.left + plot.right) / 2, height - 18);
+  context.save();
+  context.translate(18, (plot.top + plot.bottom) / 2);
+  context.rotate(-Math.PI / 2);
+  context.fillText(labels.y, 0, 0);
+  context.restore();
+  return {
+    plot,
+    x: value => plot.left + (value - bounds.minX) / (bounds.maxX - bounds.minX) * (plot.right - plot.left),
+    y: value => plot.bottom - (value - bounds.minY) / (bounds.maxY - bounds.minY) * (plot.bottom - plot.top)
+  };
+}
+
+function populationPointColour(galaxy) {
+  return galaxy.derived.gas_fraction_at_ml_0p5 > 0.5 ? '#f4b860' : '#54b8ea';
+}
+
+function drawBtfr(galaxies) {
+  const canvas = $('btfrCanvas');
+  const { context, width, height } = prepareCanvas(canvas);
+  const data = galaxies.filter(galaxy => galaxy.flat_velocity_kms > 0 && galaxy.derived.baryonic_mass_1e9_msun_at_ml_0p5 > 0).map(galaxy => ({
+    galaxy,
+    x: Math.log10(galaxy.flat_velocity_kms),
+    y: Math.log10(galaxy.derived.baryonic_mass_1e9_msun_at_ml_0p5 * 1e9)
+  }));
+  const bounds = { minX: 1.3, maxX: 2.6, minY: 7, maxY: 12 };
+  const scales = drawPopulationAxes(context, width, height, bounds, { x: 'log₁₀ Vflat [km/s]', y: 'log₁₀ Mbar [M☉]' });
+  state.population.plotPoints.btfrCanvas = [];
+  for (const point of data) {
+    const x = scales.x(point.x);
+    const y = scales.y(point.y);
+    const highlighted = point.galaxy.galaxy_id === state.population.highlightedGalaxyId;
+    context.fillStyle = populationPointColour(point.galaxy);
+    context.globalAlpha = highlighted ? 1 : 0.72;
+    context.beginPath(); context.arc(x, y, highlighted ? 6 : point.galaxy.quality_flag === 1 ? 3.3 : 2.4, 0, Math.PI * 2); context.fill();
+    if (highlighted) { context.strokeStyle = '#ffffff'; context.lineWidth = 2; context.stroke(); }
+    state.population.plotPoints.btfrCanvas.push({ x, y, galaxyId: point.galaxy.galaxy_id });
+  }
+  context.globalAlpha = 1;
+  context.fillStyle = '#d7e0eb'; context.font = '11px ui-monospace, monospace'; context.textAlign = 'left';
+  context.fillText(`N = ${data.length}; amber = gas dominated`, scales.plot.left + 8, scales.plot.top + 12);
+  $('btfrSummary').textContent = `${data.length} filtered galaxies with published positive flat velocities are shown. Baryonic masses assume a fixed 3.6-micron stellar mass-to-light ratio of 0.5 and the SPARC helium correction.`;
+}
+
+function drawRar(galaxies) {
+  const canvas = $('rarCanvas');
+  const { context, width, height } = prepareCanvas(canvas);
+  const accelerationFactor = 3.240779289e-14;
+  const data = [];
+  for (const galaxy of galaxies) {
+    for (const point of galaxy.points) {
+      const baryonicVelocitySquared = point.v_gas * Math.abs(point.v_gas) + 0.5 * point.v_disk ** 2 + 0.7 * point.v_bulge ** 2;
+      const observedAcceleration = point.y ** 2 / point.x * accelerationFactor;
+      const baryonicAcceleration = baryonicVelocitySquared / point.x * accelerationFactor;
+      if (observedAcceleration > 0 && baryonicAcceleration > 0) data.push({
+        galaxy, x: Math.log10(baryonicAcceleration), y: Math.log10(observedAcceleration)
+      });
+    }
+  }
+  const bounds = { minX: -13.5, maxX: -8, minY: -13.5, maxY: -8 };
+  const scales = drawPopulationAxes(context, width, height, bounds, { x: 'log₁₀ gbar [m/s²]', y: 'log₁₀ gobs [m/s²]' });
+  const gDagger = 1.2e-10;
+  context.strokeStyle = '#b1a7ff'; context.lineWidth = 2; context.beginPath();
+  for (let index = 0; index <= 120; index += 1) {
+    const logBaryonic = bounds.minX + (bounds.maxX - bounds.minX) * index / 120;
+    const gBar = 10 ** logBaryonic;
+    const predicted = gBar / (1 - Math.exp(-Math.sqrt(gBar / gDagger)));
+    const x = scales.x(logBaryonic); const y = scales.y(Math.log10(predicted));
+    if (index) context.lineTo(x, y); else context.moveTo(x, y);
+  }
+  context.stroke();
+  state.population.plotPoints.rarCanvas = [];
+  for (const point of data) {
+    const x = scales.x(point.x); const y = scales.y(point.y);
+    const highlighted = point.galaxy.galaxy_id === state.population.highlightedGalaxyId;
+    context.fillStyle = populationPointColour(point.galaxy);
+    context.globalAlpha = highlighted ? 0.95 : 0.35;
+    context.fillRect(x - (highlighted ? 2.5 : 1), y - (highlighted ? 2.5 : 1), highlighted ? 5 : 2, highlighted ? 5 : 2);
+    state.population.plotPoints.rarCanvas.push({ x, y, galaxyId: point.galaxy.galaxy_id });
+  }
+  context.globalAlpha = 1;
+  context.fillStyle = '#d7e0eb'; context.font = '11px ui-monospace, monospace'; context.textAlign = 'left';
+  context.fillText(`N = ${data.length} radii; violet = g† reference`, scales.plot.left + 8, scales.plot.top + 12);
+  $('rarSummary').textContent = `${data.length} resolved radii from ${galaxies.length} filtered galaxies are shown against the empirical acceleration-relation reference with g-dagger equal to 1.2 times 10 to the minus 10 metres per second squared.`;
+}
+
+function renderPopulationTable(galaxies) {
+  $('populationRows').innerHTML = galaxies.map(galaxy => `<tr><th scope="row">${galaxy.galaxy}</th><td>${galaxy.morphology}</td><td>${galaxy.quality_flag}</td><td>${formatNumber(galaxy.distance_mpc, 2)}</td><td>${formatNumber(galaxy.inclination_deg, 1)}</td><td>${formatNumber(galaxy.effective_surface_brightness_lsun_pc2, 2)}</td><td>${formatNumber(galaxy.derived.gas_fraction_at_ml_0p5, 3)}</td><td>${galaxy.flat_velocity_kms > 0 ? formatNumber(galaxy.flat_velocity_kms, 1) : '—'}</td><td>${galaxy.n_points}</td></tr>`).join('') || '<tr><td colspan="9">No galaxies match these filters.</td></tr>';
+}
+
+function renderPopulation() {
+  if (!state.catalog) return;
+  const galaxies = filteredPopulation();
+  state.population.galaxies = galaxies;
+  const resolvedPoints = galaxies.reduce((sum, galaxy) => sum + galaxy.n_points, 0);
+  const btfrCount = galaxies.filter(galaxy => galaxy.flat_velocity_kms > 0).length;
+  const gasFractions = galaxies.map(galaxy => galaxy.derived.gas_fraction_at_ml_0p5);
+  $('populationMetrics').innerHTML = [
+    ['Selected galaxies', galaxies.length, `of ${state.catalog.selection_count}`],
+    ['Resolved velocities', resolvedPoints.toLocaleString('en-GB'), 'RAR inputs'],
+    ['Published Vflat', btfrCount, 'BTFR inputs'],
+    ['Median gas fraction', formatNumber(median(gasFractions), 3), 'fixed M/L=0.5']
+  ].map(([label, value, note]) => `<div class="population-metric"><span>${label}</span><strong>${value}</strong><span>${note}</span></div>`).join('');
+  drawBtfr(galaxies);
+  drawRar(galaxies);
+  renderPopulationTable(galaxies);
+}
+
+function exportPopulationCsv() {
+  const header = ['galaxy_id', 'morphology', 'quality_flag', 'distance_mpc', 'inclination_deg', 'effective_surface_brightness_lsun_pc2', 'gas_fraction_at_ml_0p5', 'baryonic_mass_1e9_msun_at_ml_0p5', 'flat_velocity_kms', 'flat_velocity_error_kms', 'n_points', 'rotation_curve_references'];
+  const rows = state.population.galaxies.map(galaxy => [galaxy.galaxy_id, galaxy.morphology, galaxy.quality_flag, galaxy.distance_mpc, galaxy.inclination_deg, galaxy.effective_surface_brightness_lsun_pc2, galaxy.derived.gas_fraction_at_ml_0p5, galaxy.derived.baryonic_mass_1e9_msun_at_ml_0p5, galaxy.flat_velocity_kms || '', galaxy.flat_velocity_error_kms || '', galaxy.n_points, galaxy.rotation_curve_references]);
+  const csvCell = value => /[",\n]/.test(String(value)) ? `"${String(value).replaceAll('"', '""')}"` : String(value);
+  download('sparc-filtered-population.csv', 'text/csv;charset=utf-8', [header, ...rows].map(row => row.map(csvCell).join(',')).join('\n'));
+}
+
+function exportPopulationJson() {
+  const payload = {
+    softwareVersion: BUILD_VERSION,
+    dataset: state.catalog.dataset,
+    datasetVersion: state.catalog.schema_version,
+    sourceChecksums: state.catalog.provenance.source_checksums,
+    filters: { name: $('populationSearch').value, quality: $('qualityFilter').value, subset: $('populationClass').value },
+    assumptions: { stellarMassToLight3p6: 0.5, bulgeMassToLight3p6: 0.7, gasHeliumFactor: 1.33, rarGDaggerMps2: 1.2e-10 },
+    selectedGalaxyIds: state.population.galaxies.map(galaxy => galaxy.galaxy_id)
+  };
+  download('sparc-population-state.json', 'application/json;charset=utf-8', `${JSON.stringify(payload, null, 2)}\n`);
+}
+
+function handlePopulationPointer(event) {
+  const canvas = event.currentTarget;
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left; const y = event.clientY - rect.top;
+  let closest = null; let distanceSquared = 100;
+  for (const point of state.population.plotPoints[canvas.id]) {
+    const candidate = (point.x - x) ** 2 + (point.y - y) ** 2;
+    if (candidate < distanceSquared) { closest = point; distanceSquared = candidate; }
+  }
+  const next = closest?.galaxyId || null;
+  if (next !== state.population.highlightedGalaxyId) {
+    state.population.highlightedGalaxyId = next;
+    drawBtfr(state.population.galaxies); drawRar(state.population.galaxies);
+    if (next) {
+      const galaxy = state.catalog.galaxies.find(candidate => candidate.galaxy_id === next);
+      canvas.title = `${galaxy.galaxy}: ${galaxy.morphology}, Q=${galaxy.quality_flag}, ${galaxy.n_points} resolved measurements`;
+    } else canvas.removeAttribute('title');
+  }
+}
+
 $('galaxySelect').addEventListener('change', event => {
   selectReference(event.currentTarget.value);
   state.result = null;
   $('fitStatus').textContent = `${state.reference.galaxy} selected`;
   runModel();
+});
+
+$('galaxySearch').addEventListener('input', event => {
+  const previous = $('galaxySelect').value;
+  renderGalaxyOptions(event.currentTarget.value);
+  if ([...$('galaxySelect').options].some(option => option.value === previous)) $('galaxySelect').value = previous;
 });
 
 $('haloModel').addEventListener('change', event => {
@@ -733,6 +943,29 @@ $('reset').addEventListener('click', () => {
 
 $('exportCsv').addEventListener('click', exportCsv);
 $('exportSvg').addEventListener('click', exportSvg);
+$('exportPopulationCsv').addEventListener('click', exportPopulationCsv);
+$('exportPopulationJson').addEventListener('click', exportPopulationJson);
+for (const control of [$('populationSearch'), $('qualityFilter'), $('populationClass')]) {
+  control.addEventListener(control.tagName === 'INPUT' ? 'input' : 'change', renderPopulation);
+}
+for (const canvas of [$('btfrCanvas'), $('rarCanvas')]) {
+  canvas.addEventListener('pointermove', handlePopulationPointer);
+  canvas.addEventListener('click', () => {
+    if (!state.population.highlightedGalaxyId) return;
+    $('galaxySearch').value = '';
+    renderGalaxyOptions();
+    $('galaxySelect').value = state.population.highlightedGalaxyId;
+    selectReference(state.population.highlightedGalaxyId);
+    state.result = null;
+    $('fitStatus').textContent = `${state.reference.galaxy} selected from population view`;
+    runModel();
+  });
+  canvas.addEventListener('pointerleave', () => {
+    state.population.highlightedGalaxyId = null;
+    drawBtfr(state.population.galaxies);
+    drawRar(state.population.galaxies);
+  });
+}
 
 buildControls();
 drawPosterior();
@@ -746,5 +979,6 @@ loadCatalog()
 const resizeObserver = new ResizeObserver(() => {
   if (state.result) renderAll();
   drawPosterior();
+  if (state.catalog) renderPopulation();
 });
 for (const canvas of document.querySelectorAll('canvas')) resizeObserver.observe(canvas);

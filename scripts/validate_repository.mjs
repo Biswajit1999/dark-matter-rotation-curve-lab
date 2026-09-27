@@ -16,7 +16,7 @@ if (!application.includes('standardised residuals') && !fs.readFileSync('index.h
 }
 if (!reference.provenance?.transformations?.includes('No interpolation or fitting')) failures.push('data transformations are not explicit');
 if (reference.points.some(point => !Object.hasOwn(point, 'v_gas') || !Object.hasOwn(point, 'v_disk'))) failures.push('published baryonic components are missing');
-if (catalog.galaxies?.length !== 10 || catalog.total_points !== 411) failures.push('multi-galaxy SPARC catalogue is incomplete');
+if (catalog.galaxies?.length !== 175 || catalog.total_points !== 3391) failures.push('complete 175-galaxy SPARC catalogue is incomplete');
 if (!application.includes('posteriorPriors') || !application.includes('exportPosterior') || !application.includes('exportPredictive')) failures.push('Bayesian workspace controls or export are missing');
 for (const galaxy of catalog.galaxies || []) {
   if (galaxy.points.some(point => !Object.hasOwn(point, 'v_gas') || !Object.hasOwn(point, 'v_disk'))) failures.push(`${galaxy.galaxy_id} baryonic components are missing`);
@@ -27,4 +27,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('Dark Matter Evidence Lab: research contracts passed for 3 halo models, 411 measurements, posterior sampling and predictive checks.');
+console.log('Dark Matter Evidence Lab: research contracts passed for 3 halo models, 3,391 measurements, population relations, posterior sampling and predictive checks.');

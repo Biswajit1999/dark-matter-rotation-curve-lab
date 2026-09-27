@@ -58,9 +58,9 @@ test('all three halo models produce complete, finite evaluations', () => {
   }
 });
 
-test('all selected galaxies produce finite evaluations for every halo family', () => {
-  assert.equal(catalog.galaxies.length, 10);
-  assert.equal(catalog.total_points, 411);
+test('all 175 SPARC galaxies produce finite evaluations for every halo family', () => {
+  assert.equal(catalog.galaxies.length, 175);
+  assert.equal(catalog.total_points, 3391);
   for (const galaxy of catalog.galaxies) {
     for (const haloModel of ['piso', 'nfw', 'burkert']) {
       const result = physics.evaluate({ ...defaultParams, haloModel }, galaxy, false);
@@ -98,6 +98,22 @@ test('deterministic posterior sampling respects priors and reports diagnostics',
   )));
   assert.ok(posterior.predictive.coverage68 >= 0 && posterior.predictive.coverage68 <= 1);
   assert.ok(posterior.predictive.bayesianPValue >= 0 && posterior.predictive.bayesianPValue <= 1);
+});
+
+test('population metadata and acceleration transforms are finite and traceable', () => {
+  const accelerationFactor = 3.240779289e-14;
+  for (const galaxy of catalog.galaxies) {
+    assert.match(galaxy.morphology, /\S/);
+    assert.ok([1, 2, 3].includes(galaxy.quality_flag));
+    assert.ok(Number.isFinite(galaxy.derived.gas_fraction_at_ml_0p5));
+    assert.ok(galaxy.original_columns.Galaxy === galaxy.galaxy_id);
+    for (const point of galaxy.points) {
+      const baryonicVelocitySquared = point.v_gas * Math.abs(point.v_gas) + 0.5 * point.v_disk ** 2 + 0.7 * point.v_bulge ** 2;
+      const observedAcceleration = point.y ** 2 / point.x * accelerationFactor;
+      assert.ok(Number.isFinite(observedAcceleration) && observedAcceleration > 0);
+      assert.ok(Number.isFinite(baryonicVelocitySquared));
+    }
+  }
 });
 
 test('synthetic known-truth galaxy is recovered within two posterior interval widths', () => {

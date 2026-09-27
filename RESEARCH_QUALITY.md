@@ -7,7 +7,7 @@ not establish.
 
 `npm run verify` checks that:
 
-1. the catalogue contains 411 strictly ordered measurements across ten named
+1. the catalogue contains 3,391 strictly ordered measurements across all 175
    SPARC galaxies, while the NGC 3198 compatibility fixture retains 43 points;
 2. observed values, uncertainties and SPARC baryonic columns are finite and
    every uncertainty is positive;
@@ -17,7 +17,7 @@ not establish.
    large radii;
 5. disc mass-to-light scaling follows \(v_\star\propto\sqrt{\Upsilon}\);
 6. all three halo families return finite series and one standardised residual
-   per observation for every selected galaxy;
+   per observation for every SPARC galaxy;
 7. the page exposes a skip link, chart descriptions, a data table and reduced
    motion styling;
 8. posterior sampling stays inside explicit priors, uses a deterministic seed
@@ -25,16 +25,18 @@ not establish.
 9. posterior predictive intervals are finite and ordered, with reproducible
    predictive random draws, coverage and a discrepancy-based Bayesian p-value;
 10. a deterministic noisy synthetic galaxy recovers its known disc and halo
-    parameters within two 68% posterior interval half-widths.
+    parameters within two 68% posterior interval half-widths;
+11. normalized population metadata retain original fields and quality flags,
+    while resolved acceleration transforms remain finite for all radii.
 
 ## Guarantees requiring future work
 
 The current tests do not validate distance or inclination marginalisation,
 correlated systematics, repeated-simulation posterior calibration, evidence
-estimation, population selection or agreement with an independent fitting
-package. The one synthetic recovery fixture is a regression test, not a
-coverage study. The ten systems are an intentionally varied demonstration set,
-not a statistically complete sample. Grid minimisation is deterministic
+estimation, hierarchical population inference or agreement with an independent
+fitting package. The one synthetic recovery fixture is a regression test, not a
+coverage study. SPARC is broad but is not a volume-limited statistically
+complete survey. Grid minimisation is deterministic
 exploration, not Bayesian inference. A later release should add repeated
 synthetic coverage experiments and JavaScript/Python parity fixtures before
 claiming research-grade parameter constraints.

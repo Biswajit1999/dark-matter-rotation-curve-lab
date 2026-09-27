@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Explore published SPARC rotation curves across ten galaxies, cluster lensing, cosmology and the technology roadmap for identifying dark matter.">
+  <meta name="description" content="Explore all 175 SPARC galaxies, population scaling relations, cluster lensing, cosmology and the technology roadmap for identifying dark matter.">
   <meta name="theme-color" content="#07111f">
   <title>Dark Matter Evidence Lab — Galaxies to Detectors</title>
-  <link rel="stylesheet" href="styles.css?v=2.0.0-beta.2">
+  <link rel="stylesheet" href="styles.css?v=2.0.0-beta.3">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to analysis</a>
@@ -24,7 +24,7 @@
 
   <main id="main-content" class="shell" tabindex="-1">
     <section class="evidence-strip" aria-label="Scientific scope">
-      <div><span class="signal-dot" aria-hidden="true"></span><strong>Galaxies</strong><span>10 SPARC systems · 411 velocities</span></div>
+      <div><span class="signal-dot" aria-hidden="true"></span><strong>Galaxies</strong><span>175 SPARC systems · 3,391 velocities</span></div>
       <div><strong>Clusters</strong><span>Lensing mass versus hot gas</span></div>
       <div><strong>Cosmos</strong><span>Structure imprinted on the CMB</span></div>
       <div><strong>Laboratory</strong><span>Rare-event particle searches</span></div>
@@ -101,9 +101,15 @@
         </div>
 
         <div class="field-group">
+          <label for="galaxySearch">Find a galaxy</label>
+          <input id="galaxySearch" type="search" placeholder="Name or morphology" autocomplete="off" aria-describedby="galaxySearchHelp">
+          <p id="galaxySearchHelp" class="field-help">Search the complete 175-galaxy catalogue.</p>
+        </div>
+
+        <div class="field-group">
           <label for="galaxySelect">SPARC galaxy</label>
           <select id="galaxySelect" aria-describedby="galaxyHelp"></select>
-          <p id="galaxyHelp" class="field-help">Choose among ten systems spanning gas-rich dwarfs and massive spirals.</p>
+          <p id="galaxyHelp" class="field-help">Choose a system to load its published resolved rotation curve.</p>
         </div>
 
         <div class="field-group">
@@ -215,9 +221,85 @@
         <div><span>Dataset</span><strong id="datasetName">—</strong></div>
         <div><span>Distance</span><strong id="distanceValue">—</strong></div>
         <div><span>Upstream SHA-256</span><code id="checksumValue">—</code></div>
-        <div><span>Transform</span><strong>Selection and column renaming only</strong></div>
+        <div><span>Transform</span><strong>Parsing and column renaming only</strong></div>
       </div>
       <p id="notes" class="citation-note"></p>
+    </section>
+
+    <section class="population-section" aria-labelledby="population-title">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">Phase 3–4 · galaxies as a population</p>
+          <h2 id="population-title">Population and acceleration-relation laboratory</h2>
+        </div>
+        <p>Filter one shared population and compare a global baryonic scaling relation with all resolved acceleration measurements. Correlation is evidence for a regularity—not, by itself, a microscopic explanation.</p>
+      </div>
+      <div class="population-controls" aria-label="Population filters">
+        <div>
+          <label for="populationSearch">Galaxy name</label>
+          <input id="populationSearch" type="search" placeholder="All names" autocomplete="off">
+        </div>
+        <div>
+          <label for="qualityFilter">SPARC quality</label>
+          <select id="qualityFilter">
+            <option value="all">All quality flags</option>
+            <option value="1">High only (Q=1)</option>
+            <option value="2">High + medium (Q≤2)</option>
+          </select>
+        </div>
+        <div>
+          <label for="populationClass">Physical subset</label>
+          <select id="populationClass">
+            <option value="all">All surface brightnesses</option>
+            <option value="low-sb">Low surface brightness</option>
+            <option value="high-sb">High surface brightness</option>
+            <option value="gas-rich">Gas dominated</option>
+          </select>
+        </div>
+        <div class="population-actions">
+          <button id="exportPopulationCsv" class="compact-button" type="button">Filtered CSV</button>
+          <button id="exportPopulationJson" class="compact-button" type="button">State JSON</button>
+        </div>
+      </div>
+      <div id="populationMetrics" class="population-metrics" aria-live="polite"></div>
+      <div class="population-charts">
+        <article class="population-chart-card">
+          <div class="population-chart-heading">
+            <div><span class="epistemic-label">Observed + assumed M/L</span><h3>Baryonic Tully–Fisher plane</h3></div>
+            <span>Vflat versus Mbar</span>
+          </div>
+          <canvas id="btfrCanvas" role="img" aria-describedby="btfrSummary"></canvas>
+          <p id="btfrSummary" class="sr-summary">The population plot is loading.</p>
+        </article>
+        <article class="population-chart-card">
+          <div class="population-chart-heading">
+            <div><span class="epistemic-label">Phenomenological comparison</span><h3>Radial acceleration relation</h3></div>
+            <span>gbar versus gobs</span>
+          </div>
+          <canvas id="rarCanvas" role="img" aria-describedby="rarSummary"></canvas>
+          <p id="rarSummary" class="sr-summary">The acceleration-relation plot is loading.</p>
+        </article>
+      </div>
+      <details>
+        <summary>Show selection, equations and accessible filtered catalogue</summary>
+        <div class="population-method">
+          <p><strong>BTFR:</strong> Mbar = 0.5 L<sub>3.6</sub> + 1.33 M<sub>HI</sub>. Galaxies without a published positive Vflat are excluded from that panel. The stellar mass-to-light ratio is an explicit fixed assumption, not a measurement.</p>
+          <p><strong>RAR:</strong> gobs = Vobs²/R and gbar = (Vgas|Vgas| + 0.5Vdisk² + 0.7Vbulge²)/R. The reference curve uses g† = 1.2 × 10<sup>−10</sup> m s<sup>−2</sup>. Non-positive derived accelerations are excluded; distance and inclination systematics are not propagated here.</p>
+          <p><strong>Subsets:</strong> low/high surface brightness split at the catalogue median effective surface brightness; gas dominated means the stored fixed-M/L gas fraction exceeds 0.5. Quality flags are SPARC’s own: 1 high, 2 medium, 3 low.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <caption>Filtered SPARC galaxy population</caption>
+            <thead><tr><th scope="col">Galaxy</th><th scope="col">Type</th><th scope="col">Q</th><th scope="col">Distance (Mpc)</th><th scope="col">Inclination (deg)</th><th scope="col">SBeff (L☉/pc²)</th><th scope="col">Gas fraction</th><th scope="col">Vflat (km/s)</th><th scope="col">N</th></tr></thead>
+            <tbody id="populationRows"><tr><td colspan="9">Population data are loading.</td></tr></tbody>
+          </table>
+        </div>
+      </details>
+      <div class="population-citation">
+        <span class="epistemic-label">Model-dependent inference</span>
+        <p>These views reproduce relationships within the selected assumptions. They do not establish whether the regularities arise from dark matter, baryonic physics, modified dynamics, selection effects, or a combination.</p>
+        <a href="https://astroweb.case.edu/SPARC/" target="_blank" rel="noopener noreferrer">SPARC data and primary references</a>
+      </div>
     </section>
 
     <section class="inference-section" aria-labelledby="inference-title">
@@ -354,6 +436,6 @@
       <a href="https://orcid.org/0009-0002-2411-1891" target="_blank" rel="noopener noreferrer">ORCID</a>
     </nav>
   </footer>
-  <script src="app.js?v=2.0.0-beta.2"></script>
+  <script src="app.js?v=2.0.0-beta.3"></script>
 </body>
 </html>
