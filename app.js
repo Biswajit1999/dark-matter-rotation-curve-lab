@@ -1,5 +1,7 @@
 'use strict';
 
+const BUILD_VERSION = '2.0.0-beta.2';
+
 const CONTROL_DEFINITIONS = [
   { key: 'massToLightDisk', label: 'Disc mass-to-light ratio', unit: 'M☉/L☉ at 3.6 μm', value: 0.5, min: 0.1, max: 1, step: 0.01 },
   { key: 'haloVelocity', label: 'Halo velocity scale', unit: 'km/s', value: 170, min: 40, max: 320, step: 1 },
@@ -106,7 +108,7 @@ function selectReference(galaxyId) {
 }
 
 async function loadCatalog() {
-  const response = await fetch('data/galaxies.json', { cache: 'no-cache' });
+  const response = await fetch(`data/galaxies.json?v=${BUILD_VERSION}`, { cache: 'no-cache' });
   if (!response.ok) throw new Error(`Galaxy catalogue request failed with HTTP ${response.status}.`);
   state.catalog = await response.json();
   const options = state.catalog.galaxies.map(galaxy => {
@@ -122,7 +124,7 @@ async function loadCatalog() {
 
 function getWorker() {
   if (state.worker) return state.worker;
-  state.worker = new Worker('physicsWorker.js');
+  state.worker = new Worker(`physicsWorker.js?v=${BUILD_VERSION}`);
   state.worker.onmessage = event => {
     if (event.data.requestId !== state.requestId) return;
     if (event.data.action === 'error') {

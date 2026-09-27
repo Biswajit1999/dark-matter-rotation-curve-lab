@@ -33,6 +33,7 @@ for (const image of [
 if (failures.length === 0) {
   const reference = JSON.parse(fs.readFileSync('data/reference.json', 'utf8'));
   const catalog = JSON.parse(fs.readFileSync('data/galaxies.json', 'utf8'));
+  const packageMetadata = JSON.parse(fs.readFileSync('package.json', 'utf8'));
   if (reference.schema_version !== '2.0.0') failures.push('reference schema_version must be 2.0.0');
   if (reference.galaxy !== 'NGC 3198') failures.push('reference galaxy must be NGC 3198');
   if (reference.n_points !== 43 || reference.points?.length !== 43) failures.push('reference data must contain exactly 43 NGC 3198 points');
@@ -68,6 +69,14 @@ if (failures.length === 0) {
     const source = pattern === 'prefers-reduced-motion' ? fs.readFileSync('styles.css', 'utf8') : html;
     if (!source.includes(pattern)) failures.push(`accessibility contract missing: ${pattern}`);
   }
+  const application = fs.readFileSync('app.js', 'utf8');
+  const worker = fs.readFileSync('physicsWorker.js', 'utf8');
+  const version = packageMetadata.version;
+  for (const asset of [`styles.css?v=${version}`, `app.js?v=${version}`]) {
+    if (!html.includes(asset)) failures.push(`HTML asset version is not pinned: ${asset}`);
+  }
+  if (!application.includes(`const BUILD_VERSION = '${version}'`)) failures.push('application build version does not match package version');
+  if (!worker.includes(`rotationPhysics.js?v=${version}`)) failures.push('worker physics asset version does not match package version');
 
   const combined = required.map(file => fs.readFileSync(file, 'utf8')).join('\n');
   const banned = ['TO' + 'DO', 'PLACE' + 'HOLDER', 'insert ' + 'logic', 'coming ' + 'soon', 'solar_residual_kms', 'Milky-Way-like anchors'];

@@ -10,7 +10,7 @@ const application = fs.readFileSync('app.js', 'utf8');
 for (const functionName of ['pseudoIsothermalVelocity', 'nfwVelocity', 'burkertVelocity', 'weightedStatistics', 'gridFit', 'posteriorPredictive', 'samplePosterior']) {
   if (!physics.includes(`function ${functionName}`)) failures.push(`physics contract missing ${functionName}`);
 }
-if (!worker.includes("importScripts('rotationPhysics.js')")) failures.push('worker must load the tested shared physics module');
+if (!worker.includes("importScripts('rotationPhysics.js?v=")) failures.push('worker must load the versioned tested shared physics module');
 if (!application.includes('standardised residuals') && !fs.readFileSync('index.html', 'utf8').toLowerCase().includes('standardised residuals')) {
   failures.push('standardised residual view is missing');
 }
