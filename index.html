@@ -3,30 +3,91 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Fit physical halo models to the published NGC 3198 SPARC rotation curve and inspect the evidence, uncertainties and provenance.">
+  <meta name="description" content="Explore published SPARC rotation curves across ten galaxies, cluster lensing, cosmology and the technology roadmap for identifying dark matter.">
   <meta name="theme-color" content="#0b1018">
-  <title>Dark Matter Evidence Lab — NGC 3198</title>
+  <title>Dark Matter Evidence Lab — Galaxies to Detectors</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to analysis</a>
   <header class="topbar">
     <div class="brand-block">
-      <p class="eyebrow">Evidence workstation · Rotation curves</p>
+      <p class="eyebrow">Evidence workstation · Galaxies to particle searches</p>
       <h1>Dark Matter Evidence Lab</h1>
-      <p class="subtitle">NGC 3198 · published SPARC components · uncertainty-aware fits</p>
+      <p class="subtitle">SPARC galaxies · merging clusters · cosmic structure · detection technology</p>
     </div>
     <div class="status-card" role="status" aria-live="polite">
-      <span id="workerStatus">Loading reference data</span>
+      <span id="workerStatus">Loading the galaxy catalogue</span>
       <strong id="fitStatus">No fit yet</strong>
     </div>
   </header>
 
   <main id="main-content" class="shell" tabindex="-1">
     <section class="evidence-strip" aria-label="Scientific scope">
-      <div><span class="signal-dot" aria-hidden="true"></span><strong>Observation</strong><span>43 measured circular velocities</span></div>
-      <div><strong>Inference</strong><span>Gas + stars + selected halo profile</span></div>
-      <div><strong>Boundary</strong><span>This constrains gravitating mass, not particle identity</span></div>
+      <div><span class="signal-dot" aria-hidden="true"></span><strong>Galaxies</strong><span>10 SPARC systems · 411 velocities</span></div>
+      <div><strong>Clusters</strong><span>Lensing mass versus hot gas</span></div>
+      <div><strong>Cosmos</strong><span>Structure imprinted on the CMB</span></div>
+      <div><strong>Laboratory</strong><span>Rare-event particle searches</span></div>
+    </section>
+
+    <section class="observation-panel" aria-labelledby="observation-title">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">Real observations · no generated artwork</p>
+          <h2 id="observation-title">One hypothesis, independent scales</h2>
+        </div>
+        <p>Dark matter is inferred through different measurements. These credited images are context—not substitutes for the quantitative data below.</p>
+      </div>
+      <div class="observation-grid">
+        <figure class="observation-card observation-card-wide">
+          <img src="assets/observations/bullet-cluster-lensing.jpg" width="850" height="436" alt="Webb and Chandra composite of the Bullet Cluster, with pink X-ray gas and blue gravitational-lensing mass maps separated across the collision." fetchpriority="high">
+          <figcaption>
+            <span class="evidence-tag">Merging cluster · lensing + X-ray</span>
+            <strong>Bullet Cluster: mass and hot gas separate</strong>
+            <p>Blue maps the lensing-derived mass distribution; pink maps X-ray-emitting gas. Dashed circles locate the two colliding galaxy clusters.</p>
+            <a href="https://chandra.harvard.edu/photo/2025/bullet/more.html" target="_blank" rel="noopener noreferrer">NASA/CXC/SAO · NASA/ESA/CSA/STScI source</a>
+          </figcaption>
+        </figure>
+
+        <figure class="observation-card">
+          <img src="assets/observations/hubble-m51.webp" width="594" height="800" alt="Hubble image of the face-on Whirlpool Galaxy M51, showing its bright core, dust lanes and spiral arms." loading="lazy">
+          <figcaption>
+            <span class="evidence-tag">Galaxy · visible structure</span>
+            <strong>M51 through Hubble</strong>
+            <p>A real spiral galaxy used as visual context. The selectable rotation curves below come from the SPARC catalogue, not this photograph.</p>
+            <a href="https://science.nasa.gov/image-detail/hubble_m51/" target="_blank" rel="noopener noreferrer">NASA/ESA/Hubble source</a>
+          </figcaption>
+        </figure>
+
+        <figure class="observation-card">
+          <img src="assets/observations/planck-cmb.jpg" width="1920" height="2534" alt="Planck all-sky maps comparing large-scale cosmic microwave background temperature signal plus noise with instrument noise." loading="lazy">
+          <figcaption>
+            <span class="evidence-tag">Cosmology · early universe</span>
+            <strong>Planck’s microwave sky</strong>
+            <p>Temperature fluctuations constrain the universe’s matter content and the growth conditions for later cosmic structure.</p>
+            <a href="https://www.esa.int/ESA_Multimedia/Images/2019/06/The_CMB_temperature_on_large_angular_scales" target="_blank" rel="noopener noreferrer">ESA/Planck Collaboration source</a>
+          </figcaption>
+        </figure>
+
+        <figure class="observation-card">
+          <img src="assets/observations/rubin-lsst-camera.jpg" width="1200" height="667" alt="Real photograph of Rubin Observatory's LSST Camera in a cleanroom, with a technician standing beside its large front opening." loading="lazy">
+          <figcaption>
+            <span class="evidence-tag">Technology · wide-field survey</span>
+            <strong>Rubin’s 3.2-gigapixel eye</strong>
+            <p>Wide, repeated imaging lets researchers map enormous galaxy populations and test small gravitational distortions statistically.</p>
+            <a href="https://rubinobservatory.org/explore/how-rubin-works/technology/camera" target="_blank" rel="noopener noreferrer">NSF–DOE Rubin Observatory source</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="image-credit-note">Every image is a real mission or observatory product. Full credits, source files and reuse notes are recorded in <a href="docs/IMAGE_CREDITS.md">IMAGE_CREDITS.md</a>.</p>
+    </section>
+
+    <section class="workbench-heading" aria-labelledby="workbench-title">
+      <div>
+        <p class="kicker">Interactive galaxy workbench</p>
+        <h2 id="workbench-title">Compare published rotation curves, one system at a time</h2>
+      </div>
+      <p>The same transparent model is applied across spirals and gas-rich dwarfs. A fit describes gravitational evidence; it does not identify a particle.</p>
     </section>
 
     <div class="workspace-grid">
@@ -37,6 +98,12 @@
             <h2 id="controls-title">Mass decomposition</h2>
           </div>
           <span id="referenceLabel" class="data-badge">Loading</span>
+        </div>
+
+        <div class="field-group">
+          <label for="galaxySelect">SPARC galaxy</label>
+          <select id="galaxySelect" aria-describedby="galaxyHelp"></select>
+          <p id="galaxyHelp" class="field-help">Choose among ten systems spanning gas-rich dwarfs and massive spirals.</p>
         </div>
 
         <div class="field-group">
@@ -55,7 +122,7 @@
           <button id="fitModel" class="primary-button" type="button">Find grid best fit</button>
           <button id="reset" class="secondary-button" type="button">Reset parameters</button>
         </div>
-        <p class="method-note">The fit minimises χ² using the published random velocity uncertainties. Distance and inclination systematics are not yet marginalised.</p>
+        <p class="method-note">The fit minimises χ² using published random velocity uncertainties. Distance and inclination systematics are not yet marginalised.</p>
       </aside>
 
       <section class="panel curve-panel" aria-labelledby="curve-title">
@@ -124,10 +191,10 @@
         <a id="sourceLink" class="source-link" href="https://astroweb.case.edu/SPARC/" target="_blank" rel="noopener noreferrer">Open SPARC source</a>
       </div>
       <details>
-        <summary>Show the 43-point accessible data table</summary>
+        <summary id="tableSummary">Show the accessible data table</summary>
         <div class="table-wrap">
           <table>
-            <caption>NGC 3198 observed rotation curve and current model evaluation</caption>
+            <caption id="dataCaption">Observed rotation curve and current model evaluation</caption>
             <thead>
               <tr>
                 <th scope="col">Radius (kpc)</th>
@@ -152,10 +219,51 @@
       </div>
       <p id="notes" class="citation-note"></p>
     </section>
+
+    <section class="roadmap-section" aria-labelledby="roadmap-title">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">Capability roadmap · 2026–2076</p>
+          <h2 id="roadmap-title">What the next 50 years can actually improve</h2>
+        </div>
+        <p>This is a staged research pathway, not a promise that discovery will arrive on a schedule. Each stage has a measurable validation gate.</p>
+      </div>
+      <ol class="roadmap">
+        <li>
+          <div class="roadmap-date">2026–2035</div>
+          <div>
+            <h3>Join the sky surveys</h3>
+            <p>Cross-calibrate Rubin, Euclid and Roman lensing maps; expand resolved galaxy dynamics; keep tonne-scale rare-event detectors accumulating exposure.</p>
+            <span><strong>Gate:</strong> consistent halo structure across instruments, wavelengths and analysis pipelines.</span>
+          </div>
+        </li>
+        <li>
+          <div class="roadmap-date">2035–2050</div>
+          <div>
+            <h3>Turn backgrounds into measurements</h3>
+            <p>Scale ultra-low-background detectors, directional recoil sensing, cryogenic thresholds and axion-band coverage while combining CMB lensing with galaxy surveys.</p>
+            <span><strong>Gate:</strong> a repeatable signal with target, direction or annual-modulation tests—or stronger exclusions that retire model families.</span>
+          </div>
+        </li>
+        <li>
+          <div class="roadmap-date">2050–2076</div>
+          <div>
+            <h3>Build for the surviving parameter space</h3>
+            <p>Condition future observatories on what earlier null results leave open: quantum sensors, interferometric concepts, distributed timing and next-generation underground targets.</p>
+            <span><strong>Gate:</strong> independent replication plus a shared astrophysical and laboratory explanation. Mission names and architectures remain conditional.</span>
+          </div>
+        </li>
+      </ol>
+      <div class="roadmap-sources">
+        <a href="https://science.nasa.gov/mission/roman-space-telescope/weak-lensing/" target="_blank" rel="noopener noreferrer">Roman weak-lensing programme</a>
+        <a href="https://rubinobservatory.org/explore/how-rubin-works/technology/camera" target="_blank" rel="noopener noreferrer">Rubin camera and survey technology</a>
+        <a href="https://lz.lbl.gov/detector/" target="_blank" rel="noopener noreferrer">LZ detector design</a>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
-    <span>© 2026 Biswajit Jana · v2 scientific upgrade in progress</span>
+    <span>© 2026 Biswajit Jana · evidence-first scientific upgrade</span>
     <nav aria-label="External links">
       <a href="https://github.com/Biswajit1999/dark-matter-rotation-curve-lab" target="_blank" rel="noopener noreferrer">Repository</a>
       <a href="https://orcid.org/0009-0002-2411-1891" target="_blank" rel="noopener noreferrer">ORCID</a>

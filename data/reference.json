@@ -1,8 +1,5 @@
 {
   "schema_version": "2.0.0",
-  "dataset": "NGC 3198 SPARC Newtonian mass model",
-  "galaxy": "NGC 3198",
-  "distance_mpc": 13.8,
   "source": "SPARC Newtonian Mass Models table from Lelli, McGaugh & Schombert (2016).",
   "source_url": "https://astroweb.case.edu/SPARC/MassModels_Lelli2016c.mrt",
   "citation": "Lelli, F., McGaugh, S. S. and Schombert, J. M. (2016), The Astronomical Journal, 152, 157. DOI: 10.3847/0004-6256/152/6/157.",
@@ -19,7 +16,7 @@
   "provenance": {
     "upstream_sha256": "9108994b12cc401b94a1768beca61c53ec354779385c9c9cc571049f3043244c",
     "retrieved_utc": "2026-09-27T00:00:00Z",
-    "selection": "Rows with ID=NGC3198",
+    "selection": "Rows with ID in NGC3198, NGC2403, NGC6503, NGC6946, NGC7331, NGC5055, NGC2841, DDO154, IC2574, NGC7793",
     "parser": "scripts/import_sparc.mjs",
     "transformations": [
       "Fixed-width table tokenisation",
@@ -27,6 +24,14 @@
       "No interpolation or fitting"
     ]
   },
+  "requiredCitations": [
+    "Lelli, F., McGaugh, S. S. and Schombert, J. M. (2016)",
+    "de Blok, W. J. G. et al. (2008)"
+  ],
+  "galaxy_id": "NGC3198",
+  "galaxy": "NGC 3198",
+  "dataset": "NGC 3198 SPARC Newtonian mass model",
+  "distance_mpc": 13.8,
   "n_points": 43,
   "points": [
     {
@@ -459,9 +464,5 @@
       "sb_disk": 0,
       "sb_bulge": 0
     }
-  ],
-  "requiredCitations": [
-    "Lelli, F., McGaugh, S. S. and Schombert, J. M. (2016)",
-    "de Blok, W. J. G. et al. (2008)"
   ]
 }

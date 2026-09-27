@@ -3,7 +3,18 @@ import fs from 'node:fs';
 
 const SOURCE_URL = 'https://astroweb.case.edu/SPARC/MassModels_Lelli2016c.mrt';
 const EXPECTED_SHA256 = '9108994b12cc401b94a1768beca61c53ec354779385c9c9cc571049f3043244c';
-const GALAXY = 'NGC3198';
+const TARGETS = [
+  'NGC3198',
+  'NGC2403',
+  'NGC6503',
+  'NGC6946',
+  'NGC7331',
+  'NGC5055',
+  'NGC2841',
+  'DDO154',
+  'IC2574',
+  'NGC7793'
+];
 
 const response = await fetch(SOURCE_URL);
 if (!response.ok) throw new Error(`SPARC download failed: HTTP ${response.status}`);
@@ -13,9 +24,12 @@ if (checksum !== EXPECTED_SHA256) {
   throw new Error(`SPARC checksum changed: expected ${EXPECTED_SHA256}, received ${checksum}`);
 }
 
-const rows = bytes.toString('utf8').split(/\r?\n/)
-  .filter(line => line.slice(0, 11).trim() === GALAXY)
-  .map(line => {
+const rowsByGalaxy = new Map(TARGETS.map(id => [id, []]));
+
+for (const line of bytes.toString('utf8').split(/\r?\n/)) {
+  const id = line.slice(0, 11).trim();
+  if (!rowsByGalaxy.has(id)) continue;
+  const row = (() => {
     const values = line.trim().split(/\s+/);
     if (values.length !== 10) throw new Error(`Unexpected SPARC row: ${line}`);
     const [, distance, radius, observed, uncertainty, gas, disk, bulge, surfaceDisk, surfaceBulge] = values;
@@ -30,15 +44,19 @@ const rows = bytes.toString('utf8').split(/\r?\n/)
       sb_bulge: Number(surfaceBulge),
       distance_mpc: Number(distance)
     };
-  });
+  })();
+  rowsByGalaxy.get(id).push(row);
+}
 
-if (rows.length !== 43) throw new Error(`Expected 43 ${GALAXY} rows, received ${rows.length}`);
+if (rowsByGalaxy.get('NGC3198').length !== 43) {
+  throw new Error(`Expected 43 NGC3198 rows, received ${rowsByGalaxy.get('NGC3198').length}`);
+}
+for (const [id, rows] of rowsByGalaxy) {
+  if (!rows.length) throw new Error(`No SPARC rows found for ${id}`);
+}
 
-const reference = {
+const shared = {
   schema_version: '2.0.0',
-  dataset: 'NGC 3198 SPARC Newtonian mass model',
-  galaxy: 'NGC 3198',
-  distance_mpc: rows[0].distance_mpc,
   source: 'SPARC Newtonian Mass Models table from Lelli, McGaugh & Schombert (2016).',
   source_url: SOURCE_URL,
   citation: 'Lelli, F., McGaugh, S. S. and Schombert, J. M. (2016), The Astronomical Journal, 152, 157. DOI: 10.3847/0004-6256/152/6/157.',
@@ -55,17 +73,40 @@ const reference = {
   provenance: {
     upstream_sha256: checksum,
     retrieved_utc: '2026-09-27T00:00:00Z',
-    selection: `Rows with ID=${GALAXY}`,
+    selection: `Rows with ID in ${TARGETS.join(', ')}`,
     parser: 'scripts/import_sparc.mjs',
     transformations: ['Fixed-width table tokenisation', 'Column renaming only', 'No interpolation or fitting']
   },
-  n_points: rows.length,
-  points: rows.map(({ distance_mpc, ...point }) => point),
   requiredCitations: [
     'Lelli, F., McGaugh, S. S. and Schombert, J. M. (2016)',
     'de Blok, W. J. G. et al. (2008)'
   ]
 };
 
+const displayName = id => id.replace(/^(NGC|IC|DDO)(\d)/, '$1 $2');
+const galaxies = TARGETS.map(id => {
+  const rows = rowsByGalaxy.get(id);
+  return {
+    galaxy_id: id,
+    galaxy: displayName(id),
+    dataset: `${displayName(id)} SPARC Newtonian mass model`,
+    distance_mpc: rows[0].distance_mpc,
+    n_points: rows.length,
+    points: rows.map(({ distance_mpc, ...point }) => point)
+  };
+});
+
+const catalog = {
+  ...shared,
+  dataset: 'Selected SPARC galaxy rotation curves and Newtonian mass models',
+  selection_count: galaxies.length,
+  total_points: galaxies.reduce((sum, galaxy) => sum + galaxy.n_points, 0),
+  galaxies
+};
+
+const defaultGalaxy = galaxies.find(galaxy => galaxy.galaxy_id === 'NGC3198');
+const reference = { ...shared, ...defaultGalaxy };
+
 fs.writeFileSync('data/reference.json', `${JSON.stringify(reference, null, 2)}\n`);
-console.log(`Wrote ${rows.length} ${GALAXY} rows to data/reference.json (${checksum.slice(0, 12)}...).`);
+fs.writeFileSync('data/galaxies.json', `${JSON.stringify(catalog, null, 2)}\n`);
+console.log(`Wrote ${catalog.total_points} points for ${galaxies.length} galaxies (${checksum.slice(0, 12)}...).`);

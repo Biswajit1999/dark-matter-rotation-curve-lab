@@ -6,6 +6,7 @@ const test = require('node:test');
 const physics = require('../rotationPhysics.js');
 
 const reference = JSON.parse(fs.readFileSync('data/reference.json', 'utf8'));
+const catalog = JSON.parse(fs.readFileSync('data/galaxies.json', 'utf8'));
 const defaultParams = {
   haloModel: 'piso',
   massToLightDisk: 0.5,
@@ -52,5 +53,18 @@ test('all three halo models produce complete, finite evaluations', () => {
     assert.equal(result.observed.length, 43);
     assert.ok(result.series.every(series => series.y.every(Number.isFinite)));
     assert.ok(Number.isFinite(result.metrics.reduced_chi_squared));
+  }
+});
+
+test('all selected galaxies produce finite evaluations for every halo family', () => {
+  assert.equal(catalog.galaxies.length, 10);
+  assert.equal(catalog.total_points, 411);
+  for (const galaxy of catalog.galaxies) {
+    for (const haloModel of ['piso', 'nfw', 'burkert']) {
+      const result = physics.evaluate({ ...defaultParams, haloModel }, galaxy, false);
+      assert.equal(result.observed.length, galaxy.n_points);
+      assert.ok(result.series.every(series => series.y.every(Number.isFinite)), `${galaxy.galaxy_id} ${haloModel}`);
+      assert.ok(Number.isFinite(result.metrics.reduced_chi_squared));
+    }
   }
 });

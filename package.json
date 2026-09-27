@@ -2,7 +2,7 @@
   "name": "dark-matter-evidence-lab",
   "version": "2.0.0-alpha.1",
   "private": true,
-  "description": "Evidence-first, reproducible modelling of the NGC 3198 SPARC rotation curve.",
+  "description": "Evidence-first, reproducible dark-matter exploration across galaxy rotation curves, cluster lensing, cosmology and detector technology.",
   "scripts": {
     "check": "node --check app.js && node --check physicsWorker.js && node --check rotationPhysics.js && node --check scripts/import_sparc.mjs && node scripts/validate.js",
     "test": "node --test tests/rotationPhysics.test.js",
@@ -15,7 +15,9 @@
     "simulation",
     "canvas",
     "web-worker",
-    "rotation"
+    "rotation",
+    "gravitational-lensing",
+    "cosmology"
   ],
   "author": "Biswajit Jana",
   "license": "MIT"

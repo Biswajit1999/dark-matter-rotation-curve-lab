@@ -134,7 +134,7 @@ h2 {
 
 .evidence-strip {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-bottom: 14px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -163,6 +163,116 @@ h2 {
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 0 4px rgba(98, 217, 197, 0.12);
+}
+
+.observation-panel,
+.roadmap-section {
+  margin-bottom: 28px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.section-heading,
+.workbench-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 18px 20px;
+}
+
+.section-heading > p,
+.workbench-heading > p {
+  width: min(100%, 640px);
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.workbench-heading { padding-inline: 4px; }
+
+.observation-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: 360px 340px;
+  gap: 1px;
+  background: var(--border);
+  border-block: 1px solid var(--border);
+}
+
+.observation-card {
+  position: relative;
+  grid-column: span 1;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  background: #070b11;
+}
+
+.observation-card-wide {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.observation-card:last-child { grid-column: span 2; }
+
+.observation-card img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  filter: saturate(0.9) contrast(1.04);
+}
+
+.observation-card figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 56px 18px 16px;
+  background: linear-gradient(transparent, rgba(4, 8, 13, 0.92) 38%);
+}
+
+.observation-card-wide figcaption { padding: 80px 24px 22px; }
+
+.observation-card figcaption strong,
+.observation-card figcaption p,
+.observation-card figcaption a { display: block; }
+
+.observation-card figcaption strong {
+  margin-top: 5px;
+  font-size: clamp(0.95rem, 1.5vw, 1.35rem);
+  line-height: 1.2;
+}
+
+.observation-card figcaption p {
+  max-width: 66ch;
+  margin: 6px 0 8px;
+  color: #c4cfde;
+  font-size: 0.73rem;
+  line-height: 1.45;
+}
+
+.observation-card figcaption a {
+  width: fit-content;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.evidence-tag {
+  color: var(--accent-strong);
+  font: 700 0.64rem var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.image-credit-note {
+  margin: 0;
+  padding: 12px 18px 14px;
+  color: var(--text-muted);
+  font-size: 0.72rem;
 }
 
 .workspace-grid {
@@ -342,6 +452,61 @@ tbody tr:hover { background: rgba(98, 217, 197, 0.06); }
 .provenance-grid code { display: block; color: var(--text); font-size: 0.76rem; overflow-wrap: anywhere; }
 .citation-note { margin: 0; padding: 13px 16px 16px; color: var(--text-muted); font-size: 0.76rem; }
 
+.roadmap-section { margin-top: 28px; }
+
+.roadmap {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  background: var(--border);
+  border-block: 1px solid var(--border);
+  list-style: none;
+}
+
+.roadmap li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  min-width: 0;
+  padding: 22px;
+  background: var(--surface);
+}
+
+.roadmap-date {
+  color: var(--accent-strong);
+  font: 700 0.7rem var(--mono);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.roadmap h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.roadmap p {
+  margin: 8px 0 12px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.roadmap span {
+  display: block;
+  color: #d6deea;
+  font-size: 0.72rem;
+}
+
+.roadmap-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  padding: 14px 20px;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
 .site-footer {
   display: flex;
   align-items: center;
@@ -357,6 +522,10 @@ tbody tr:hover { background: rgba(98, 217, 197, 0.06); }
 .site-footer nav { display: flex; gap: 18px; }
 
 @media (max-width: 1180px) {
+  .observation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: 400px 300px 300px; }
+  .observation-card-wide { grid-column: 1 / -1; grid-row: auto; }
+  .observation-card { grid-column: auto; }
+  .observation-card:last-child { grid-column: 1 / -1; }
   .workspace-grid { grid-template-columns: minmax(250px, 0.72fr) minmax(500px, 1.5fr); grid-template-rows: minmax(420px, 56vh) 300px 300px auto; }
   .controls-panel { grid-column: 1; grid-row: 1 / span 4; }
   .curve-panel { grid-column: 2; grid-row: 1; }
@@ -373,6 +542,13 @@ tbody tr:hover { background: rgba(98, 217, 197, 0.06); }
   .evidence-strip { grid-template-columns: 1fr; }
   .evidence-strip > div { border-right: 0; border-bottom: 1px solid var(--border); }
   .evidence-strip > div:last-child { border-bottom: 0; }
+  .section-heading,
+  .workbench-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .observation-grid { display: block; background: transparent; }
+  .observation-card { height: 360px; border-top: 1px solid var(--border); }
+  .observation-card-wide { height: 420px; }
+  .roadmap { grid-template-columns: 1fr; }
+  .roadmap-date { writing-mode: horizontal-tb; }
   .workspace-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 460px 300px 340px auto; }
   .controls-panel,
   .curve-panel,
@@ -394,6 +570,10 @@ tbody tr:hover { background: rgba(98, 217, 197, 0.06); }
   .axis-note { max-width: 42%; }
   .workspace-grid { grid-template-rows: auto 430px 290px 320px auto; }
   .metrics { grid-template-columns: 1fr; }
+  .observation-card,
+  .observation-card-wide { height: 390px; }
+  .observation-card figcaption { padding-inline: 14px; }
+  .roadmap li { grid-template-columns: 1fr; gap: 8px; padding: 18px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

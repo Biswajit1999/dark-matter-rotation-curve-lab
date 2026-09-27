@@ -14,7 +14,7 @@ const HALO_HELP = {
 
 const METRIC_LABELS = {
   chi_squared: ['χ²', 'weighted sum'],
-  reduced_chi_squared: ['Reduced χ²', '40 degrees of freedom'],
+  reduced_chi_squared: ['Reduced χ²', 'degrees of freedom'],
   weighted_rms_kms: ['Weighted RMS', 'km/s'],
   log_likelihood: ['Log likelihood', '−χ² / 2'],
   aic: ['AIC', '3 fitted parameters'],
@@ -22,6 +22,7 @@ const METRIC_LABELS = {
 };
 
 const state = {
+  catalog: null,
   reference: null,
   params: {
     haloModel: 'piso',
@@ -86,16 +87,35 @@ function buildControls() {
   $('haloHelp').textContent = HALO_HELP[state.params.haloModel];
 }
 
-async function loadReference() {
-  const response = await fetch('data/reference.json', { cache: 'no-cache' });
-  if (!response.ok) throw new Error(`Reference data request failed with HTTP ${response.status}.`);
-  state.reference = await response.json();
+function selectReference(galaxyId) {
+  const selected = state.catalog.galaxies.find(galaxy => galaxy.galaxy_id === galaxyId);
+  if (!selected) throw new Error(`Unknown galaxy selection: ${galaxyId}`);
+  const { galaxies, selection_count, total_points, ...shared } = state.catalog;
+  state.reference = { ...shared, ...selected };
   $('referenceLabel').textContent = `${state.reference.n_points} SPARC points`;
   $('datasetName').textContent = state.reference.dataset;
   $('distanceValue').textContent = `${state.reference.distance_mpc} Mpc`;
   $('checksumValue').textContent = state.reference.provenance.upstream_sha256;
   $('sourceLink').href = state.reference.source_url;
+  $('curve-title').textContent = `${state.reference.galaxy} rotation-curve decomposition`;
+  $('tableSummary').textContent = `Show ${state.reference.n_points}-point accessible data table`;
+  $('dataCaption').textContent = `${state.reference.galaxy} observed rotation curve and current model evaluation`;
   $('notes').textContent = `${state.reference.citation} Random velocity uncertainties are included; inclination and distance systematics are not.`;
+}
+
+async function loadCatalog() {
+  const response = await fetch('data/galaxies.json', { cache: 'no-cache' });
+  if (!response.ok) throw new Error(`Galaxy catalogue request failed with HTTP ${response.status}.`);
+  state.catalog = await response.json();
+  const options = state.catalog.galaxies.map(galaxy => {
+    const option = document.createElement('option');
+    option.value = galaxy.galaxy_id;
+    option.textContent = `${galaxy.galaxy} · ${galaxy.n_points} points · ${galaxy.distance_mpc} Mpc`;
+    return option;
+  });
+  $('galaxySelect').replaceChildren(...options);
+  $('galaxySelect').value = 'NGC3198';
+  selectReference('NGC3198');
 }
 
 function getWorker() {
@@ -113,8 +133,8 @@ function getWorker() {
     syncControls();
     renderAll();
     setBusy(false);
-    $('workerStatus').textContent = 'Worker ready · deterministic calculation';
-    $('fitStatus').textContent = event.data.action === 'fit' ? 'Grid minimum applied' : `${state.params.haloModel.toUpperCase()} model`;
+    $('workerStatus').textContent = `${state.catalog.selection_count} galaxies loaded · deterministic calculation`;
+    $('fitStatus').textContent = event.data.action === 'fit' ? `${state.reference.galaxy} grid minimum` : `${state.reference.galaxy} · ${state.params.haloModel.toUpperCase()}`;
   };
   state.worker.onerror = event => {
     setBusy(false);
@@ -274,7 +294,7 @@ function drawSeries() {
     context.textAlign = 'left';
     context.fillText(item.name, x + 26, y);
   });
-  $('curveSummary').textContent = `NGC 3198 has ${points.length} observed velocities from ${formatNumber(points[0].radius)} to ${formatNumber(points.at(-1).radius)} kpc. The current ${state.params.haloModel.toUpperCase()} model has reduced chi-squared ${formatNumber(state.result.metrics.reduced_chi_squared, 2)}.`;
+  $('curveSummary').textContent = `${state.reference.galaxy} has ${points.length} observed velocities from ${formatNumber(points[0].radius)} to ${formatNumber(points.at(-1).radius)} kpc. The current ${state.params.haloModel.toUpperCase()} model has reduced chi-squared ${formatNumber(state.result.metrics.reduced_chi_squared, 2)}.`;
 }
 
 function drawResiduals() {
@@ -355,7 +375,7 @@ function renderMetrics() {
     const strong = document.createElement('strong');
     strong.textContent = key === 'outer_dark_fraction' ? `${formatNumber(value * 100, 1)}%` : formatNumber(value, 3);
     const note = document.createElement('small');
-    note.textContent = METRIC_LABELS[key][1];
+    note.textContent = key === 'reduced_chi_squared' ? `${Math.max(1, state.reference.n_points - 3)} degrees of freedom` : METRIC_LABELS[key][1];
     card.append(label, strong, note);
     return card;
   });
@@ -399,7 +419,7 @@ function exportCsv() {
   if (!state.result) return;
   const header = ['radius_kpc', 'observed_kms', 'uncertainty_kms', 'gas_kms', 'disk_scaled_kms', 'halo_kms', 'total_kms', 'standardised_residual'];
   const rows = state.result.observed.map(point => [point.radius, point.observed, point.uncertainty, point.gas, point.disk, point.halo, point.total, point.standardised]);
-  download(`ngc3198-${state.params.haloModel}-fit.csv`, 'text/csv;charset=utf-8', [header, ...rows].map(row => row.join(',')).join('\n'));
+  download(`${state.reference.galaxy_id.toLowerCase()}-${state.params.haloModel}-fit.csv`, 'text/csv;charset=utf-8', [header, ...rows].map(row => row.join(',')).join('\n'));
 }
 
 function exportSvg() {
@@ -421,9 +441,16 @@ function exportSvg() {
     return `<path d="${path}" fill="none" stroke="${series.color}" stroke-width="${series.id === 'total' ? 3 : 2}"${series.dash?.length ? ` stroke-dasharray="${series.dash.join(' ')}"` : ''}/>`;
   }).join('');
   const observations = points.map(point => `<g><line x1="${x(point.radius)}" x2="${x(point.radius)}" y1="${y(point.observed - point.uncertainty)}" y2="${y(point.observed + point.uncertainty)}" stroke="#ff9f6e"/><circle cx="${x(point.radius)}" cy="${y(point.observed)}" r="3" fill="#ff9f6e"/></g>`).join('');
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><title>NGC 3198 rotation-curve decomposition</title><desc>Observed SPARC velocities with gas, stellar disc, ${escape(state.params.haloModel)} halo and total model.</desc><rect width="100%" height="100%" fill="#111925"/><line x1="${left}" y1="${top}" x2="${left}" y2="${bottom}" stroke="#8290a6"/><line x1="${left}" y1="${bottom}" x2="${right}" y2="${bottom}" stroke="#8290a6"/>${paths}${observations}<text x="600" y="620" fill="#dce4ef" text-anchor="middle">Galactocentric radius [kpc]</text><text x="28" y="320" fill="#dce4ef" text-anchor="middle" transform="rotate(-90 28 320)">Circular velocity [km/s]</text></svg>`;
-  download(`ngc3198-${state.params.haloModel}-fit.svg`, 'image/svg+xml;charset=utf-8', svg);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><title>${escape(state.reference.galaxy)} rotation-curve decomposition</title><desc>Observed SPARC velocities with gas, stellar disc, ${escape(state.params.haloModel)} halo and total model.</desc><rect width="100%" height="100%" fill="#111925"/><line x1="${left}" y1="${top}" x2="${left}" y2="${bottom}" stroke="#8290a6"/><line x1="${left}" y1="${bottom}" x2="${right}" y2="${bottom}" stroke="#8290a6"/>${paths}${observations}<text x="600" y="620" fill="#dce4ef" text-anchor="middle">Galactocentric radius [kpc]</text><text x="28" y="320" fill="#dce4ef" text-anchor="middle" transform="rotate(-90 28 320)">Circular velocity [km/s]</text></svg>`;
+  download(`${state.reference.galaxy_id.toLowerCase()}-${state.params.haloModel}-fit.svg`, 'image/svg+xml;charset=utf-8', svg);
 }
+
+$('galaxySelect').addEventListener('change', event => {
+  selectReference(event.currentTarget.value);
+  state.result = null;
+  $('fitStatus').textContent = `${state.reference.galaxy} selected`;
+  runModel();
+});
 
 $('haloModel').addEventListener('change', event => {
   state.params.haloModel = event.currentTarget.value;
@@ -447,7 +474,7 @@ $('exportCsv').addEventListener('click', exportCsv);
 $('exportSvg').addEventListener('click', exportSvg);
 
 buildControls();
-loadReference()
+loadCatalog()
   .then(() => runModel())
   .catch(error => {
     $('workerStatus').textContent = 'Reference data unavailable';

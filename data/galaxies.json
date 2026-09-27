@@ -1,0 +1,4236 @@
+{
+  "schema_version": "2.0.0",
+  "source": "SPARC Newtonian Mass Models table from Lelli, McGaugh & Schombert (2016).",
+  "source_url": "https://astroweb.case.edu/SPARC/MassModels_Lelli2016c.mrt",
+  "citation": "Lelli, F., McGaugh, S. S. and Schombert, J. M. (2016), The Astronomical Journal, 152, 157. DOI: 10.3847/0004-6256/152/6/157.",
+  "columns": {
+    "x": "Galactocentric radius [kpc]",
+    "y": "Observed circular velocity [km/s]",
+    "y_err": "Random uncertainty in observed velocity [km/s]; excludes inclination systematics",
+    "v_gas": "Gas contribution [km/s], including factor 1.33 for helium",
+    "v_disk": "Stellar-disc contribution [km/s] at M/L_3.6 = 1 Msun/Lsun",
+    "v_bulge": "Bulge contribution [km/s] at M/L_3.6 = 1 Msun/Lsun",
+    "sb_disk": "Disc surface brightness [Lsun/pc^2]",
+    "sb_bulge": "Bulge surface brightness [Lsun/pc^2]"
+  },
+  "provenance": {
+    "upstream_sha256": "9108994b12cc401b94a1768beca61c53ec354779385c9c9cc571049f3043244c",
+    "retrieved_utc": "2026-09-27T00:00:00Z",
+    "selection": "Rows with ID in NGC3198, NGC2403, NGC6503, NGC6946, NGC7331, NGC5055, NGC2841, DDO154, IC2574, NGC7793",
+    "parser": "scripts/import_sparc.mjs",
+    "transformations": [
+      "Fixed-width table tokenisation",
+      "Column renaming only",
+      "No interpolation or fitting"
+    ]
+  },
+  "requiredCitations": [
+    "Lelli, F., McGaugh, S. S. and Schombert, J. M. (2016)",
+    "de Blok, W. J. G. et al. (2008)"
+  ],
+  "dataset": "Selected SPARC galaxy rotation curves and Newtonian mass models",
+  "selection_count": 10,
+  "total_points": 411,
+  "galaxies": [
+    {
+      "galaxy_id": "NGC3198",
+      "galaxy": "NGC 3198",
+      "dataset": "NGC 3198 SPARC Newtonian mass model",
+      "distance_mpc": 13.8,
+      "n_points": 43,
+      "points": [
+        {
+          "x": 0.32,
+          "y": 24.4,
+          "y_err": 35.9,
+          "v_gas": 0,
+          "v_disk": 63.28,
+          "v_bulge": 0,
+          "sb_disk": 1084.92,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.64,
+          "y": 43.3,
+          "y_err": 16.3,
+          "v_gas": 0,
+          "v_disk": 73.66,
+          "v_bulge": 0,
+          "sb_disk": 590.57,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.96,
+          "y": 45.5,
+          "y_err": 16.1,
+          "v_gas": 0,
+          "v_disk": 78.98,
+          "v_bulge": 0,
+          "sb_disk": 410.97,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.28,
+          "y": 58.5,
+          "y_err": 15.4,
+          "v_gas": 0.35,
+          "v_disk": 82.7,
+          "v_bulge": 0,
+          "sb_disk": 329.34,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.61,
+          "y": 68.8,
+          "y_err": 7.61,
+          "v_gas": 0.15,
+          "v_disk": 84.22,
+          "v_bulge": 0,
+          "sb_disk": 268.62,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.93,
+          "y": 76.9,
+          "y_err": 10.3,
+          "v_gas": -0.05,
+          "v_disk": 83.17,
+          "v_bulge": 0,
+          "sb_disk": 247.67,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.24,
+          "y": 82,
+          "y_err": 8.09,
+          "v_gas": -0.47,
+          "v_disk": 87.04,
+          "v_bulge": 0,
+          "sb_disk": 227.56,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.57,
+          "y": 86.9,
+          "y_err": 7.6,
+          "v_gas": -0.95,
+          "v_disk": 88.91,
+          "v_bulge": 0,
+          "sb_disk": 205.02,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.89,
+          "y": 97.6,
+          "y_err": 3.03,
+          "v_gas": -1.43,
+          "v_disk": 88.98,
+          "v_bulge": 0,
+          "sb_disk": 200.2,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.21,
+          "y": 100,
+          "y_err": 5.31,
+          "v_gas": -1.14,
+          "v_disk": 93.81,
+          "v_bulge": 0,
+          "sb_disk": 208.58,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.54,
+          "y": 107,
+          "y_err": 7.51,
+          "v_gas": -0.39,
+          "v_disk": 101.22,
+          "v_bulge": 0,
+          "sb_disk": 208.47,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.85,
+          "y": 113,
+          "y_err": 7.32,
+          "v_gas": 0.36,
+          "v_disk": 108.53,
+          "v_bulge": 0,
+          "sb_disk": 196.07,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.17,
+          "y": 117,
+          "y_err": 5.21,
+          "v_gas": 1.52,
+          "v_disk": 115.51,
+          "v_bulge": 0,
+          "sb_disk": 179.96,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.5,
+          "y": 119,
+          "y_err": 5.67,
+          "v_gas": 3.07,
+          "v_disk": 120.51,
+          "v_bulge": 0,
+          "sb_disk": 164.19,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.82,
+          "y": 127,
+          "y_err": 5.39,
+          "v_gas": 4.63,
+          "v_disk": 125.42,
+          "v_bulge": 0,
+          "sb_disk": 150.99,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.15,
+          "y": 132,
+          "y_err": 4.34,
+          "v_gas": 6.02,
+          "v_disk": 129.4,
+          "v_bulge": 0,
+          "sb_disk": 138.08,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.46,
+          "y": 134,
+          "y_err": 2.36,
+          "v_gas": 7.16,
+          "v_disk": 133.15,
+          "v_bulge": 0,
+          "sb_disk": 126,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.78,
+          "y": 137,
+          "y_err": 0.89,
+          "v_gas": 8.31,
+          "v_disk": 136.45,
+          "v_bulge": 0,
+          "sb_disk": 113.63,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.1,
+          "y": 140,
+          "y_err": 2.84,
+          "v_gas": 9.46,
+          "v_disk": 139.41,
+          "v_bulge": 0,
+          "sb_disk": 101.19,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.43,
+          "y": 142,
+          "y_err": 0.88,
+          "v_gas": 10.61,
+          "v_disk": 141.85,
+          "v_bulge": 0,
+          "sb_disk": 86.52,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.74,
+          "y": 144,
+          "y_err": 1.23,
+          "v_gas": 11.77,
+          "v_disk": 142.32,
+          "v_bulge": 0,
+          "sb_disk": 70.23,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.06,
+          "y": 146,
+          "y_err": 1.57,
+          "v_gas": 12.87,
+          "v_disk": 140.94,
+          "v_bulge": 0,
+          "sb_disk": 57.67,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.04,
+          "y": 147,
+          "y_err": 3,
+          "v_gas": 16.39,
+          "v_disk": 135.68,
+          "v_bulge": 0,
+          "sb_disk": 40.74,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.04,
+          "y": 148,
+          "y_err": 3,
+          "v_gas": 20.03,
+          "v_disk": 130.79,
+          "v_bulge": 0,
+          "sb_disk": 31.83,
+          "sb_bulge": 0
+        },
+        {
+          "x": 10.04,
+          "y": 152,
+          "y_err": 2,
+          "v_gas": 23.68,
+          "v_disk": 128.1,
+          "v_bulge": 0,
+          "sb_disk": 26.64,
+          "sb_bulge": 0
+        },
+        {
+          "x": 11.04,
+          "y": 155,
+          "y_err": 2,
+          "v_gas": 27.08,
+          "v_disk": 126.67,
+          "v_bulge": 0,
+          "sb_disk": 21.02,
+          "sb_bulge": 0
+        },
+        {
+          "x": 12.05,
+          "y": 156,
+          "y_err": 2,
+          "v_gas": 30.11,
+          "v_disk": 124.98,
+          "v_bulge": 0,
+          "sb_disk": 15.42,
+          "sb_bulge": 0
+        },
+        {
+          "x": 14.05,
+          "y": 157,
+          "y_err": 2,
+          "v_gas": 34.48,
+          "v_disk": 118.12,
+          "v_bulge": 0,
+          "sb_disk": 6.42,
+          "sb_bulge": 0
+        },
+        {
+          "x": 16.07,
+          "y": 153,
+          "y_err": 2,
+          "v_gas": 36.43,
+          "v_disk": 108.22,
+          "v_bulge": 0,
+          "sb_disk": 2.95,
+          "sb_bulge": 0
+        },
+        {
+          "x": 18.13,
+          "y": 153,
+          "y_err": 2,
+          "v_gas": 37.76,
+          "v_disk": 101.1,
+          "v_bulge": 0,
+          "sb_disk": 2.39,
+          "sb_bulge": 0
+        },
+        {
+          "x": 20.05,
+          "y": 154,
+          "y_err": 2,
+          "v_gas": 39.83,
+          "v_disk": 96.4,
+          "v_bulge": 0,
+          "sb_disk": 1.44,
+          "sb_bulge": 0
+        },
+        {
+          "x": 22.12,
+          "y": 153,
+          "y_err": 2,
+          "v_gas": 40.92,
+          "v_disk": 91.56,
+          "v_bulge": 0,
+          "sb_disk": 0.72,
+          "sb_bulge": 0
+        },
+        {
+          "x": 24.03,
+          "y": 150,
+          "y_err": 2,
+          "v_gas": 41.77,
+          "v_disk": 87.03,
+          "v_bulge": 0,
+          "sb_disk": 0.28,
+          "sb_bulge": 0
+        },
+        {
+          "x": 26.1,
+          "y": 149,
+          "y_err": 2,
+          "v_gas": 43.71,
+          "v_disk": 82.67,
+          "v_bulge": 0,
+          "sb_disk": 0.16,
+          "sb_bulge": 0
+        },
+        {
+          "x": 28.16,
+          "y": 148,
+          "y_err": 2,
+          "v_gas": 45.41,
+          "v_disk": 79.06,
+          "v_bulge": 0,
+          "sb_disk": 0.08,
+          "sb_bulge": 0
+        },
+        {
+          "x": 30.08,
+          "y": 146,
+          "y_err": 2,
+          "v_gas": 45.29,
+          "v_disk": 76.07,
+          "v_bulge": 0,
+          "sb_disk": 0.04,
+          "sb_bulge": 0
+        },
+        {
+          "x": 32.14,
+          "y": 147,
+          "y_err": 2,
+          "v_gas": 44.56,
+          "v_disk": 73.27,
+          "v_bulge": 0,
+          "sb_disk": 0.02,
+          "sb_bulge": 0
+        },
+        {
+          "x": 34.06,
+          "y": 148,
+          "y_err": 2,
+          "v_gas": 44.81,
+          "v_disk": 70.91,
+          "v_bulge": 0,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 36.12,
+          "y": 148,
+          "y_err": 2,
+          "v_gas": 45.9,
+          "v_disk": 68.62,
+          "v_bulge": 0,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 38.19,
+          "y": 149,
+          "y_err": 2,
+          "v_gas": 46.75,
+          "v_disk": 66.59,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 40.1,
+          "y": 150,
+          "y_err": 2,
+          "v_gas": 47.48,
+          "v_disk": 64.84,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 42.17,
+          "y": 150,
+          "y_err": 3,
+          "v_gas": 48.93,
+          "v_disk": 63.1,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 44.08,
+          "y": 149,
+          "y_err": 3,
+          "v_gas": 47.84,
+          "v_disk": 61.63,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        }
+      ]
+    },
+    {
+      "galaxy_id": "NGC2403",
+      "galaxy": "NGC 2403",
+      "dataset": "NGC 2403 SPARC Newtonian mass model",
+      "distance_mpc": 3.16,
+      "n_points": 73,
+      "points": [
+        {
+          "x": 0.16,
+          "y": 24.5,
+          "y_err": 2.83,
+          "v_gas": 0,
+          "v_disk": 23.21,
+          "v_bulge": 0,
+          "sb_disk": 1105.79,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.26,
+          "y": 35.3,
+          "y_err": 2.46,
+          "v_gas": 0,
+          "v_disk": 35.33,
+          "v_bulge": 0,
+          "sb_disk": 1006.36,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.36,
+          "y": 43.2,
+          "y_err": 1.12,
+          "v_gas": 1.92,
+          "v_disk": 46.97,
+          "v_bulge": 0,
+          "sb_disk": 938.26,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.46,
+          "y": 52,
+          "y_err": 1.25,
+          "v_gas": 2.29,
+          "v_disk": 56.68,
+          "v_bulge": 0,
+          "sb_disk": 789.78,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.56,
+          "y": 60.9,
+          "y_err": 2.93,
+          "v_gas": 2.64,
+          "v_disk": 63.77,
+          "v_bulge": 0,
+          "sb_disk": 624.65,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.66,
+          "y": 65.8,
+          "y_err": 1.25,
+          "v_gas": 3,
+          "v_disk": 67.56,
+          "v_bulge": 0,
+          "sb_disk": 511.64,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.76,
+          "y": 71.7,
+          "y_err": 1.25,
+          "v_gas": 3.34,
+          "v_disk": 70.83,
+          "v_bulge": 0,
+          "sb_disk": 469.31,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.86,
+          "y": 74.6,
+          "y_err": 1.6,
+          "v_gas": 3.68,
+          "v_disk": 72.8,
+          "v_bulge": 0,
+          "sb_disk": 402.53,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.96,
+          "y": 74.6,
+          "y_err": 1.03,
+          "v_gas": 4.02,
+          "v_disk": 74.87,
+          "v_bulge": 0,
+          "sb_disk": 381.19,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.06,
+          "y": 76.6,
+          "y_err": 1.12,
+          "v_gas": 4.37,
+          "v_disk": 77.12,
+          "v_bulge": 0,
+          "sb_disk": 359.63,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.16,
+          "y": 78.5,
+          "y_err": 1.6,
+          "v_gas": 4.75,
+          "v_disk": 79.47,
+          "v_bulge": 0,
+          "sb_disk": 345.41,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.27,
+          "y": 83.4,
+          "y_err": 1.8,
+          "v_gas": 5.15,
+          "v_disk": 82.18,
+          "v_bulge": 0,
+          "sb_disk": 332.26,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.36,
+          "y": 86.4,
+          "y_err": 1.6,
+          "v_gas": 5.51,
+          "v_disk": 85.19,
+          "v_bulge": 0,
+          "sb_disk": 317.57,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.47,
+          "y": 87.4,
+          "y_err": 1.41,
+          "v_gas": 5.76,
+          "v_disk": 87.94,
+          "v_bulge": 0,
+          "sb_disk": 297.25,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.57,
+          "y": 90.3,
+          "y_err": 1.41,
+          "v_gas": 5.98,
+          "v_disk": 90.77,
+          "v_bulge": 0,
+          "sb_disk": 286.72,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.67,
+          "y": 93.3,
+          "y_err": 1.6,
+          "v_gas": 6.21,
+          "v_disk": 93.98,
+          "v_bulge": 0,
+          "sb_disk": 271.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.77,
+          "y": 93.3,
+          "y_err": 1.41,
+          "v_gas": 6.42,
+          "v_disk": 96.86,
+          "v_bulge": 0,
+          "sb_disk": 252.38,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.87,
+          "y": 95.2,
+          "y_err": 1.25,
+          "v_gas": 6.61,
+          "v_disk": 99.21,
+          "v_bulge": 0,
+          "sb_disk": 231.06,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.97,
+          "y": 97.2,
+          "y_err": 1.6,
+          "v_gas": 6.81,
+          "v_disk": 101.42,
+          "v_bulge": 0,
+          "sb_disk": 214.5,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.08,
+          "y": 99.1,
+          "y_err": 2.02,
+          "v_gas": 7.01,
+          "v_disk": 103.79,
+          "v_bulge": 0,
+          "sb_disk": 203.15,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.18,
+          "y": 98.2,
+          "y_err": 2.02,
+          "v_gas": 7.27,
+          "v_disk": 106.07,
+          "v_bulge": 0,
+          "sb_disk": 177.77,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.28,
+          "y": 98.2,
+          "y_err": 1.6,
+          "v_gas": 7.54,
+          "v_disk": 106.73,
+          "v_bulge": 0,
+          "sb_disk": 143.26,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.37,
+          "y": 98.2,
+          "y_err": 1,
+          "v_gas": 7.81,
+          "v_disk": 106.19,
+          "v_bulge": 0,
+          "sb_disk": 125.45,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.47,
+          "y": 97.2,
+          "y_err": 1.12,
+          "v_gas": 8.25,
+          "v_disk": 105.57,
+          "v_bulge": 0,
+          "sb_disk": 115.5,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.57,
+          "y": 98.2,
+          "y_err": 1.41,
+          "v_gas": 8.77,
+          "v_disk": 105.08,
+          "v_bulge": 0,
+          "sb_disk": 108.64,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.68,
+          "y": 98.2,
+          "y_err": 1.12,
+          "v_gas": 9.31,
+          "v_disk": 104.39,
+          "v_bulge": 0,
+          "sb_disk": 99.02,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.78,
+          "y": 98.2,
+          "y_err": 1.6,
+          "v_gas": 9.95,
+          "v_disk": 103.8,
+          "v_bulge": 0,
+          "sb_disk": 91.66,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.88,
+          "y": 99.1,
+          "y_err": 2.69,
+          "v_gas": 10.97,
+          "v_disk": 103.16,
+          "v_bulge": 0,
+          "sb_disk": 86.76,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.98,
+          "y": 100,
+          "y_err": 2.69,
+          "v_gas": 11.96,
+          "v_disk": 102.68,
+          "v_bulge": 0,
+          "sb_disk": 83.79,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.08,
+          "y": 102,
+          "y_err": 3.16,
+          "v_gas": 13.06,
+          "v_disk": 102.46,
+          "v_bulge": 0,
+          "sb_disk": 81.8,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.19,
+          "y": 101,
+          "y_err": 3.4,
+          "v_gas": 14.06,
+          "v_disk": 102.29,
+          "v_bulge": 0,
+          "sb_disk": 78.36,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.29,
+          "y": 101,
+          "y_err": 3.4,
+          "v_gas": 15.05,
+          "v_disk": 102.51,
+          "v_bulge": 0,
+          "sb_disk": 75.36,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.39,
+          "y": 103,
+          "y_err": 2.93,
+          "v_gas": 16.15,
+          "v_disk": 102.82,
+          "v_bulge": 0,
+          "sb_disk": 71.99,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.49,
+          "y": 107,
+          "y_err": 2.46,
+          "v_gas": 17.15,
+          "v_disk": 103.06,
+          "v_bulge": 0,
+          "sb_disk": 67.49,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.59,
+          "y": 110,
+          "y_err": 2.46,
+          "v_gas": 18.14,
+          "v_disk": 102.95,
+          "v_bulge": 0,
+          "sb_disk": 62.39,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.69,
+          "y": 112,
+          "y_err": 3.4,
+          "v_gas": 19.24,
+          "v_disk": 103.12,
+          "v_bulge": 0,
+          "sb_disk": 56.77,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.79,
+          "y": 114,
+          "y_err": 5.1,
+          "v_gas": 20.24,
+          "v_disk": 102.93,
+          "v_bulge": 0,
+          "sb_disk": 52.43,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.9,
+          "y": 118,
+          "y_err": 5.1,
+          "v_gas": 21.03,
+          "v_disk": 102.5,
+          "v_bulge": 0,
+          "sb_disk": 47.97,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.99,
+          "y": 118,
+          "y_err": 4.85,
+          "v_gas": 21.83,
+          "v_disk": 101.99,
+          "v_bulge": 0,
+          "sb_disk": 44.58,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.47,
+          "y": 118,
+          "y_err": 5.36,
+          "v_gas": 25.72,
+          "v_disk": 99.49,
+          "v_bulge": 0,
+          "sb_disk": 31.94,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.97,
+          "y": 121,
+          "y_err": 2.57,
+          "v_gas": 27.81,
+          "v_disk": 97.06,
+          "v_bulge": 0,
+          "sb_disk": 24.17,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.47,
+          "y": 124,
+          "y_err": 0.22,
+          "v_gas": 29.41,
+          "v_disk": 94.4,
+          "v_bulge": 0,
+          "sb_disk": 15.97,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.96,
+          "y": 125,
+          "y_err": 0.88,
+          "v_gas": 30.7,
+          "v_disk": 91.13,
+          "v_bulge": 0,
+          "sb_disk": 11.31,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.46,
+          "y": 126,
+          "y_err": 0.45,
+          "v_gas": 31.7,
+          "v_disk": 87.9,
+          "v_bulge": 0,
+          "sb_disk": 7.9,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.96,
+          "y": 126,
+          "y_err": 0.55,
+          "v_gas": 33.29,
+          "v_disk": 84.95,
+          "v_bulge": 0,
+          "sb_disk": 5.51,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.45,
+          "y": 126,
+          "y_err": 0.45,
+          "v_gas": 34.99,
+          "v_disk": 81.98,
+          "v_bulge": 0,
+          "sb_disk": 3.88,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.95,
+          "y": 126,
+          "y_err": 0.24,
+          "v_gas": 36.58,
+          "v_disk": 79.11,
+          "v_bulge": 0,
+          "sb_disk": 2.71,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.45,
+          "y": 127,
+          "y_err": 1.45,
+          "v_gas": 38.38,
+          "v_disk": 76.42,
+          "v_bulge": 0,
+          "sb_disk": 1.9,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.94,
+          "y": 128,
+          "y_err": 1.12,
+          "v_gas": 39.97,
+          "v_disk": 74.09,
+          "v_bulge": 0,
+          "sb_disk": 1.34,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.44,
+          "y": 128,
+          "y_err": 1.68,
+          "v_gas": 41.47,
+          "v_disk": 71.75,
+          "v_bulge": 0,
+          "sb_disk": 0.93,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.94,
+          "y": 127,
+          "y_err": 2.56,
+          "v_gas": 42.57,
+          "v_disk": 69.58,
+          "v_bulge": 0,
+          "sb_disk": 0.65,
+          "sb_bulge": 0
+        },
+        {
+          "x": 10.43,
+          "y": 127,
+          "y_err": 1.24,
+          "v_gas": 43.96,
+          "v_disk": 67.61,
+          "v_bulge": 0,
+          "sb_disk": 0.46,
+          "sb_bulge": 0
+        },
+        {
+          "x": 10.93,
+          "y": 128,
+          "y_err": 0.21,
+          "v_gas": 45.06,
+          "v_disk": 65.75,
+          "v_bulge": 0,
+          "sb_disk": 0.32,
+          "sb_bulge": 0
+        },
+        {
+          "x": 11.43,
+          "y": 130,
+          "y_err": 1.13,
+          "v_gas": 45.76,
+          "v_disk": 64.12,
+          "v_bulge": 0,
+          "sb_disk": 0.22,
+          "sb_bulge": 0
+        },
+        {
+          "x": 11.92,
+          "y": 130,
+          "y_err": 2.23,
+          "v_gas": 46.15,
+          "v_disk": 62.55,
+          "v_bulge": 0,
+          "sb_disk": 0.16,
+          "sb_bulge": 0
+        },
+        {
+          "x": 12.42,
+          "y": 132,
+          "y_err": 2.68,
+          "v_gas": 46.65,
+          "v_disk": 61.06,
+          "v_bulge": 0,
+          "sb_disk": 0.11,
+          "sb_bulge": 0
+        },
+        {
+          "x": 12.92,
+          "y": 133,
+          "y_err": 2.68,
+          "v_gas": 46.95,
+          "v_disk": 59.67,
+          "v_bulge": 0,
+          "sb_disk": 0.08,
+          "sb_bulge": 0
+        },
+        {
+          "x": 13.42,
+          "y": 133,
+          "y_err": 3.37,
+          "v_gas": 46.75,
+          "v_disk": 58.37,
+          "v_bulge": 0,
+          "sb_disk": 0.05,
+          "sb_bulge": 0
+        },
+        {
+          "x": 13.91,
+          "y": 133,
+          "y_err": 3.81,
+          "v_gas": 46.25,
+          "v_disk": 57.26,
+          "v_bulge": 0,
+          "sb_disk": 0.04,
+          "sb_bulge": 0
+        },
+        {
+          "x": 14.41,
+          "y": 133,
+          "y_err": 2.56,
+          "v_gas": 45.95,
+          "v_disk": 56.12,
+          "v_bulge": 0,
+          "sb_disk": 0.03,
+          "sb_bulge": 0
+        },
+        {
+          "x": 14.91,
+          "y": 134,
+          "y_err": 0.56,
+          "v_gas": 45.66,
+          "v_disk": 55.05,
+          "v_bulge": 0,
+          "sb_disk": 0.02,
+          "sb_bulge": 0
+        },
+        {
+          "x": 15.4,
+          "y": 134,
+          "y_err": 0.79,
+          "v_gas": 45.26,
+          "v_disk": 54.06,
+          "v_bulge": 0,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 15.9,
+          "y": 133,
+          "y_err": 0.67,
+          "v_gas": 44.76,
+          "v_disk": 53.11,
+          "v_bulge": 0,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 16.4,
+          "y": 134,
+          "y_err": 2.35,
+          "v_gas": 44.16,
+          "v_disk": 52.26,
+          "v_bulge": 0,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 16.89,
+          "y": 134,
+          "y_err": 4.13,
+          "v_gas": 43.36,
+          "v_disk": 51.43,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 17.39,
+          "y": 136,
+          "y_err": 3.91,
+          "v_gas": 42.67,
+          "v_disk": 50.61,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 17.89,
+          "y": 136,
+          "y_err": 6.38,
+          "v_gas": 41.87,
+          "v_disk": 49.84,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 18.38,
+          "y": 135,
+          "y_err": 8.39,
+          "v_gas": 41.07,
+          "v_disk": 49.16,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 18.88,
+          "y": 133,
+          "y_err": 7.83,
+          "v_gas": 40.27,
+          "v_disk": 48.46,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 19.38,
+          "y": 134,
+          "y_err": 6.26,
+          "v_gas": 39.87,
+          "v_disk": 47.78,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 19.87,
+          "y": 136,
+          "y_err": 5.6,
+          "v_gas": 39.87,
+          "v_disk": 47.15,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 20.37,
+          "y": 135,
+          "y_err": 5.24,
+          "v_gas": 39.87,
+          "v_disk": 46.52,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 20.87,
+          "y": 134,
+          "y_err": 3.12,
+          "v_gas": 39.87,
+          "v_disk": 45.97,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        }
+      ]
+    },
+    {
+      "galaxy_id": "NGC6503",
+      "galaxy": "NGC 6503",
+      "dataset": "NGC 6503 SPARC Newtonian mass model",
+      "distance_mpc": 6.26,
+      "n_points": 31,
+      "points": [
+        {
+          "x": 0.76,
+          "y": 77,
+          "y_err": 10,
+          "v_gas": 4.04,
+          "v_disk": 70.72,
+          "v_bulge": 0,
+          "sb_disk": 834.73,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.52,
+          "y": 100,
+          "y_err": 5,
+          "v_gas": 7.62,
+          "v_disk": 123.17,
+          "v_bulge": 0,
+          "sb_disk": 563.29,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.28,
+          "y": 110,
+          "y_err": 2,
+          "v_gas": 9.72,
+          "v_disk": 142.64,
+          "v_bulge": 0,
+          "sb_disk": 225.6,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.04,
+          "y": 118,
+          "y_err": 2,
+          "v_gas": 12.42,
+          "v_disk": 134.42,
+          "v_bulge": 0,
+          "sb_disk": 66.48,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.79,
+          "y": 121,
+          "y_err": 2,
+          "v_gas": 13.35,
+          "v_disk": 121.97,
+          "v_bulge": 0,
+          "sb_disk": 28.63,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.55,
+          "y": 121,
+          "y_err": 2,
+          "v_gas": 14.78,
+          "v_disk": 111.53,
+          "v_bulge": 0,
+          "sb_disk": 14.64,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.31,
+          "y": 117,
+          "y_err": 2,
+          "v_gas": 17.55,
+          "v_disk": 103.23,
+          "v_bulge": 0,
+          "sb_disk": 8.92,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.07,
+          "y": 116,
+          "y_err": 2,
+          "v_gas": 19.2,
+          "v_disk": 96.65,
+          "v_bulge": 0,
+          "sb_disk": 6.87,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.83,
+          "y": 116,
+          "y_err": 2,
+          "v_gas": 20.33,
+          "v_disk": 91.96,
+          "v_bulge": 0,
+          "sb_disk": 5.31,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.59,
+          "y": 116,
+          "y_err": 2,
+          "v_gas": 21.66,
+          "v_disk": 87.62,
+          "v_bulge": 0,
+          "sb_disk": 2.98,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.35,
+          "y": 115,
+          "y_err": 1,
+          "v_gas": 22.79,
+          "v_disk": 83.25,
+          "v_bulge": 0,
+          "sb_disk": 1.95,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.11,
+          "y": 115,
+          "y_err": 1,
+          "v_gas": 23.92,
+          "v_disk": 79.58,
+          "v_bulge": 0,
+          "sb_disk": 1.74,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.86,
+          "y": 116,
+          "y_err": 1,
+          "v_gas": 24.84,
+          "v_disk": 76.81,
+          "v_bulge": 0,
+          "sb_disk": 1.53,
+          "sb_bulge": 0
+        },
+        {
+          "x": 10.64,
+          "y": 117,
+          "y_err": 1,
+          "v_gas": 25.46,
+          "v_disk": 74.18,
+          "v_bulge": 0,
+          "sb_disk": 0.83,
+          "sb_bulge": 0
+        },
+        {
+          "x": 11.38,
+          "y": 117,
+          "y_err": 1,
+          "v_gas": 26.38,
+          "v_disk": 71.5,
+          "v_bulge": 0,
+          "sb_disk": 0.58,
+          "sb_bulge": 0
+        },
+        {
+          "x": 12.12,
+          "y": 118,
+          "y_err": 1,
+          "v_gas": 27.2,
+          "v_disk": 69.18,
+          "v_bulge": 0,
+          "sb_disk": 0.42,
+          "sb_bulge": 0
+        },
+        {
+          "x": 12.86,
+          "y": 117,
+          "y_err": 1,
+          "v_gas": 28.13,
+          "v_disk": 67.04,
+          "v_bulge": 0,
+          "sb_disk": 0.3,
+          "sb_bulge": 0
+        },
+        {
+          "x": 13.7,
+          "y": 116,
+          "y_err": 1,
+          "v_gas": 28.74,
+          "v_disk": 64.84,
+          "v_bulge": 0,
+          "sb_disk": 0.2,
+          "sb_bulge": 0
+        },
+        {
+          "x": 14.44,
+          "y": 115,
+          "y_err": 1,
+          "v_gas": 28.64,
+          "v_disk": 63.05,
+          "v_bulge": 0,
+          "sb_disk": 0.14,
+          "sb_bulge": 0
+        },
+        {
+          "x": 15.18,
+          "y": 117,
+          "y_err": 1,
+          "v_gas": 28.33,
+          "v_disk": 61.39,
+          "v_bulge": 0,
+          "sb_disk": 0.1,
+          "sb_bulge": 0
+        },
+        {
+          "x": 15.91,
+          "y": 116,
+          "y_err": 1,
+          "v_gas": 28.13,
+          "v_disk": 59.88,
+          "v_bulge": 0,
+          "sb_disk": 0.07,
+          "sb_bulge": 0
+        },
+        {
+          "x": 16.65,
+          "y": 115,
+          "y_err": 2,
+          "v_gas": 28.33,
+          "v_disk": 58.45,
+          "v_bulge": 0,
+          "sb_disk": 0.05,
+          "sb_bulge": 0
+        },
+        {
+          "x": 17.49,
+          "y": 115,
+          "y_err": 2,
+          "v_gas": 28.23,
+          "v_disk": 56.93,
+          "v_bulge": 0,
+          "sb_disk": 0.03,
+          "sb_bulge": 0
+        },
+        {
+          "x": 18.23,
+          "y": 115,
+          "y_err": 2,
+          "v_gas": 27.82,
+          "v_disk": 55.71,
+          "v_bulge": 0,
+          "sb_disk": 0.02,
+          "sb_bulge": 0
+        },
+        {
+          "x": 18.97,
+          "y": 114,
+          "y_err": 2,
+          "v_gas": 27.2,
+          "v_disk": 54.55,
+          "v_bulge": 0,
+          "sb_disk": 0.02,
+          "sb_bulge": 0
+        },
+        {
+          "x": 19.71,
+          "y": 115,
+          "y_err": 2,
+          "v_gas": 26.9,
+          "v_disk": 53.46,
+          "v_bulge": 0,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 20.45,
+          "y": 114,
+          "y_err": 2,
+          "v_gas": 26.69,
+          "v_disk": 52.44,
+          "v_bulge": 0,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 21.29,
+          "y": 116,
+          "y_err": 2,
+          "v_gas": 26.49,
+          "v_disk": 51.35,
+          "v_bulge": 0,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 22.03,
+          "y": 115,
+          "y_err": 3,
+          "v_gas": 26.18,
+          "v_disk": 50.44,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 22.76,
+          "y": 118,
+          "y_err": 4,
+          "v_gas": 25.87,
+          "v_disk": 49.61,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 23.5,
+          "y": 115,
+          "y_err": 10,
+          "v_gas": 25.46,
+          "v_disk": 48.79,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        }
+      ]
+    },
+    {
+      "galaxy_id": "NGC6946",
+      "galaxy": "NGC 6946",
+      "dataset": "NGC 6946 SPARC Newtonian mass model",
+      "distance_mpc": 5.52,
+      "n_points": 58,
+      "points": [
+        {
+          "x": 0.19,
+          "y": 153,
+          "y_err": 8,
+          "v_gas": 0.96,
+          "v_disk": 24.4,
+          "v_bulge": 233.17,
+          "sb_disk": 1609.94,
+          "sb_bulge": 5052.7
+        },
+        {
+          "x": 0.56,
+          "y": 130,
+          "y_err": 9,
+          "v_gas": 2.86,
+          "v_disk": 62.52,
+          "v_bulge": 168.53,
+          "sb_disk": 1346.02,
+          "sb_bulge": 485.78
+        },
+        {
+          "x": 0.94,
+          "y": 128,
+          "y_err": 3,
+          "v_gas": 4.5,
+          "v_disk": 91.94,
+          "v_bulge": 137.01,
+          "sb_disk": 1105.63,
+          "sb_bulge": 4.79
+        },
+        {
+          "x": 1.22,
+          "y": 134,
+          "y_err": 3,
+          "v_gas": 5.34,
+          "v_disk": 109.48,
+          "v_bulge": 120.39,
+          "sb_disk": 984.97,
+          "sb_bulge": 0.11
+        },
+        {
+          "x": 1.59,
+          "y": 129,
+          "y_err": 4,
+          "v_gas": 6.46,
+          "v_disk": 127.82,
+          "v_bulge": 105.47,
+          "sb_disk": 802.43,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.96,
+          "y": 131,
+          "y_err": 7,
+          "v_gas": 6.51,
+          "v_disk": 138.39,
+          "v_bulge": 94.99,
+          "sb_disk": 679.4,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.34,
+          "y": 138,
+          "y_err": 8,
+          "v_gas": 6.51,
+          "v_disk": 151.17,
+          "v_bulge": 86.94,
+          "sb_disk": 641.26,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.71,
+          "y": 139,
+          "y_err": 5,
+          "v_gas": 6.44,
+          "v_disk": 166.55,
+          "v_bulge": 80.79,
+          "sb_disk": 529.81,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.99,
+          "y": 143,
+          "y_err": 3,
+          "v_gas": 6.38,
+          "v_disk": 170.5,
+          "v_bulge": 76.91,
+          "sb_disk": 471.62,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.37,
+          "y": 146,
+          "y_err": 2,
+          "v_gas": 7.55,
+          "v_disk": 177.07,
+          "v_bulge": 72.44,
+          "sb_disk": 404.45,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.74,
+          "y": 154,
+          "y_err": 2,
+          "v_gas": 10.54,
+          "v_disk": 180.71,
+          "v_bulge": 68.77,
+          "sb_disk": 348.88,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.12,
+          "y": 161,
+          "y_err": 1,
+          "v_gas": 12.86,
+          "v_disk": 184.13,
+          "v_bulge": 65.52,
+          "sb_disk": 319.37,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.4,
+          "y": 167,
+          "y_err": 2,
+          "v_gas": 13.54,
+          "v_disk": 187.91,
+          "v_bulge": 63.4,
+          "sb_disk": 300.02,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.77,
+          "y": 173,
+          "y_err": 2,
+          "v_gas": 14.41,
+          "v_disk": 193.15,
+          "v_bulge": 60.89,
+          "sb_disk": 267.87,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.15,
+          "y": 176,
+          "y_err": 4,
+          "v_gas": 17.51,
+          "v_disk": 197.95,
+          "v_bulge": 58.6,
+          "sb_disk": 241.97,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.52,
+          "y": 178,
+          "y_err": 5,
+          "v_gas": 20.8,
+          "v_disk": 204.45,
+          "v_bulge": 56.6,
+          "sb_disk": 207.99,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.89,
+          "y": 180,
+          "y_err": 3,
+          "v_gas": 23.41,
+          "v_disk": 204.89,
+          "v_bulge": 54.8,
+          "sb_disk": 141.7,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.17,
+          "y": 179,
+          "y_err": 4,
+          "v_gas": 25.15,
+          "v_disk": 201.57,
+          "v_bulge": 53.54,
+          "sb_disk": 126.19,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.55,
+          "y": 180,
+          "y_err": 5,
+          "v_gas": 27.66,
+          "v_disk": 200.86,
+          "v_bulge": 51.96,
+          "sb_disk": 123.94,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.92,
+          "y": 181,
+          "y_err": 4,
+          "v_gas": 31.15,
+          "v_disk": 201.34,
+          "v_bulge": 50.55,
+          "sb_disk": 98.46,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.3,
+          "y": 179,
+          "y_err": 4,
+          "v_gas": 34.05,
+          "v_disk": 198.33,
+          "v_bulge": 49.22,
+          "sb_disk": 72.51,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.58,
+          "y": 179,
+          "y_err": 2,
+          "v_gas": 34.92,
+          "v_disk": 194.96,
+          "v_bulge": 48.3,
+          "sb_disk": 60.13,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.95,
+          "y": 179,
+          "y_err": 1,
+          "v_gas": 35.89,
+          "v_disk": 189.92,
+          "v_bulge": 47.17,
+          "sb_disk": 49.35,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.33,
+          "y": 178,
+          "y_err": 1,
+          "v_gas": 37.34,
+          "v_disk": 184.93,
+          "v_bulge": 46.08,
+          "sb_disk": 46.41,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.7,
+          "y": 177,
+          "y_err": 2,
+          "v_gas": 38.88,
+          "v_disk": 182.77,
+          "v_bulge": 45.09,
+          "sb_disk": 46.83,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.08,
+          "y": 176,
+          "y_err": 2,
+          "v_gas": 39.08,
+          "v_disk": 181.24,
+          "v_bulge": 44.13,
+          "sb_disk": 41.04,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.36,
+          "y": 173,
+          "y_err": 3,
+          "v_gas": 38.4,
+          "v_disk": 179.87,
+          "v_bulge": 43.47,
+          "sb_disk": 35.55,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.73,
+          "y": 172,
+          "y_err": 2,
+          "v_gas": 37.72,
+          "v_disk": 177.19,
+          "v_bulge": 42.63,
+          "sb_disk": 30.1,
+          "sb_bulge": 0
+        },
+        {
+          "x": 10.1,
+          "y": 172,
+          "y_err": 2,
+          "v_gas": 37.43,
+          "v_disk": 174.69,
+          "v_bulge": 41.85,
+          "sb_disk": 25.97,
+          "sb_bulge": 0
+        },
+        {
+          "x": 10.48,
+          "y": 170,
+          "y_err": 2,
+          "v_gas": 37.14,
+          "v_disk": 171.99,
+          "v_bulge": 41.08,
+          "sb_disk": 22.33,
+          "sb_bulge": 0
+        },
+        {
+          "x": 10.76,
+          "y": 171,
+          "y_err": 2,
+          "v_gas": 36.66,
+          "v_disk": 170.15,
+          "v_bulge": 40.54,
+          "sb_disk": 19.9,
+          "sb_bulge": 0
+        },
+        {
+          "x": 11.13,
+          "y": 174,
+          "y_err": 2,
+          "v_gas": 35.89,
+          "v_disk": 167.51,
+          "v_bulge": 39.86,
+          "sb_disk": 17.13,
+          "sb_bulge": 0
+        },
+        {
+          "x": 11.51,
+          "y": 174,
+          "y_err": 2,
+          "v_gas": 36.08,
+          "v_disk": 164.95,
+          "v_bulge": 39.2,
+          "sb_disk": 14.62,
+          "sb_bulge": 0
+        },
+        {
+          "x": 11.88,
+          "y": 175,
+          "y_err": 2,
+          "v_gas": 36.76,
+          "v_disk": 162.35,
+          "v_bulge": 38.58,
+          "sb_disk": 12.58,
+          "sb_bulge": 0
+        },
+        {
+          "x": 12.26,
+          "y": 174,
+          "y_err": 2,
+          "v_gas": 37.82,
+          "v_disk": 159.81,
+          "v_bulge": 37.98,
+          "sb_disk": 10.77,
+          "sb_bulge": 0
+        },
+        {
+          "x": 12.54,
+          "y": 173,
+          "y_err": 6,
+          "v_gas": 38.79,
+          "v_disk": 158,
+          "v_bulge": 37.55,
+          "sb_disk": 9.59,
+          "sb_bulge": 0
+        },
+        {
+          "x": 12.91,
+          "y": 173,
+          "y_err": 6,
+          "v_gas": 40.14,
+          "v_disk": 155.62,
+          "v_bulge": 37.01,
+          "sb_disk": 8.27,
+          "sb_bulge": 0
+        },
+        {
+          "x": 13.29,
+          "y": 173,
+          "y_err": 8,
+          "v_gas": 42.08,
+          "v_disk": 153.17,
+          "v_bulge": 36.48,
+          "sb_disk": 7.06,
+          "sb_bulge": 0
+        },
+        {
+          "x": 13.66,
+          "y": 175,
+          "y_err": 9,
+          "v_gas": 44.01,
+          "v_disk": 150.89,
+          "v_bulge": 35.98,
+          "sb_disk": 6.08,
+          "sb_bulge": 0
+        },
+        {
+          "x": 14.03,
+          "y": 174,
+          "y_err": 9,
+          "v_gas": 45.46,
+          "v_disk": 148.68,
+          "v_bulge": 35.5,
+          "sb_disk": 5.22,
+          "sb_bulge": 0
+        },
+        {
+          "x": 14.31,
+          "y": 171,
+          "y_err": 9,
+          "v_gas": 46.53,
+          "v_disk": 147.06,
+          "v_bulge": 35.16,
+          "sb_disk": 4.65,
+          "sb_bulge": 0
+        },
+        {
+          "x": 14.69,
+          "y": 167,
+          "y_err": 8,
+          "v_gas": 45.94,
+          "v_disk": 144.87,
+          "v_bulge": 34.7,
+          "sb_disk": 3.99,
+          "sb_bulge": 0
+        },
+        {
+          "x": 15.06,
+          "y": 165,
+          "y_err": 7,
+          "v_gas": 44.59,
+          "v_disk": 142.8,
+          "v_bulge": 34.27,
+          "sb_disk": 3.42,
+          "sb_bulge": 0
+        },
+        {
+          "x": 15.44,
+          "y": 163,
+          "y_err": 8,
+          "v_gas": 44.01,
+          "v_disk": 140.8,
+          "v_bulge": 33.84,
+          "sb_disk": 2.94,
+          "sb_bulge": 0
+        },
+        {
+          "x": 15.72,
+          "y": 162,
+          "y_err": 8,
+          "v_gas": 44.2,
+          "v_disk": 139.35,
+          "v_bulge": 33.54,
+          "sb_disk": 2.61,
+          "sb_bulge": 0
+        },
+        {
+          "x": 16.09,
+          "y": 161,
+          "y_err": 9,
+          "v_gas": 33.85,
+          "v_disk": 137.46,
+          "v_bulge": 33.15,
+          "sb_disk": 2.25,
+          "sb_bulge": 0
+        },
+        {
+          "x": 16.47,
+          "y": 159,
+          "y_err": 10,
+          "v_gas": 33.85,
+          "v_disk": 135.59,
+          "v_bulge": 32.77,
+          "sb_disk": 1.93,
+          "sb_bulge": 0
+        },
+        {
+          "x": 16.84,
+          "y": 158,
+          "y_err": 10,
+          "v_gas": 33.85,
+          "v_disk": 133.88,
+          "v_bulge": 32.41,
+          "sb_disk": 1.65,
+          "sb_bulge": 0
+        },
+        {
+          "x": 17.21,
+          "y": 157,
+          "y_err": 10,
+          "v_gas": 33.85,
+          "v_disk": 132.2,
+          "v_bulge": 32.06,
+          "sb_disk": 1.42,
+          "sb_bulge": 0
+        },
+        {
+          "x": 17.5,
+          "y": 157,
+          "y_err": 10,
+          "v_gas": 33.85,
+          "v_disk": 130.89,
+          "v_bulge": 31.79,
+          "sb_disk": 1.26,
+          "sb_bulge": 0
+        },
+        {
+          "x": 17.87,
+          "y": 157,
+          "y_err": 9,
+          "v_gas": 33.85,
+          "v_disk": 129.3,
+          "v_bulge": 31.46,
+          "sb_disk": 1.09,
+          "sb_bulge": 0
+        },
+        {
+          "x": 18.24,
+          "y": 160,
+          "y_err": 11,
+          "v_gas": 33.85,
+          "v_disk": 127.8,
+          "v_bulge": 31.14,
+          "sb_disk": 0.93,
+          "sb_bulge": 0
+        },
+        {
+          "x": 18.62,
+          "y": 159,
+          "y_err": 12,
+          "v_gas": 33.85,
+          "v_disk": 126.3,
+          "v_bulge": 30.82,
+          "sb_disk": 0.8,
+          "sb_bulge": 0
+        },
+        {
+          "x": 18.9,
+          "y": 160,
+          "y_err": 14,
+          "v_gas": 33.85,
+          "v_disk": 125.2,
+          "v_bulge": 30.59,
+          "sb_disk": 0.71,
+          "sb_bulge": 0
+        },
+        {
+          "x": 19.27,
+          "y": 158,
+          "y_err": 16,
+          "v_gas": 33.85,
+          "v_disk": 123.92,
+          "v_bulge": 30.3,
+          "sb_disk": 0.61,
+          "sb_bulge": 0
+        },
+        {
+          "x": 19.65,
+          "y": 155,
+          "y_err": 18,
+          "v_gas": 33.85,
+          "v_disk": 122.75,
+          "v_bulge": 30,
+          "sb_disk": 0.52,
+          "sb_bulge": 0
+        },
+        {
+          "x": 20.02,
+          "y": 157,
+          "y_err": 19,
+          "v_gas": 33.85,
+          "v_disk": 121.08,
+          "v_bulge": 29.72,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 20.4,
+          "y": 154,
+          "y_err": 21,
+          "v_gas": 33.85,
+          "v_disk": 119.5,
+          "v_bulge": 29.44,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        }
+      ]
+    },
+    {
+      "galaxy_id": "NGC7331",
+      "galaxy": "NGC 7331",
+      "dataset": "NGC 7331 SPARC Newtonian mass model",
+      "distance_mpc": 14.7,
+      "n_points": 36,
+      "points": [
+        {
+          "x": 2.67,
+          "y": 221,
+          "y_err": 20,
+          "v_gas": -12.02,
+          "v_disk": 317.9,
+          "v_bulge": 136.84,
+          "sb_disk": 2029.41,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.21,
+          "y": 237,
+          "y_err": 13,
+          "v_gas": -12.52,
+          "v_disk": 344.05,
+          "v_bulge": 124.77,
+          "sb_disk": 1695.43,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.74,
+          "y": 249,
+          "y_err": 8,
+          "v_gas": -12.91,
+          "v_disk": 365.51,
+          "v_bulge": 115.63,
+          "sb_disk": 1209.56,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.27,
+          "y": 250,
+          "y_err": 5,
+          "v_gas": -12.71,
+          "v_disk": 368.89,
+          "v_bulge": 108.22,
+          "sb_disk": 879.42,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.81,
+          "y": 253,
+          "y_err": 5,
+          "v_gas": -11.52,
+          "v_disk": 367.77,
+          "v_bulge": 101.96,
+          "sb_disk": 718.98,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.35,
+          "y": 257,
+          "y_err": 5,
+          "v_gas": -9.56,
+          "v_disk": 371.23,
+          "v_bulge": 96.68,
+          "sb_disk": 558.39,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.88,
+          "y": 257,
+          "y_err": 5,
+          "v_gas": -6.26,
+          "v_disk": 365.05,
+          "v_bulge": 92.22,
+          "sb_disk": 415.53,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.41,
+          "y": 257,
+          "y_err": 5,
+          "v_gas": 4.8,
+          "v_disk": 360.1,
+          "v_bulge": 88.33,
+          "sb_disk": 334.62,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.48,
+          "y": 257,
+          "y_err": 5,
+          "v_gas": 12.22,
+          "v_disk": 345.54,
+          "v_bulge": 81.76,
+          "sb_disk": 196.95,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.55,
+          "y": 255,
+          "y_err": 5,
+          "v_gas": 16.59,
+          "v_disk": 324.23,
+          "v_bulge": 76.48,
+          "sb_disk": 125.71,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.62,
+          "y": 248,
+          "y_err": 6,
+          "v_gas": 22.45,
+          "v_disk": 311.29,
+          "v_bulge": 72.1,
+          "sb_disk": 108.76,
+          "sb_bulge": 0
+        },
+        {
+          "x": 10.66,
+          "y": 247,
+          "y_err": 6,
+          "v_gas": 28.21,
+          "v_disk": 299.93,
+          "v_bulge": 68.49,
+          "sb_disk": 79.7,
+          "sb_bulge": 0
+        },
+        {
+          "x": 11.74,
+          "y": 246,
+          "y_err": 6,
+          "v_gas": 33.77,
+          "v_disk": 288.64,
+          "v_bulge": 65.26,
+          "sb_disk": 68.87,
+          "sb_bulge": 0
+        },
+        {
+          "x": 12.83,
+          "y": 244,
+          "y_err": 6,
+          "v_gas": 38.94,
+          "v_disk": 280.42,
+          "v_bulge": 62.43,
+          "sb_disk": 55.08,
+          "sb_bulge": 0
+        },
+        {
+          "x": 13.91,
+          "y": 242,
+          "y_err": 4,
+          "v_gas": 43.31,
+          "v_disk": 272.13,
+          "v_bulge": 59.96,
+          "sb_disk": 43.42,
+          "sb_bulge": 0
+        },
+        {
+          "x": 15,
+          "y": 238,
+          "y_err": 3,
+          "v_gas": 45.59,
+          "v_disk": 263.74,
+          "v_bulge": 57.74,
+          "sb_disk": 35.37,
+          "sb_bulge": 0
+        },
+        {
+          "x": 16.08,
+          "y": 236,
+          "y_err": 3,
+          "v_gas": 47.38,
+          "v_disk": 256.44,
+          "v_bulge": 55.77,
+          "sb_disk": 30.67,
+          "sb_bulge": 0
+        },
+        {
+          "x": 17.07,
+          "y": 233,
+          "y_err": 3,
+          "v_gas": 49.66,
+          "v_disk": 250.86,
+          "v_bulge": 54.12,
+          "sb_disk": 27.32,
+          "sb_bulge": 0
+        },
+        {
+          "x": 18.15,
+          "y": 234,
+          "y_err": 3,
+          "v_gas": 53.93,
+          "v_disk": 245.89,
+          "v_bulge": 52.49,
+          "sb_disk": 23.83,
+          "sb_bulge": 0
+        },
+        {
+          "x": 19.24,
+          "y": 236,
+          "y_err": 3,
+          "v_gas": 57.71,
+          "v_disk": 242,
+          "v_bulge": 50.98,
+          "sb_disk": 19.98,
+          "sb_bulge": 0
+        },
+        {
+          "x": 20.32,
+          "y": 237,
+          "y_err": 3,
+          "v_gas": 60.09,
+          "v_disk": 237.62,
+          "v_bulge": 49.61,
+          "sb_disk": 14.17,
+          "sb_bulge": 0
+        },
+        {
+          "x": 21.41,
+          "y": 238,
+          "y_err": 3,
+          "v_gas": 61.78,
+          "v_disk": 231.06,
+          "v_bulge": 48.33,
+          "sb_disk": 9.38,
+          "sb_bulge": 0
+        },
+        {
+          "x": 22.49,
+          "y": 240,
+          "y_err": 3,
+          "v_gas": 63.67,
+          "v_disk": 224.49,
+          "v_bulge": 47.15,
+          "sb_disk": 7.57,
+          "sb_bulge": 0
+        },
+        {
+          "x": 23.48,
+          "y": 238,
+          "y_err": 3,
+          "v_gas": 64.56,
+          "v_disk": 219.56,
+          "v_bulge": 46.15,
+          "sb_disk": 6.48,
+          "sb_bulge": 0
+        },
+        {
+          "x": 24.57,
+          "y": 237,
+          "y_err": 3,
+          "v_gas": 62.97,
+          "v_disk": 214.35,
+          "v_bulge": 45.11,
+          "sb_disk": 5.34,
+          "sb_bulge": 0
+        },
+        {
+          "x": 25.65,
+          "y": 236,
+          "y_err": 3,
+          "v_gas": 61.48,
+          "v_disk": 209.72,
+          "v_bulge": 44.15,
+          "sb_disk": 4.39,
+          "sb_bulge": 0
+        },
+        {
+          "x": 26.74,
+          "y": 238,
+          "y_err": 3,
+          "v_gas": 60.79,
+          "v_disk": 205.21,
+          "v_bulge": 43.24,
+          "sb_disk": 3.53,
+          "sb_bulge": 0
+        },
+        {
+          "x": 27.82,
+          "y": 239,
+          "y_err": 3,
+          "v_gas": 59.4,
+          "v_disk": 200.95,
+          "v_bulge": 42.4,
+          "sb_disk": 2.83,
+          "sb_bulge": 0
+        },
+        {
+          "x": 28.91,
+          "y": 239,
+          "y_err": 3,
+          "v_gas": 57.31,
+          "v_disk": 196.85,
+          "v_bulge": 41.59,
+          "sb_disk": 2.28,
+          "sb_bulge": 0
+        },
+        {
+          "x": 29.89,
+          "y": 241,
+          "y_err": 4,
+          "v_gas": 55.13,
+          "v_disk": 193.34,
+          "v_bulge": 40.9,
+          "sb_disk": 1.87,
+          "sb_bulge": 0
+        },
+        {
+          "x": 30.98,
+          "y": 236,
+          "y_err": 4,
+          "v_gas": 52.84,
+          "v_disk": 189.65,
+          "v_bulge": 40.18,
+          "sb_disk": 1.51,
+          "sb_bulge": 0
+        },
+        {
+          "x": 32.06,
+          "y": 236,
+          "y_err": 5,
+          "v_gas": 51.55,
+          "v_disk": 186.2,
+          "v_bulge": 39.49,
+          "sb_disk": 1.22,
+          "sb_bulge": 0
+        },
+        {
+          "x": 33.15,
+          "y": 239,
+          "y_err": 5,
+          "v_gas": 51.35,
+          "v_disk": 182.89,
+          "v_bulge": 38.84,
+          "sb_disk": 0.98,
+          "sb_bulge": 0
+        },
+        {
+          "x": 34.23,
+          "y": 237,
+          "y_err": 5,
+          "v_gas": 50.86,
+          "v_disk": 179.88,
+          "v_bulge": 38.22,
+          "sb_disk": 0.79,
+          "sb_bulge": 0
+        },
+        {
+          "x": 35.32,
+          "y": 241,
+          "y_err": 7,
+          "v_gas": 49.27,
+          "v_disk": 177.27,
+          "v_bulge": 37.63,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 36.31,
+          "y": 238,
+          "y_err": 9,
+          "v_gas": 47.97,
+          "v_disk": 173.78,
+          "v_bulge": 37.11,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        }
+      ]
+    },
+    {
+      "galaxy_id": "NGC5055",
+      "galaxy": "NGC 5055",
+      "dataset": "NGC 5055 SPARC Newtonian mass model",
+      "distance_mpc": 9.9,
+      "n_points": 28,
+      "points": [
+        {
+          "x": 0.72,
+          "y": 125,
+          "y_err": 17.6,
+          "v_gas": 2.2,
+          "v_disk": 201.48,
+          "v_bulge": 0,
+          "sb_disk": 4079.93,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.43,
+          "y": 162,
+          "y_err": 8.5,
+          "v_gas": 3.72,
+          "v_disk": 240.13,
+          "v_bulge": 0,
+          "sb_disk": 2087.92,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.16,
+          "y": 178,
+          "y_err": 5.22,
+          "v_gas": 4.09,
+          "v_disk": 263.27,
+          "v_bulge": 0,
+          "sb_disk": 1497.11,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.87,
+          "y": 193,
+          "y_err": 1.88,
+          "v_gas": 5.34,
+          "v_disk": 280.74,
+          "v_bulge": 0,
+          "sb_disk": 897.98,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.59,
+          "y": 192,
+          "y_err": 3.59,
+          "v_gas": 6.03,
+          "v_disk": 273.32,
+          "v_bulge": 0,
+          "sb_disk": 618.08,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.3,
+          "y": 190,
+          "y_err": 0.97,
+          "v_gas": 5.11,
+          "v_disk": 272.18,
+          "v_bulge": 0,
+          "sb_disk": 518.18,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.03,
+          "y": 195,
+          "y_err": 0.99,
+          "v_gas": 8.42,
+          "v_disk": 273.73,
+          "v_bulge": 0,
+          "sb_disk": 418.28,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.75,
+          "y": 201,
+          "y_err": 0.45,
+          "v_gas": 14.42,
+          "v_disk": 276.2,
+          "v_bulge": 0,
+          "sb_disk": 347.11,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.46,
+          "y": 204,
+          "y_err": 0.81,
+          "v_gas": 19.11,
+          "v_disk": 279.72,
+          "v_bulge": 0,
+          "sb_disk": 262.38,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.18,
+          "y": 204,
+          "y_err": 0.65,
+          "v_gas": 22.51,
+          "v_disk": 275.62,
+          "v_bulge": 0,
+          "sb_disk": 205.49,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.91,
+          "y": 206,
+          "y_err": 0.66,
+          "v_gas": 25.8,
+          "v_disk": 271.43,
+          "v_bulge": 0,
+          "sb_disk": 160.87,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.62,
+          "y": 206,
+          "y_err": 1.54,
+          "v_gas": 28.49,
+          "v_disk": 267.09,
+          "v_bulge": 0,
+          "sb_disk": 129.11,
+          "sb_bulge": 0
+        },
+        {
+          "x": 11.49,
+          "y": 206,
+          "y_err": 1.9,
+          "v_gas": 33.07,
+          "v_disk": 245.58,
+          "v_bulge": 0,
+          "sb_disk": 52.63,
+          "sb_bulge": 0
+        },
+        {
+          "x": 14.3,
+          "y": 206,
+          "y_err": 0.42,
+          "v_gas": 45.73,
+          "v_disk": 225.03,
+          "v_bulge": 0,
+          "sb_disk": 25.15,
+          "sb_bulge": 0
+        },
+        {
+          "x": 17.19,
+          "y": 203,
+          "y_err": 4.19,
+          "v_gas": 47.26,
+          "v_disk": 208.52,
+          "v_bulge": 0,
+          "sb_disk": 9.46,
+          "sb_bulge": 0
+        },
+        {
+          "x": 20.07,
+          "y": 200,
+          "y_err": 1.23,
+          "v_gas": 44.56,
+          "v_disk": 190.41,
+          "v_bulge": 0,
+          "sb_disk": 3.58,
+          "sb_bulge": 0
+        },
+        {
+          "x": 22.96,
+          "y": 194,
+          "y_err": 4.09,
+          "v_gas": 40.45,
+          "v_disk": 175.86,
+          "v_bulge": 0,
+          "sb_disk": 1.78,
+          "sb_bulge": 0
+        },
+        {
+          "x": 25.85,
+          "y": 188,
+          "y_err": 5.2,
+          "v_gas": 37.41,
+          "v_disk": 164.23,
+          "v_bulge": 0,
+          "sb_disk": 0.59,
+          "sb_bulge": 0
+        },
+        {
+          "x": 28.74,
+          "y": 184,
+          "y_err": 1.16,
+          "v_gas": 38.46,
+          "v_disk": 154.38,
+          "v_bulge": 0,
+          "sb_disk": 0.15,
+          "sb_bulge": 0
+        },
+        {
+          "x": 31.62,
+          "y": 182,
+          "y_err": 2.47,
+          "v_gas": 40.22,
+          "v_disk": 146.2,
+          "v_bulge": 0,
+          "sb_disk": 0.09,
+          "sb_bulge": 0
+        },
+        {
+          "x": 34.51,
+          "y": 180,
+          "y_err": 3.85,
+          "v_gas": 42.57,
+          "v_disk": 139.3,
+          "v_bulge": 0,
+          "sb_disk": 0.04,
+          "sb_bulge": 0
+        },
+        {
+          "x": 37.4,
+          "y": 181,
+          "y_err": 8.43,
+          "v_gas": 40.57,
+          "v_disk": 133.34,
+          "v_bulge": 0,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 40.29,
+          "y": 180,
+          "y_err": 4.55,
+          "v_gas": 41.86,
+          "v_disk": 128.12,
+          "v_bulge": 0,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 43.17,
+          "y": 179,
+          "y_err": 0.44,
+          "v_gas": 42.92,
+          "v_disk": 123.52,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 45.92,
+          "y": 179,
+          "y_err": 1.96,
+          "v_gas": 44.68,
+          "v_disk": 119.59,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 48.81,
+          "y": 179,
+          "y_err": 2.99,
+          "v_gas": 44.56,
+          "v_disk": 115.83,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 51.7,
+          "y": 174,
+          "y_err": 3.39,
+          "v_gas": 43.74,
+          "v_disk": 112.43,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 54.59,
+          "y": 172,
+          "y_err": 4.84,
+          "v_gas": 41.74,
+          "v_disk": 109.32,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        }
+      ]
+    },
+    {
+      "galaxy_id": "NGC2841",
+      "galaxy": "NGC 2841",
+      "dataset": "NGC 2841 SPARC Newtonian mass model",
+      "distance_mpc": 14.1,
+      "n_points": 50,
+      "points": [
+        {
+          "x": 3.44,
+          "y": 285,
+          "y_err": 14.4,
+          "v_gas": -0.57,
+          "v_disk": 163.4,
+          "v_bulge": 239.5,
+          "sb_disk": 560.42,
+          "sb_bulge": 13.23
+        },
+        {
+          "x": 3.77,
+          "y": 297,
+          "y_err": 13.6,
+          "v_gas": -0.57,
+          "v_disk": 171.13,
+          "v_bulge": 229.25,
+          "sb_disk": 537.66,
+          "sb_bulge": 5.28
+        },
+        {
+          "x": 4.13,
+          "y": 303,
+          "y_err": 8.47,
+          "v_gas": -0.43,
+          "v_disk": 180.88,
+          "v_bulge": 219.24,
+          "sb_disk": 507.23,
+          "sb_bulge": 1.94
+        },
+        {
+          "x": 4.47,
+          "y": 306,
+          "y_err": 5.93,
+          "v_gas": -0.1,
+          "v_disk": 188.37,
+          "v_bulge": 210.91,
+          "sb_disk": 465.98,
+          "sb_bulge": 0.76
+        },
+        {
+          "x": 4.8,
+          "y": 307,
+          "y_err": 5.93,
+          "v_gas": -0.19,
+          "v_disk": 194.64,
+          "v_bulge": 203.54,
+          "sb_disk": 438.69,
+          "sb_bulge": 0.3
+        },
+        {
+          "x": 5.13,
+          "y": 304,
+          "y_err": 8.47,
+          "v_gas": -0.28,
+          "v_disk": 200.57,
+          "v_bulge": 196.88,
+          "sb_disk": 413.05,
+          "sb_bulge": 0.12
+        },
+        {
+          "x": 5.48,
+          "y": 308,
+          "y_err": 8.47,
+          "v_gas": -0.38,
+          "v_disk": 206.64,
+          "v_bulge": 190.44,
+          "sb_disk": 383.91,
+          "sb_bulge": 0.05
+        },
+        {
+          "x": 5.83,
+          "y": 313,
+          "y_err": 12.7,
+          "v_gas": -0.48,
+          "v_disk": 211.29,
+          "v_bulge": 184.57,
+          "sb_disk": 352.6,
+          "sb_bulge": 0.02
+        },
+        {
+          "x": 6.16,
+          "y": 314,
+          "y_err": 9.32,
+          "v_gas": -0.53,
+          "v_disk": 215.14,
+          "v_bulge": 179.57,
+          "sb_disk": 340.73,
+          "sb_bulge": 0.01
+        },
+        {
+          "x": 6.51,
+          "y": 315,
+          "y_err": 6.78,
+          "v_gas": 3.83,
+          "v_disk": 221.84,
+          "v_bulge": 174.68,
+          "sb_disk": 329.32,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.86,
+          "y": 317,
+          "y_err": 8.47,
+          "v_gas": 8.02,
+          "v_disk": 227.72,
+          "v_bulge": 170.15,
+          "sb_disk": 300.88,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.18,
+          "y": 320,
+          "y_err": 7.63,
+          "v_gas": 12.15,
+          "v_disk": 231.73,
+          "v_bulge": 166.32,
+          "sb_disk": 276.7,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.51,
+          "y": 316,
+          "y_err": 20.5,
+          "v_gas": 16.24,
+          "v_disk": 235.48,
+          "v_bulge": 162.63,
+          "sb_disk": 259.76,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.85,
+          "y": 318,
+          "y_err": 23.4,
+          "v_gas": 20.27,
+          "v_disk": 239.96,
+          "v_bulge": 159.08,
+          "sb_disk": 241.28,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.21,
+          "y": 321,
+          "y_err": 8.48,
+          "v_gas": 24.66,
+          "v_disk": 243.42,
+          "v_bulge": 155.54,
+          "sb_disk": 214.54,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.57,
+          "y": 323,
+          "y_err": 8.66,
+          "v_gas": 27.1,
+          "v_disk": 245.15,
+          "v_bulge": 152.23,
+          "sb_disk": 187.05,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.9,
+          "y": 321,
+          "y_err": 12.7,
+          "v_gas": 29.42,
+          "v_disk": 245.8,
+          "v_bulge": 149.38,
+          "sb_disk": 167.67,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.24,
+          "y": 323,
+          "y_err": 11,
+          "v_gas": 31.74,
+          "v_disk": 245.24,
+          "v_bulge": 146.61,
+          "sb_disk": 150.42,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.6,
+          "y": 323,
+          "y_err": 10.4,
+          "v_gas": 34.31,
+          "v_disk": 244.14,
+          "v_bulge": 143.83,
+          "sb_disk": 136.11,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.93,
+          "y": 322,
+          "y_err": 13.6,
+          "v_gas": 36.63,
+          "v_disk": 243.64,
+          "v_bulge": 141.42,
+          "sb_disk": 126.37,
+          "sb_bulge": 0
+        },
+        {
+          "x": 10.27,
+          "y": 321,
+          "y_err": 13.6,
+          "v_gas": 38.95,
+          "v_disk": 243.6,
+          "v_bulge": 139.06,
+          "sb_disk": 118.7,
+          "sb_bulge": 0
+        },
+        {
+          "x": 10.6,
+          "y": 323,
+          "y_err": 9.32,
+          "v_gas": 41.02,
+          "v_disk": 243.38,
+          "v_bulge": 136.88,
+          "sb_disk": 108.16,
+          "sb_bulge": 0
+        },
+        {
+          "x": 10.93,
+          "y": 322,
+          "y_err": 11.9,
+          "v_gas": 43.22,
+          "v_disk": 243.08,
+          "v_bulge": 134.8,
+          "sb_disk": 97.33,
+          "sb_bulge": 0
+        },
+        {
+          "x": 11.27,
+          "y": 321,
+          "y_err": 11,
+          "v_gas": 45.42,
+          "v_disk": 242.44,
+          "v_bulge": 132.75,
+          "sb_disk": 86.07,
+          "sb_bulge": 0
+        },
+        {
+          "x": 12.31,
+          "y": 323,
+          "y_err": 4.24,
+          "v_gas": 52.25,
+          "v_disk": 237.3,
+          "v_bulge": 127.02,
+          "sb_disk": 60.76,
+          "sb_bulge": 0
+        },
+        {
+          "x": 14.35,
+          "y": 319,
+          "y_err": 4.24,
+          "v_gas": 56.77,
+          "v_disk": 222.06,
+          "v_bulge": 117.64,
+          "sb_disk": 30.36,
+          "sb_bulge": 0
+        },
+        {
+          "x": 16.4,
+          "y": 308,
+          "y_err": 4.24,
+          "v_gas": 51.89,
+          "v_disk": 207.98,
+          "v_bulge": 110.04,
+          "sb_disk": 19.68,
+          "sb_bulge": 0
+        },
+        {
+          "x": 18.48,
+          "y": 299,
+          "y_err": 5.66,
+          "v_gas": 48.35,
+          "v_disk": 196.87,
+          "v_bulge": 103.67,
+          "sb_disk": 11.59,
+          "sb_bulge": 0
+        },
+        {
+          "x": 20.57,
+          "y": 299,
+          "y_err": 5.66,
+          "v_gas": 54.45,
+          "v_disk": 185.72,
+          "v_bulge": 98.26,
+          "sb_disk": 7,
+          "sb_bulge": 0
+        },
+        {
+          "x": 22.51,
+          "y": 298,
+          "y_err": 5.66,
+          "v_gas": 63.61,
+          "v_disk": 176.98,
+          "v_bulge": 93.93,
+          "sb_disk": 4.66,
+          "sb_bulge": 0
+        },
+        {
+          "x": 24.59,
+          "y": 296,
+          "y_err": 5.66,
+          "v_gas": 66.17,
+          "v_disk": 168.93,
+          "v_bulge": 89.87,
+          "sb_disk": 3.04,
+          "sb_bulge": 0
+        },
+        {
+          "x": 26.68,
+          "y": 293,
+          "y_err": 4.24,
+          "v_gas": 61.9,
+          "v_disk": 161.21,
+          "v_bulge": 86.28,
+          "sb_disk": 1.15,
+          "sb_bulge": 0
+        },
+        {
+          "x": 28.77,
+          "y": 289,
+          "y_err": 4.24,
+          "v_gas": 58.85,
+          "v_disk": 153.59,
+          "v_bulge": 83.08,
+          "sb_disk": 0.69,
+          "sb_bulge": 0
+        },
+        {
+          "x": 30.7,
+          "y": 289,
+          "y_err": 4.24,
+          "v_gas": 57.01,
+          "v_disk": 147.56,
+          "v_bulge": 80.43,
+          "sb_disk": 0.41,
+          "sb_bulge": 0
+        },
+        {
+          "x": 32.79,
+          "y": 288,
+          "y_err": 4.24,
+          "v_gas": 57.38,
+          "v_disk": 141.95,
+          "v_bulge": 77.82,
+          "sb_disk": 0.23,
+          "sb_bulge": 0
+        },
+        {
+          "x": 34.88,
+          "y": 285,
+          "y_err": 4.24,
+          "v_gas": 60.43,
+          "v_disk": 136.82,
+          "v_bulge": 75.46,
+          "sb_disk": 0.13,
+          "sb_bulge": 0
+        },
+        {
+          "x": 36.96,
+          "y": 283,
+          "y_err": 2.83,
+          "v_gas": 64.09,
+          "v_disk": 132.38,
+          "v_bulge": 73.3,
+          "sb_disk": 0.07,
+          "sb_bulge": 0
+        },
+        {
+          "x": 38.9,
+          "y": 275,
+          "y_err": 2.83,
+          "v_gas": 66.9,
+          "v_disk": 128.66,
+          "v_bulge": 71.45,
+          "sb_disk": 0.04,
+          "sb_bulge": 0
+        },
+        {
+          "x": 40.99,
+          "y": 272,
+          "y_err": 2.83,
+          "v_gas": 68.61,
+          "v_disk": 124.87,
+          "v_bulge": 69.61,
+          "sb_disk": 0.02,
+          "sb_bulge": 0
+        },
+        {
+          "x": 43.08,
+          "y": 271,
+          "y_err": 2.83,
+          "v_gas": 68.98,
+          "v_disk": 121.52,
+          "v_bulge": 67.9,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 45.16,
+          "y": 274,
+          "y_err": 4.24,
+          "v_gas": 67.76,
+          "v_disk": 118.47,
+          "v_bulge": 66.31,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 47.1,
+          "y": 277,
+          "y_err": 4.24,
+          "v_gas": 65.19,
+          "v_disk": 115.75,
+          "v_bulge": 64.93,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 49.19,
+          "y": 281,
+          "y_err": 4.24,
+          "v_gas": 62.26,
+          "v_disk": 113.11,
+          "v_bulge": 63.54,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 51.27,
+          "y": 286,
+          "y_err": 4.24,
+          "v_gas": 60.55,
+          "v_disk": 110.59,
+          "v_bulge": 62.24,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 53.36,
+          "y": 282,
+          "y_err": 4.24,
+          "v_gas": 60.55,
+          "v_disk": 108.3,
+          "v_bulge": 61.01,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 55.3,
+          "y": 283,
+          "y_err": 4.24,
+          "v_gas": 62.39,
+          "v_disk": 106.31,
+          "v_bulge": 59.93,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 57.38,
+          "y": 288,
+          "y_err": 5.66,
+          "v_gas": 64.95,
+          "v_disk": 104.23,
+          "v_bulge": 58.83,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 59.47,
+          "y": 287,
+          "y_err": 5.66,
+          "v_gas": 67.27,
+          "v_disk": 102.32,
+          "v_bulge": 57.79,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 61.56,
+          "y": 289,
+          "y_err": 7.07,
+          "v_gas": 68.49,
+          "v_disk": 100.51,
+          "v_bulge": 56.8,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 63.64,
+          "y": 294,
+          "y_err": 7.07,
+          "v_gas": 68.73,
+          "v_disk": 98.76,
+          "v_bulge": 55.86,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        }
+      ]
+    },
+    {
+      "galaxy_id": "DDO154",
+      "galaxy": "DDO 154",
+      "dataset": "DDO 154 SPARC Newtonian mass model",
+      "distance_mpc": 4.04,
+      "n_points": 12,
+      "points": [
+        {
+          "x": 0.49,
+          "y": 13.8,
+          "y_err": 1.6,
+          "v_gas": 3.74,
+          "v_disk": 12.31,
+          "v_bulge": 0,
+          "sb_disk": 15.93,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.99,
+          "y": 21.6,
+          "y_err": 0.8,
+          "v_gas": 7.46,
+          "v_disk": 14.55,
+          "v_bulge": 0,
+          "sb_disk": 5.52,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.48,
+          "y": 28.9,
+          "y_err": 0.7,
+          "v_gas": 10.87,
+          "v_disk": 12.95,
+          "v_bulge": 0,
+          "sb_disk": 1.26,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.97,
+          "y": 34.3,
+          "y_err": 0.5,
+          "v_gas": 13.32,
+          "v_disk": 11.54,
+          "v_bulge": 0,
+          "sb_disk": 0.29,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.47,
+          "y": 38.2,
+          "y_err": 0.4,
+          "v_gas": 14.77,
+          "v_disk": 10.18,
+          "v_bulge": 0,
+          "sb_disk": 0.08,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.96,
+          "y": 42,
+          "y_err": 0.2,
+          "v_gas": 16.2,
+          "v_disk": 9.16,
+          "v_bulge": 0,
+          "sb_disk": 0.02,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.46,
+          "y": 44.6,
+          "y_err": 0.2,
+          "v_gas": 17.6,
+          "v_disk": 8.37,
+          "v_bulge": 0,
+          "sb_disk": 0.01,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.95,
+          "y": 46.3,
+          "y_err": 0.2,
+          "v_gas": 17.91,
+          "v_disk": 7.77,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.44,
+          "y": 47.4,
+          "y_err": 0.3,
+          "v_gas": 17.48,
+          "v_disk": 7.29,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.94,
+          "y": 48.2,
+          "y_err": 0.6,
+          "v_gas": 16.93,
+          "v_disk": 6.89,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.43,
+          "y": 47.4,
+          "y_err": 0.7,
+          "v_gas": 16.28,
+          "v_disk": 6.55,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.92,
+          "y": 45.5,
+          "y_err": 1.3,
+          "v_gas": 15.64,
+          "v_disk": 6.26,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        }
+      ]
+    },
+    {
+      "galaxy_id": "IC2574",
+      "galaxy": "IC 2574",
+      "dataset": "IC 2574 SPARC Newtonian mass model",
+      "distance_mpc": 3.91,
+      "n_points": 34,
+      "points": [
+        {
+          "x": 0.85,
+          "y": 10.3,
+          "y_err": 0.2,
+          "v_gas": 0,
+          "v_disk": 9.59,
+          "v_bulge": 0,
+          "sb_disk": 16.75,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.14,
+          "y": 12.9,
+          "y_err": 2.7,
+          "v_gas": 0,
+          "v_disk": 11.99,
+          "v_bulge": 0,
+          "sb_disk": 14.92,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.42,
+          "y": 16.4,
+          "y_err": 1.8,
+          "v_gas": 0.94,
+          "v_disk": 13.83,
+          "v_bulge": 0,
+          "sb_disk": 13.07,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.71,
+          "y": 18.6,
+          "y_err": 2.1,
+          "v_gas": 3.44,
+          "v_disk": 15.27,
+          "v_bulge": 0,
+          "sb_disk": 11.58,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.99,
+          "y": 19.8,
+          "y_err": 2,
+          "v_gas": 5.14,
+          "v_disk": 16.76,
+          "v_bulge": 0,
+          "sb_disk": 10.8,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.28,
+          "y": 26.1,
+          "y_err": 0.6,
+          "v_gas": 5.82,
+          "v_disk": 17.77,
+          "v_bulge": 0,
+          "sb_disk": 9.24,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.55,
+          "y": 27.7,
+          "y_err": 2.7,
+          "v_gas": 6.87,
+          "v_disk": 18.7,
+          "v_bulge": 0,
+          "sb_disk": 8.42,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.84,
+          "y": 29.7,
+          "y_err": 2.6,
+          "v_gas": 7.58,
+          "v_disk": 19.36,
+          "v_bulge": 0,
+          "sb_disk": 7.37,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.13,
+          "y": 33,
+          "y_err": 3.4,
+          "v_gas": 8.21,
+          "v_disk": 19.89,
+          "v_bulge": 0,
+          "sb_disk": 6.93,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.41,
+          "y": 34.8,
+          "y_err": 1.2,
+          "v_gas": 8.78,
+          "v_disk": 20.19,
+          "v_bulge": 0,
+          "sb_disk": 5.88,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.7,
+          "y": 35,
+          "y_err": 0.9,
+          "v_gas": 8.64,
+          "v_disk": 20.15,
+          "v_bulge": 0,
+          "sb_disk": 5.69,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.98,
+          "y": 39,
+          "y_err": 10.2,
+          "v_gas": 7.98,
+          "v_disk": 20.39,
+          "v_bulge": 0,
+          "sb_disk": 5.87,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.26,
+          "y": 35.9,
+          "y_err": 5.4,
+          "v_gas": 7.97,
+          "v_disk": 21.28,
+          "v_bulge": 0,
+          "sb_disk": 6.08,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.55,
+          "y": 40,
+          "y_err": 4.1,
+          "v_gas": 10.01,
+          "v_disk": 22.72,
+          "v_bulge": 0,
+          "sb_disk": 6.5,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.84,
+          "y": 38.7,
+          "y_err": 1.4,
+          "v_gas": 11.42,
+          "v_disk": 24.6,
+          "v_bulge": 0,
+          "sb_disk": 5.76,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.12,
+          "y": 41.8,
+          "y_err": 0.5,
+          "v_gas": 12.67,
+          "v_disk": 25.34,
+          "v_bulge": 0,
+          "sb_disk": 4.6,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.41,
+          "y": 42.9,
+          "y_err": 0.4,
+          "v_gas": 13.13,
+          "v_disk": 25.74,
+          "v_bulge": 0,
+          "sb_disk": 4.3,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.68,
+          "y": 44.4,
+          "y_err": 1.7,
+          "v_gas": 13.93,
+          "v_disk": 26.48,
+          "v_bulge": 0,
+          "sb_disk": 4.03,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.97,
+          "y": 46.1,
+          "y_err": 1.3,
+          "v_gas": 14.5,
+          "v_disk": 27.15,
+          "v_bulge": 0,
+          "sb_disk": 3.42,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.26,
+          "y": 49,
+          "y_err": 0.9,
+          "v_gas": 15.98,
+          "v_disk": 27.39,
+          "v_bulge": 0,
+          "sb_disk": 2.76,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.54,
+          "y": 51.9,
+          "y_err": 0.6,
+          "v_gas": 17.58,
+          "v_disk": 27.31,
+          "v_bulge": 0,
+          "sb_disk": 2.14,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.83,
+          "y": 53.1,
+          "y_err": 2.1,
+          "v_gas": 18.38,
+          "v_disk": 26.75,
+          "v_bulge": 0,
+          "sb_disk": 1.67,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.1,
+          "y": 54,
+          "y_err": 0.5,
+          "v_gas": 19.29,
+          "v_disk": 26.25,
+          "v_bulge": 0,
+          "sb_disk": 1.55,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.39,
+          "y": 55.9,
+          "y_err": 1.1,
+          "v_gas": 19.86,
+          "v_disk": 26.04,
+          "v_bulge": 0,
+          "sb_disk": 1.54,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.68,
+          "y": 58.8,
+          "y_err": 3.6,
+          "v_gas": 21.01,
+          "v_disk": 25.86,
+          "v_bulge": 0,
+          "sb_disk": 1.4,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.96,
+          "y": 57.3,
+          "y_err": 4.6,
+          "v_gas": 21.81,
+          "v_disk": 25.77,
+          "v_bulge": 0,
+          "sb_disk": 1.25,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.25,
+          "y": 54,
+          "y_err": 9,
+          "v_gas": 22.49,
+          "v_disk": 25.57,
+          "v_bulge": 0,
+          "sb_disk": 1.12,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.52,
+          "y": 63.8,
+          "y_err": 12,
+          "v_gas": 22.38,
+          "v_disk": 25.47,
+          "v_bulge": 0,
+          "sb_disk": 1.02,
+          "sb_bulge": 0
+        },
+        {
+          "x": 8.81,
+          "y": 60.5,
+          "y_err": 6.2,
+          "v_gas": 22.6,
+          "v_disk": 25.41,
+          "v_bulge": 0,
+          "sb_disk": 0.92,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.1,
+          "y": 61,
+          "y_err": 5.7,
+          "v_gas": 22.95,
+          "v_disk": 25.38,
+          "v_bulge": 0,
+          "sb_disk": 0.83,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.38,
+          "y": 66,
+          "y_err": 1.3,
+          "v_gas": 23.63,
+          "v_disk": 25.51,
+          "v_bulge": 0,
+          "sb_disk": 0.75,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.67,
+          "y": 65.2,
+          "y_err": 3.4,
+          "v_gas": 24.89,
+          "v_disk": 25.74,
+          "v_bulge": 0,
+          "sb_disk": 0.67,
+          "sb_bulge": 0
+        },
+        {
+          "x": 9.96,
+          "y": 67.1,
+          "y_err": 4.7,
+          "v_gas": 25.8,
+          "v_disk": 24.84,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        },
+        {
+          "x": 10.23,
+          "y": 67.5,
+          "y_err": 9.3,
+          "v_gas": 27.17,
+          "v_disk": 23.97,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        }
+      ]
+    },
+    {
+      "galaxy_id": "NGC7793",
+      "galaxy": "NGC 7793",
+      "dataset": "NGC 7793 SPARC Newtonian mass model",
+      "distance_mpc": 3.61,
+      "n_points": 46,
+      "points": [
+        {
+          "x": 0.11,
+          "y": 9.1,
+          "y_err": 8.5,
+          "v_gas": 0.65,
+          "v_disk": 27.23,
+          "v_bulge": 0,
+          "sb_disk": 1208.98,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.14,
+          "y": 17.6,
+          "y_err": 7.4,
+          "v_gas": 0.65,
+          "v_disk": 29.91,
+          "v_bulge": 0,
+          "sb_disk": 1005.64,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.17,
+          "y": 19.3,
+          "y_err": 7.4,
+          "v_gas": 0.65,
+          "v_disk": 32.32,
+          "v_bulge": 0,
+          "sb_disk": 927.7,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.21,
+          "y": 24.8,
+          "y_err": 6.4,
+          "v_gas": 0.65,
+          "v_disk": 35.62,
+          "v_bulge": 0,
+          "sb_disk": 855.59,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.24,
+          "y": 30,
+          "y_err": 7.2,
+          "v_gas": 0.74,
+          "v_disk": 37.98,
+          "v_bulge": 0,
+          "sb_disk": 779.54,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.28,
+          "y": 35,
+          "y_err": 7.3,
+          "v_gas": 0.9,
+          "v_disk": 40.67,
+          "v_bulge": 0,
+          "sb_disk": 719.48,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.32,
+          "y": 38.3,
+          "y_err": 7.6,
+          "v_gas": 1.05,
+          "v_disk": 43.2,
+          "v_bulge": 0,
+          "sb_disk": 673.21,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.35,
+          "y": 42.7,
+          "y_err": 8.8,
+          "v_gas": 1.21,
+          "v_disk": 45.04,
+          "v_bulge": 0,
+          "sb_disk": 639.89,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.39,
+          "y": 47,
+          "y_err": 5.3,
+          "v_gas": 1.36,
+          "v_disk": 47.33,
+          "v_bulge": 0,
+          "sb_disk": 592.88,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.42,
+          "y": 49.8,
+          "y_err": 5.6,
+          "v_gas": 1.52,
+          "v_disk": 48.89,
+          "v_bulge": 0,
+          "sb_disk": 570.71,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.46,
+          "y": 52.2,
+          "y_err": 6.2,
+          "v_gas": 1.67,
+          "v_disk": 51,
+          "v_bulge": 0,
+          "sb_disk": 547.08,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.49,
+          "y": 53.4,
+          "y_err": 6.3,
+          "v_gas": 1.83,
+          "v_disk": 52.6,
+          "v_bulge": 0,
+          "sb_disk": 532.24,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.53,
+          "y": 54.6,
+          "y_err": 5.9,
+          "v_gas": 1.99,
+          "v_disk": 54.8,
+          "v_bulge": 0,
+          "sb_disk": 510.29,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.56,
+          "y": 55.5,
+          "y_err": 6.9,
+          "v_gas": 2.12,
+          "v_disk": 56.23,
+          "v_bulge": 0,
+          "sb_disk": 470.53,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.6,
+          "y": 55.9,
+          "y_err": 7.5,
+          "v_gas": 2.23,
+          "v_disk": 57.57,
+          "v_bulge": 0,
+          "sb_disk": 435.19,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.63,
+          "y": 58.3,
+          "y_err": 7.4,
+          "v_gas": 2.35,
+          "v_disk": 58.53,
+          "v_bulge": 0,
+          "sb_disk": 427.73,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.66,
+          "y": 59.3,
+          "y_err": 6.3,
+          "v_gas": 2.47,
+          "v_disk": 59.59,
+          "v_bulge": 0,
+          "sb_disk": 418.4,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.7,
+          "y": 59.5,
+          "y_err": 6.7,
+          "v_gas": 2.59,
+          "v_disk": 61.08,
+          "v_bulge": 0,
+          "sb_disk": 407.7,
+          "sb_bulge": 0
+        },
+        {
+          "x": 0.87,
+          "y": 59.1,
+          "y_err": 5.1,
+          "v_gas": 3.18,
+          "v_disk": 66.09,
+          "v_bulge": 0,
+          "sb_disk": 332.63,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.05,
+          "y": 62.6,
+          "y_err": 5.5,
+          "v_gas": 3.96,
+          "v_disk": 69.65,
+          "v_bulge": 0,
+          "sb_disk": 278.38,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.22,
+          "y": 65.6,
+          "y_err": 4.8,
+          "v_gas": 5.5,
+          "v_disk": 72.34,
+          "v_bulge": 0,
+          "sb_disk": 246.3,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.4,
+          "y": 70.7,
+          "y_err": 4.6,
+          "v_gas": 7.05,
+          "v_disk": 75.45,
+          "v_bulge": 0,
+          "sb_disk": 231.32,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.57,
+          "y": 73.9,
+          "y_err": 4,
+          "v_gas": 8.58,
+          "v_disk": 78.94,
+          "v_bulge": 0,
+          "sb_disk": 213.33,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.75,
+          "y": 78.5,
+          "y_err": 4.2,
+          "v_gas": 10.09,
+          "v_disk": 82.71,
+          "v_bulge": 0,
+          "sb_disk": 201.89,
+          "sb_bulge": 0
+        },
+        {
+          "x": 1.92,
+          "y": 82.4,
+          "y_err": 4.6,
+          "v_gas": 11.55,
+          "v_disk": 87.55,
+          "v_bulge": 0,
+          "sb_disk": 189.35,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.1,
+          "y": 87.1,
+          "y_err": 4.9,
+          "v_gas": 13.06,
+          "v_disk": 92.38,
+          "v_bulge": 0,
+          "sb_disk": 166.62,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.27,
+          "y": 89.6,
+          "y_err": 5.4,
+          "v_gas": 14.78,
+          "v_disk": 95.96,
+          "v_bulge": 0,
+          "sb_disk": 136.43,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.45,
+          "y": 94.9,
+          "y_err": 5.7,
+          "v_gas": 16.4,
+          "v_disk": 96.45,
+          "v_bulge": 0,
+          "sb_disk": 101.1,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.62,
+          "y": 98.1,
+          "y_err": 5,
+          "v_gas": 18.13,
+          "v_disk": 95.98,
+          "v_bulge": 0,
+          "sb_disk": 91.89,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.79,
+          "y": 99.3,
+          "y_err": 5.7,
+          "v_gas": 20.29,
+          "v_disk": 96.23,
+          "v_bulge": 0,
+          "sb_disk": 81.24,
+          "sb_bulge": 0
+        },
+        {
+          "x": 2.97,
+          "y": 98.6,
+          "y_err": 7.2,
+          "v_gas": 22.34,
+          "v_disk": 96.64,
+          "v_bulge": 0,
+          "sb_disk": 70.11,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.16,
+          "y": 101,
+          "y_err": 8.7,
+          "v_gas": 24.5,
+          "v_disk": 96.45,
+          "v_bulge": 0,
+          "sb_disk": 55.69,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.33,
+          "y": 103,
+          "y_err": 9.4,
+          "v_gas": 26.22,
+          "v_disk": 95.51,
+          "v_bulge": 0,
+          "sb_disk": 46.58,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.51,
+          "y": 107,
+          "y_err": 9.1,
+          "v_gas": 27.95,
+          "v_disk": 94.38,
+          "v_bulge": 0,
+          "sb_disk": 39.61,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.68,
+          "y": 114,
+          "y_err": 7.4,
+          "v_gas": 29.68,
+          "v_disk": 93.3,
+          "v_bulge": 0,
+          "sb_disk": 34.08,
+          "sb_bulge": 0
+        },
+        {
+          "x": 3.85,
+          "y": 112,
+          "y_err": 8.1,
+          "v_gas": 29.78,
+          "v_disk": 92.28,
+          "v_bulge": 0,
+          "sb_disk": 29.83,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.03,
+          "y": 114,
+          "y_err": 7.6,
+          "v_gas": 30,
+          "v_disk": 91.15,
+          "v_bulge": 0,
+          "sb_disk": 24.84,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.2,
+          "y": 116,
+          "y_err": 7.2,
+          "v_gas": 30.11,
+          "v_disk": 89.82,
+          "v_bulge": 0,
+          "sb_disk": 20.34,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.38,
+          "y": 114,
+          "y_err": 7.8,
+          "v_gas": 30.65,
+          "v_disk": 88.18,
+          "v_bulge": 0,
+          "sb_disk": 17.27,
+          "sb_bulge": 0
+        },
+        {
+          "x": 4.73,
+          "y": 114,
+          "y_err": 11.4,
+          "v_gas": 31.83,
+          "v_disk": 85.52,
+          "v_bulge": 0,
+          "sb_disk": 14.11,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.25,
+          "y": 109,
+          "y_err": 9.9,
+          "v_gas": 33.35,
+          "v_disk": 82.4,
+          "v_bulge": 0,
+          "sb_disk": 8.84,
+          "sb_bulge": 0
+        },
+        {
+          "x": 5.78,
+          "y": 107,
+          "y_err": 12.6,
+          "v_gas": 34.64,
+          "v_disk": 77.56,
+          "v_bulge": 0,
+          "sb_disk": 3.77,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.3,
+          "y": 105,
+          "y_err": 12.5,
+          "v_gas": 34.75,
+          "v_disk": 74.17,
+          "v_bulge": 0,
+          "sb_disk": 4.92,
+          "sb_bulge": 0
+        },
+        {
+          "x": 6.82,
+          "y": 101,
+          "y_err": 5.2,
+          "v_gas": 33.99,
+          "v_disk": 71.94,
+          "v_bulge": 0,
+          "sb_disk": 2.59,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.35,
+          "y": 94.5,
+          "y_err": 4.6,
+          "v_gas": 32.7,
+          "v_disk": 69.09,
+          "v_bulge": 0,
+          "sb_disk": 1.7,
+          "sb_bulge": 0
+        },
+        {
+          "x": 7.87,
+          "y": 90.8,
+          "y_err": 6.1,
+          "v_gas": 30.97,
+          "v_disk": 66.92,
+          "v_bulge": 0,
+          "sb_disk": 0,
+          "sb_bulge": 0
+        }
+      ]
+    }
+  ]
+}
