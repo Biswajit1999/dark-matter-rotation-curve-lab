@@ -19,12 +19,14 @@ not establish.
 6. all three halo families return finite series and one standardised residual
    per observation for every selected galaxy;
 7. the page exposes a skip link, chart descriptions, a data table and reduced
-   motion styling.
+   motion styling;
+8. posterior sampling stays inside explicit priors, uses a deterministic seed
+   and reports split-R-hat, effective sample size and acceptance diagnostics.
 
 ## Guarantees requiring future work
 
 The current tests do not validate distance or inclination marginalisation,
-correlated systematics, posterior calibration, evidence estimation, population
+correlated systematics, posterior calibration or predictive coverage, evidence estimation, population
 selection or agreement with an independent fitting package. The ten systems
 are an intentionally varied demonstration set, not a statistically complete
 sample. Grid minimisation

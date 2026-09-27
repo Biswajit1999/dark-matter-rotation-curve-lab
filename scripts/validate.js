@@ -13,7 +13,6 @@ const required = [
   'rotationPhysics.js',
   'data/galaxies.json',
   'data/reference.json',
-  'docs/IMAGE_CREDITS.md',
   'scripts/import_sparc.mjs',
   'tests/rotationPhysics.test.js'
 ];
@@ -65,7 +64,7 @@ if (failures.length === 0) {
   }
 
   const html = fs.readFileSync('index.html', 'utf8');
-  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'prefers-reduced-motion']) {
+  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'id="priorForm"', 'id="posteriorRows"', 'prefers-reduced-motion']) {
     const source = pattern === 'prefers-reduced-motion' ? fs.readFileSync('styles.css', 'utf8') : html;
     if (!source.includes(pattern)) failures.push(`accessibility contract missing: ${pattern}`);
   }

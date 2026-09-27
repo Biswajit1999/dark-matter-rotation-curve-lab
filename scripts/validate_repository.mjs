@@ -7,7 +7,7 @@ const physics = fs.readFileSync('rotationPhysics.js', 'utf8');
 const worker = fs.readFileSync('physicsWorker.js', 'utf8');
 const application = fs.readFileSync('app.js', 'utf8');
 
-for (const functionName of ['pseudoIsothermalVelocity', 'nfwVelocity', 'burkertVelocity', 'weightedStatistics', 'gridFit']) {
+for (const functionName of ['pseudoIsothermalVelocity', 'nfwVelocity', 'burkertVelocity', 'weightedStatistics', 'gridFit', 'samplePosterior']) {
   if (!physics.includes(`function ${functionName}`)) failures.push(`physics contract missing ${functionName}`);
 }
 if (!worker.includes("importScripts('rotationPhysics.js')")) failures.push('worker must load the tested shared physics module');
@@ -17,6 +17,7 @@ if (!application.includes('standardised residuals') && !fs.readFileSync('index.h
 if (!reference.provenance?.transformations?.includes('No interpolation or fitting')) failures.push('data transformations are not explicit');
 if (reference.points.some(point => !Object.hasOwn(point, 'v_gas') || !Object.hasOwn(point, 'v_disk'))) failures.push('published baryonic components are missing');
 if (catalog.galaxies?.length !== 10 || catalog.total_points !== 411) failures.push('multi-galaxy SPARC catalogue is incomplete');
+if (!application.includes('posteriorPriors') || !application.includes('exportPosterior')) failures.push('Bayesian workspace controls or export are missing');
 for (const galaxy of catalog.galaxies || []) {
   if (galaxy.points.some(point => !Object.hasOwn(point, 'v_gas') || !Object.hasOwn(point, 'v_disk'))) failures.push(`${galaxy.galaxy_id} baryonic components are missing`);
 }
@@ -26,4 +27,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('Dark Matter Evidence Lab: research contracts passed for 3 halo models and 411 measurements across 10 SPARC galaxies.');
+console.log('Dark Matter Evidence Lab: research contracts passed for 3 halo models, 411 measurements and deterministic posterior sampling.');

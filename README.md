@@ -41,6 +41,25 @@ active application now:
   Chandra, Planck and Rubin products stored in the repository;
 - adds a 2026–2076 capability roadmap with explicit validation gates and labels
   its later stages as conditional research directions, not mission forecasts.
+- provides explicit uniform prior bounds, deterministic adaptive Metropolis
+  chains, 68% credible intervals, split-R-hat, effective sample size, parameter
+  covariance visualisation and downloadable posterior samples.
+
+## Development phases
+
+| Phase | Scope | Status |
+|---|---|---|
+| A | Scientific correctness and repository cleanup | Complete |
+| B | SPARC multi-galaxy laboratory | Complete |
+| C | Bayesian inference workspace | Complete |
+| D | Multiwavelength and archive infrastructure | Next |
+| E | Dwarf dynamics, lensing and X-ray laboratories | Pending |
+| F | CMB, particle-search and future-sensitivity laboratories | Pending |
+| G | Publication mode, educator material and public release | Pending |
+
+Overview imagery does not count as completion of a scientific module. A phase
+is marked complete only when its data, computation, provenance, interface and
+tests are implemented.
 
 ## Run locally
 
@@ -118,6 +137,21 @@ That independence assumption is explicit: the current release does not claim
 to model covariance, distance uncertainty, inclination uncertainty or stellar
 population uncertainty beyond the interactive disc mass-to-light ratio.
 
+## Bayesian workspace
+
+Phase C adds four deterministic adaptive Metropolis chains for the disc
+mass-to-light ratio, halo velocity scale and halo radius. The browser exposes
+all prior bounds and records the sampler configuration and seed. Proposal
+covariance is adapted only during warm-up; retained draws are not used to tune
+the sampler. The interface reports median and 16th/84th percentiles, split
+R-hat, an autocorrelation-based effective sample-size estimate and acceptance
+rate. Samples can be exported as CSV with chain and draw identifiers.
+
+This is a transparent teaching and diagnostic implementation, not a substitute
+for a peer-reviewed inference workflow. Scientific publication should confirm
+results with a maintained inference package and include prior-sensitivity,
+synthetic-coverage and posterior-predictive tests.
+
 ## Validate
 
 ```bash
@@ -141,7 +175,6 @@ observations across the ten selected systems.
 | `data/galaxies.json` | Ten-galaxy SPARC catalogue with 411 observations |
 | `data/reference.json` | NGC 3198 compatibility fixture |
 | `assets/observations/` | Real Hubble, Chandra/Webb, Planck and Rubin imagery |
-| `docs/IMAGE_CREDITS.md` | Image source, credit and reuse ledger |
 | `scripts/import_sparc.mjs` | Checksum-pinned SPARC ingestion |
 | `tests/rotationPhysics.test.js` | Analytic, data and finite-output tests |
 
@@ -156,8 +189,9 @@ observations across the ten selected systems.
 - Rotation curves constrain the gravitational field. They do not establish
   the microscopic identity of dark matter.
 
-See [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md) for the validation contract and
-[docs/IMAGE_CREDITS.md](docs/IMAGE_CREDITS.md) for the media provenance ledger.
+See [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md) for the validation contract.
+Image credits and primary-source links are displayed directly beneath every
+image in the application.
 
 ## References
 

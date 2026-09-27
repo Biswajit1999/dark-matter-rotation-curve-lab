@@ -150,10 +150,10 @@
     }));
     return {
       series: [
-        { id: 'total', name: 'Total model', x: radii, y: components.map(value => value.total), color: '#f3f7ff', dash: [] },
-        { id: 'gas', name: 'SPARC gas', x: radii, y: components.map(value => value.gas), color: '#4cc9f0', dash: [8, 5] },
-        { id: 'disk', name: 'SPARC stellar disc', x: radii, y: components.map(value => value.disk), color: '#f9c74f', dash: [3, 4] },
-        { id: 'halo', name: `${params.haloModel.toUpperCase()} halo`, x: radii, y: components.map(value => value.halo), color: '#b58cff', dash: [12, 5] }
+        { id: 'total', name: 'Total model', x: radii, y: components.map(value => value.total), color: '#f4f7fb', dash: [] },
+        { id: 'gas', name: 'SPARC gas', x: radii, y: components.map(value => value.gas), color: '#54b8ea', dash: [8, 5] },
+        { id: 'disk', name: 'SPARC stellar disc', x: radii, y: components.map(value => value.disk), color: '#ffd166', dash: [3, 4] },
+        { id: 'halo', name: `${params.haloModel.toUpperCase()} halo`, x: radii, y: components.map(value => value.halo), color: '#b1a7ff', dash: [12, 5] }
       ],
       observed,
       residuals: statistics.residuals,
@@ -188,6 +188,226 @@
     return { params: best.params, result: evaluate(best.params, reference, true) };
   }
 
+  function seededRandom(seed) {
+    let state = Number(seed) >>> 0;
+    return function nextRandom() {
+      state += 0x6D2B79F5;
+      let value = state;
+      value = Math.imul(value ^ (value >>> 15), value | 1);
+      value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+      return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function normalRandom(random) {
+    const first = Math.max(random(), 1e-12);
+    const second = random();
+    return Math.sqrt(-2 * Math.log(first)) * Math.cos(2 * Math.PI * second);
+  }
+
+  function quantile(values, probability) {
+    const sorted = [...values].sort((left, right) => left - right);
+    const position = (sorted.length - 1) * probability;
+    const lower = Math.floor(position);
+    const fraction = position - lower;
+    return sorted[lower] + (sorted[Math.min(lower + 1, sorted.length - 1)] - sorted[lower]) * fraction;
+  }
+
+  function sampleVariance(values) {
+    if (values.length < 2) return 0;
+    const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+    return values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / (values.length - 1);
+  }
+
+  function splitRhat(chains, key) {
+    const split = chains.flatMap(chain => {
+      const half = Math.floor(chain.length / 2);
+      return [chain.slice(0, half), chain.slice(chain.length - half)];
+    });
+    const length = Math.min(...split.map(chain => chain.length));
+    const series = split.map(chain => chain.slice(0, length).map(sample => sample[key]));
+    const means = series.map(values => values.reduce((sum, value) => sum + value, 0) / length);
+    const within = series.reduce((sum, values) => sum + sampleVariance(values), 0) / series.length;
+    if (within <= 0) return 1;
+    const between = length * sampleVariance(means);
+    const variance = ((length - 1) / length) * within + between / length;
+    return Math.sqrt(variance / within);
+  }
+
+  function effectiveSampleSize(chains, key) {
+    const series = chains.map(chain => chain.map(sample => sample[key]));
+    const length = Math.min(...series.map(values => values.length));
+    const chainMeans = series.map(values => values.slice(0, length).reduce((sum, value) => sum + value, 0) / length);
+    const variances = series.map(values => sampleVariance(values.slice(0, length)));
+    let correlationSum = 0;
+    for (let lag = 1; lag <= Math.min(60, length - 2); lag += 1) {
+      let covariance = 0;
+      let variance = 0;
+      for (let chainIndex = 0; chainIndex < series.length; chainIndex += 1) {
+        const values = series[chainIndex];
+        const mean = chainMeans[chainIndex];
+        for (let index = 0; index < length - lag; index += 1) {
+          covariance += (values[index] - mean) * (values[index + lag] - mean);
+        }
+        variance += Math.max(variances[chainIndex], 1e-20) * (length - lag);
+      }
+      const correlation = covariance / variance;
+      if (!Number.isFinite(correlation) || correlation <= 0) break;
+      correlationSum += correlation;
+    }
+    return Math.min(series.length * length, (series.length * length) / (1 + 2 * correlationSum));
+  }
+
+  function empiricalCovariance(samples, keys, ranges) {
+    const means = keys.map(key => samples.reduce((sum, sample) => sum + sample[key], 0) / samples.length);
+    return keys.map((leftKey, leftIndex) => keys.map((rightKey, rightIndex) => {
+      const covariance = samples.reduce((sum, sample) => (
+        sum + (sample[leftKey] - means[leftIndex]) * (sample[rightKey] - means[rightIndex])
+      ), 0) / Math.max(1, samples.length - 1);
+      return covariance + (leftIndex === rightIndex ? ranges[leftKey] ** 2 * 1e-9 : 0);
+    }));
+  }
+
+  function cholesky3(matrix) {
+    const lower = Array.from({ length: 3 }, () => Array(3).fill(0));
+    for (let row = 0; row < 3; row += 1) {
+      for (let column = 0; column <= row; column += 1) {
+        let sum = matrix[row][column];
+        for (let index = 0; index < column; index += 1) sum -= lower[row][index] * lower[column][index];
+        if (row === column) {
+          if (sum <= 0 || !Number.isFinite(sum)) return null;
+          lower[row][column] = Math.sqrt(sum);
+        } else {
+          lower[row][column] = sum / lower[column][column];
+        }
+      }
+    }
+    return lower;
+  }
+
+  function samplePosterior(params, reference, options = {}) {
+    const keys = ['massToLightDisk', 'haloVelocity', 'haloScale'];
+    const defaultPriors = {
+      massToLightDisk: [0.1, 1],
+      haloVelocity: [40, 320],
+      haloScale: [0.5, 25]
+    };
+    const priors = Object.fromEntries(keys.map(key => {
+      const bounds = options.priors?.[key] || defaultPriors[key];
+      const minimum = Number(bounds[0]);
+      const maximum = Number(bounds[1]);
+      if (!Number.isFinite(minimum) || !Number.isFinite(maximum) || minimum >= maximum) {
+        throw new Error(`Invalid prior bounds for ${key}.`);
+      }
+      return [key, [minimum, maximum]];
+    }));
+    const chainCount = clamp(Math.round(Number(options.chainCount) || 4), 2, 8);
+    const iterations = clamp(Math.round(Number(options.iterations) || 2600), 800, 12000);
+    const burnIn = clamp(Math.round(Number(options.burnIn) || 1000), 200, iterations - 200);
+    const thin = clamp(Math.round(Number(options.thin) || 3), 1, 20);
+    const seed = Number(options.seed) || 20260927;
+    const random = seededRandom(seed);
+    const fitted = gridFit(params, reference).params;
+    const ranges = Object.fromEntries(keys.map(key => [key, priors[key][1] - priors[key][0]]));
+    const chains = [];
+    const acceptanceRates = [];
+
+    const logPosterior = candidate => {
+      for (const key of keys) {
+        if (candidate[key] < priors[key][0] || candidate[key] > priors[key][1]) return -Infinity;
+      }
+      return -0.5 * weightedStatistics(candidate, reference.points).chiSquared;
+    };
+
+    for (let chainIndex = 0; chainIndex < chainCount; chainIndex += 1) {
+      let current = { ...fitted };
+      for (const [index, key] of keys.entries()) {
+        const offset = (chainIndex - (chainCount - 1) / 2) * 0.006 * ranges[key] * (index % 2 ? -1 : 1);
+        current[key] = clamp(current[key] + offset, priors[key][0], priors[key][1]);
+      }
+      let currentLogPosterior = logPosterior(current);
+      const steps = Object.fromEntries(keys.map(key => [key, ranges[key] * 0.018]));
+      const retained = [];
+      const adaptationHistory = [];
+      let covarianceFactor = null;
+      let proposalScale = 2.38 / Math.sqrt(keys.length);
+      let accepted = 0;
+      let windowAccepted = 0;
+
+      for (let iteration = 0; iteration < iterations; iteration += 1) {
+        const proposal = { ...current };
+        if (covarianceFactor) {
+          const normals = keys.map(() => normalRandom(random));
+          keys.forEach((key, row) => {
+            let delta = 0;
+            for (let column = 0; column <= row; column += 1) delta += covarianceFactor[row][column] * normals[column];
+            proposal[key] += proposalScale * delta;
+          });
+        } else {
+          for (const key of keys) proposal[key] += normalRandom(random) * steps[key];
+        }
+        const proposalLogPosterior = logPosterior(proposal);
+        if (Math.log(Math.max(random(), 1e-12)) < proposalLogPosterior - currentLogPosterior) {
+          current = proposal;
+          currentLogPosterior = proposalLogPosterior;
+          accepted += 1;
+          windowAccepted += 1;
+        }
+        if (iteration < burnIn) adaptationHistory.push(Object.fromEntries(keys.map(key => [key, current[key]])));
+        if (iteration < burnIn && (iteration + 1) % 100 === 0) {
+          const rate = windowAccepted / 100;
+          const adjustment = rate < 0.17 ? 0.78 : rate > 0.4 ? 1.22 : 1;
+          if (covarianceFactor) proposalScale *= adjustment;
+          else for (const key of keys) steps[key] *= adjustment;
+          if (iteration >= 299) {
+            const recent = adaptationHistory.slice(-Math.min(1200, adaptationHistory.length));
+            covarianceFactor = cholesky3(empiricalCovariance(recent, keys, ranges)) || covarianceFactor;
+          }
+          windowAccepted = 0;
+        }
+        if (iteration >= burnIn && (iteration - burnIn) % thin === 0) {
+          retained.push(Object.fromEntries(keys.map(key => [key, current[key]])));
+        }
+      }
+      chains.push(retained);
+      acceptanceRates.push(accepted / iterations);
+    }
+
+    const samples = chains.flat();
+    const summaries = Object.fromEntries(keys.map(key => {
+      const values = samples.map(sample => sample[key]);
+      return [key, {
+        q16: quantile(values, 0.16),
+        median: quantile(values, 0.5),
+        q84: quantile(values, 0.84),
+        rhat: splitRhat(chains, key),
+        ess: effectiveSampleSize(chains, key)
+      }];
+    }));
+    const posteriorParams = {
+      ...params,
+      ...Object.fromEntries(keys.map(key => [key, summaries[key].median]))
+    };
+    return {
+      params: posteriorParams,
+      result: evaluate(posteriorParams, reference, true),
+      posterior: {
+        parameterKeys: keys,
+        priors,
+        chains,
+        samples,
+        summaries,
+        diagnostics: {
+          acceptanceRates,
+          meanAcceptance: acceptanceRates.reduce((sum, value) => sum + value, 0) / acceptanceRates.length,
+          maxRhat: Math.max(...keys.map(key => summaries[key].rhat)),
+          minEss: Math.min(...keys.map(key => summaries[key].ess))
+        },
+        config: { chainCount, iterations, burnIn, thin, seed }
+      }
+    };
+  }
+
   return {
     burkertVelocity,
     componentsAt,
@@ -196,6 +416,7 @@
     haloVelocity,
     nfwVelocity,
     pseudoIsothermalVelocity,
+    samplePosterior,
     signedSquare,
     weightedStatistics
   };

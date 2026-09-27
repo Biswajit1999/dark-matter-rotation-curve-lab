@@ -68,3 +68,26 @@ test('all selected galaxies produce finite evaluations for every halo family', (
     }
   }
 });
+
+test('deterministic posterior sampling respects priors and reports diagnostics', () => {
+  const posterior = physics.samplePosterior(defaultParams, reference, {
+    priors: {
+      massToLightDisk: [0.2, 0.9],
+      haloVelocity: [80, 220],
+      haloScale: [0.5, 12]
+    },
+    chainCount: 4,
+    iterations: 1200,
+    burnIn: 400,
+    thin: 2,
+    seed: 42
+  }).posterior;
+  assert.equal(posterior.chains.length, 4);
+  assert.equal(posterior.samples.length, 1600);
+  assert.ok(posterior.samples.every(sample => sample.massToLightDisk >= 0.2 && sample.massToLightDisk <= 0.9));
+  assert.ok(posterior.samples.every(sample => sample.haloVelocity >= 80 && sample.haloVelocity <= 220));
+  assert.ok(posterior.samples.every(sample => sample.haloScale >= 0.5 && sample.haloScale <= 12));
+  assert.ok(Number.isFinite(posterior.diagnostics.maxRhat));
+  assert.ok(Number.isFinite(posterior.diagnostics.minEss));
+  assert.ok(posterior.diagnostics.meanAcceptance > 0 && posterior.diagnostics.meanAcceptance < 1);
+});

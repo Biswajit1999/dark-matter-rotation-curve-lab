@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Explore published SPARC rotation curves across ten galaxies, cluster lensing, cosmology and the technology roadmap for identifying dark matter.">
-  <meta name="theme-color" content="#0b1018">
+  <meta name="theme-color" content="#07111f">
   <title>Dark Matter Evidence Lab — Galaxies to Detectors</title>
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -45,7 +45,7 @@
             <span class="evidence-tag">Merging cluster · lensing + X-ray</span>
             <strong>Bullet Cluster: mass and hot gas separate</strong>
             <p>Blue maps the lensing-derived mass distribution; pink maps X-ray-emitting gas. Dashed circles locate the two colliding galaxy clusters.</p>
-            <a href="https://chandra.harvard.edu/photo/2025/bullet/more.html" target="_blank" rel="noopener noreferrer">NASA/CXC/SAO · NASA/ESA/CSA/STScI source</a>
+            <a href="https://chandra.harvard.edu/photo/2025/bullet/more.html" target="_blank" rel="noopener noreferrer">Credit: X-ray NASA/CXC/SAO · NIR NASA/ESA/CSA/STScI · processing NASA/STScI/J. DePasquale</a>
           </figcaption>
         </figure>
 
@@ -55,7 +55,7 @@
             <span class="evidence-tag">Galaxy · visible structure</span>
             <strong>M51 through Hubble</strong>
             <p>A real spiral galaxy used as visual context. The selectable rotation curves below come from the SPARC catalogue, not this photograph.</p>
-            <a href="https://science.nasa.gov/image-detail/hubble_m51/" target="_blank" rel="noopener noreferrer">NASA/ESA/Hubble source</a>
+            <a href="https://science.nasa.gov/image-detail/hubble_m51/" target="_blank" rel="noopener noreferrer">Credit: NASA, ESA, S. Beckwith (STScI) and Hubble Heritage Team (STScI/AURA)</a>
           </figcaption>
         </figure>
 
@@ -65,7 +65,7 @@
             <span class="evidence-tag">Cosmology · early universe</span>
             <strong>Planck’s microwave sky</strong>
             <p>Temperature fluctuations constrain the universe’s matter content and the growth conditions for later cosmic structure.</p>
-            <a href="https://www.esa.int/ESA_Multimedia/Images/2019/06/The_CMB_temperature_on_large_angular_scales" target="_blank" rel="noopener noreferrer">ESA/Planck Collaboration source</a>
+            <a href="https://www.esa.int/ESA_Multimedia/Images/2019/06/The_CMB_temperature_on_large_angular_scales" target="_blank" rel="noopener noreferrer">Credit: ESA/Planck Collaboration</a>
           </figcaption>
         </figure>
 
@@ -75,11 +75,11 @@
             <span class="evidence-tag">Technology · wide-field survey</span>
             <strong>Rubin’s 3.2-gigapixel eye</strong>
             <p>Wide, repeated imaging lets researchers map enormous galaxy populations and test small gravitational distortions statistically.</p>
-            <a href="https://rubinobservatory.org/explore/how-rubin-works/technology/camera" target="_blank" rel="noopener noreferrer">NSF–DOE Rubin Observatory source</a>
+            <a href="https://rubinobservatory.org/explore/how-rubin-works/technology/camera" target="_blank" rel="noopener noreferrer">Credit: Olivier Bonin/SLAC National Accelerator Laboratory</a>
           </figcaption>
         </figure>
       </div>
-      <p class="image-credit-note">Every image is a real mission or observatory product. Full credits, source files and reuse notes are recorded in <a href="docs/IMAGE_CREDITS.md">IMAGE_CREDITS.md</a>.</p>
+      <p class="image-credit-note">Every image is a real mission or observatory product. Full credits and primary-source links appear directly on each image.</p>
     </section>
 
     <section class="workbench-heading" aria-labelledby="workbench-title">
@@ -218,6 +218,74 @@
         <div><span>Transform</span><strong>Selection and column renaming only</strong></div>
       </div>
       <p id="notes" class="citation-note"></p>
+    </section>
+
+    <section class="inference-section" aria-labelledby="inference-title">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">Phase C · Bayesian inference</p>
+          <h2 id="inference-title">Posterior workspace</h2>
+        </div>
+        <p>Set explicit uniform priors, run four deterministic Metropolis chains and inspect credible intervals and convergence before interpreting a fitted halo.</p>
+      </div>
+      <div class="inference-layout">
+        <form class="prior-panel" id="priorForm">
+          <div class="prior-heading">
+            <h3>Uniform prior bounds</h3>
+            <span>minimum → maximum</span>
+          </div>
+          <div class="prior-grid">
+            <fieldset>
+              <legend>Disc M/L</legend>
+              <label for="priorMlMin">Minimum</label>
+              <input id="priorMlMin" type="number" min="0.01" max="1.49" step="0.01" value="0.1">
+              <label for="priorMlMax">Maximum</label>
+              <input id="priorMlMax" type="number" min="0.02" max="1.5" step="0.01" value="1">
+            </fieldset>
+            <fieldset>
+              <legend>Halo velocity (km/s)</legend>
+              <label for="priorVelocityMin">Minimum</label>
+              <input id="priorVelocityMin" type="number" min="10" max="490" step="5" value="40">
+              <label for="priorVelocityMax">Maximum</label>
+              <input id="priorVelocityMax" type="number" min="20" max="500" step="5" value="320">
+            </fieldset>
+            <fieldset>
+              <legend>Scale radius (kpc)</legend>
+              <label for="priorScaleMin">Minimum</label>
+              <input id="priorScaleMin" type="number" min="0.05" max="49" step="0.05" value="0.5">
+              <label for="priorScaleMax">Maximum</label>
+              <input id="priorScaleMax" type="number" min="0.1" max="50" step="0.1" value="25">
+            </fieldset>
+          </div>
+          <div class="inference-actions">
+            <button id="runPosterior" class="primary-button" type="submit">Run posterior chains</button>
+            <button id="exportPosterior" class="secondary-button" type="button" disabled>Download samples</button>
+          </div>
+          <p class="method-note inference-note">4 chains × 2,600 iterations; 1,000 warm-up iterations; thinning 3; deterministic seed 20260927. Priors are uniform within the displayed bounds. The sampler first locates the grid minimum, then adapts proposal widths during warm-up.</p>
+        </form>
+        <div class="posterior-panel">
+          <div class="posterior-status" role="status" aria-live="polite">
+            <span id="posteriorStatus">Posterior not run for this galaxy and halo model.</span>
+          </div>
+          <div id="posteriorMetrics" class="posterior-metrics" aria-label="Posterior convergence summary"></div>
+          <div class="posterior-chart">
+            <canvas id="posteriorCanvas" role="img" aria-describedby="posteriorSummary"></canvas>
+          </div>
+          <p id="posteriorSummary" class="sr-summary">Run posterior chains to create marginal distributions and a halo-parameter covariance plot.</p>
+        </div>
+      </div>
+      <details class="posterior-table-details">
+        <summary>Show accessible posterior summary table</summary>
+        <div class="table-wrap">
+          <table>
+            <caption>Posterior medians, 68% credible intervals and convergence diagnostics</caption>
+            <thead>
+              <tr><th scope="col">Parameter</th><th scope="col">16th percentile</th><th scope="col">Median</th><th scope="col">84th percentile</th><th scope="col">Split R-hat</th><th scope="col">ESS</th></tr>
+            </thead>
+            <tbody id="posteriorRows"><tr><td colspan="6">No posterior samples yet.</td></tr></tbody>
+          </table>
+        </div>
+      </details>
     </section>
 
     <section class="roadmap-section" aria-labelledby="roadmap-title">

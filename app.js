@@ -32,6 +32,7 @@ const state = {
     haloScale: 5
   },
   result: null,
+  posterior: null,
   worker: null,
   requestId: 0,
   pendingFrame: null
@@ -126,15 +127,22 @@ function getWorker() {
     if (event.data.action === 'error') {
       setBusy(false);
       $('workerStatus').textContent = `Model error: ${event.data.message}`;
+      $('posteriorStatus').textContent = `Posterior error: ${event.data.message}`;
       return;
     }
     state.params = { ...state.params, ...event.data.params };
     state.result = event.data.result;
+    if (event.data.action === 'sample') state.posterior = event.data.posterior;
     syncControls();
     renderAll();
+    renderPosterior();
     setBusy(false);
     $('workerStatus').textContent = `${state.catalog.selection_count} galaxies loaded · deterministic calculation`;
-    $('fitStatus').textContent = event.data.action === 'fit' ? `${state.reference.galaxy} grid minimum` : `${state.reference.galaxy} · ${state.params.haloModel.toUpperCase()}`;
+    $('fitStatus').textContent = event.data.action === 'fit'
+      ? `${state.reference.galaxy} grid minimum`
+      : event.data.action === 'sample'
+        ? `${state.reference.galaxy} posterior sampled`
+        : `${state.reference.galaxy} · ${state.params.haloModel.toUpperCase()}`;
   };
   state.worker.onerror = event => {
     setBusy(false);
@@ -143,17 +151,29 @@ function getWorker() {
   return state.worker;
 }
 
-function setBusy(isBusy) {
+function setBusy(isBusy, action = '') {
   $('fitModel').disabled = isBusy;
-  $('fitModel').textContent = isBusy ? 'Searching parameter grid…' : 'Find grid best fit';
+  $('runPosterior').disabled = isBusy;
+  $('fitModel').textContent = isBusy && action === 'fit' ? 'Searching parameter grid…' : 'Find grid best fit';
+  $('runPosterior').textContent = isBusy && action === 'sample' ? 'Sampling four chains…' : 'Run posterior chains';
   document.body.classList.toggle('is-busy', isBusy);
 }
 
-function runModel(action = 'evaluate') {
+function clearPosterior(message = 'Posterior not run for this galaxy and halo model.') {
+  state.posterior = null;
+  $('posteriorStatus').textContent = message;
+  $('posteriorMetrics').replaceChildren();
+  $('posteriorRows').innerHTML = '<tr><td colspan="6">No posterior samples yet.</td></tr>';
+  $('exportPosterior').disabled = true;
+  drawPosterior();
+}
+
+function runModel(action = 'evaluate', samplerOptions = null) {
   if (!state.reference) return;
+  if (action !== 'sample') clearPosterior('Model or target changed; run new posterior chains for this configuration.');
   state.requestId += 1;
   $('runId').textContent = `run ${String(state.requestId).padStart(3, '0')}`;
-  getWorker().postMessage({ requestId: state.requestId, action, params: state.params, reference: state.reference });
+  getWorker().postMessage({ requestId: state.requestId, action, params: state.params, reference: state.reference, samplerOptions });
 }
 
 function scheduleModel() {
@@ -211,7 +231,7 @@ function drawAxes(context, dimensions, bounds, labels) {
     context.textAlign = 'right';
     context.fillText(formatNumber(bounds.minY + (bounds.maxY - bounds.minY) * index / 5, 1), plot.left - 10, y);
   }
-  context.strokeStyle = '#526078';
+    context.strokeStyle = '#4b6b86';
   context.beginPath();
   context.moveTo(plot.left, plot.top);
   context.lineTo(plot.left, plot.bottom);
@@ -257,7 +277,7 @@ function drawSeries() {
   for (const point of points) {
     const x = scaleX(point.radius);
     const y = scaleY(point.observed);
-    context.strokeStyle = '#ff9f6e';
+    context.strokeStyle = '#f4b860';
     context.lineWidth = 1;
     context.beginPath();
     context.moveTo(x, scaleY(point.observed - point.uncertainty));
@@ -267,13 +287,13 @@ function drawSeries() {
     context.moveTo(x - 3, scaleY(point.observed + point.uncertainty));
     context.lineTo(x + 3, scaleY(point.observed + point.uncertainty));
     context.stroke();
-    context.fillStyle = '#ff9f6e';
+    context.fillStyle = '#f4b860';
     context.beginPath();
     context.arc(x, y, 2.8, 0, Math.PI * 2);
     context.fill();
   }
 
-  const legendItems = [{ name: 'Observed ±1σ', color: '#ff9f6e', dash: [] }, ...state.result.series];
+  const legendItems = [{ name: 'Observed ±1σ', color: '#f4b860', dash: [] }, ...state.result.series];
   const columns = width < 720 ? 2 : legendItems.length;
   const itemWidth = Math.min(160, (width - 88) / columns);
   legendItems.forEach((item, index) => {
@@ -316,7 +336,7 @@ function drawResiduals() {
   }
   context.setLineDash([]);
   for (const item of residuals) {
-    context.fillStyle = Math.abs(item.standardised) > 3 ? '#ff6b7a' : '#62d9c5';
+    context.fillStyle = Math.abs(item.standardised) > 3 ? '#ff7b8b' : '#54b8ea';
     context.beginPath();
     context.arc(scaleX(item.radius), scaleY(item.standardised), 3, 0, Math.PI * 2);
     context.fill();
@@ -349,7 +369,7 @@ function drawHeatmap() {
   bufferContext.putImageData(image, 0, 0);
   context.imageSmoothingEnabled = false;
   context.drawImage(buffer, margin.left, margin.top, plotWidth, plotHeight);
-  context.strokeStyle = '#526078';
+  context.strokeStyle = '#4b6b86';
   context.strokeRect(margin.left, margin.top, plotWidth, plotHeight);
   context.fillStyle = '#c8d1df';
   context.font = '12px ui-monospace, SFMono-Regular, Consolas, monospace';
@@ -405,6 +425,156 @@ function renderAll() {
   renderTable();
 }
 
+function drawPosterior() {
+  const canvas = $('posteriorCanvas');
+  if (!canvas) return;
+  const { context, width, height } = prepareCanvas(canvas);
+  context.fillStyle = '#091725';
+  context.fillRect(0, 0, width, height);
+  if (!state.posterior) {
+    context.fillStyle = '#a8b4c8';
+    context.font = '14px system-ui, sans-serif';
+    context.textAlign = 'center';
+    context.fillText('Run posterior chains to inspect uncertainty and covariance.', width / 2, height / 2);
+    return;
+  }
+
+  const { samples, summaries, priors } = state.posterior;
+  const scatter = { left: 62, top: 30, right: Math.max(230, width * 0.58), bottom: height - 48 };
+  const velocityWidth = Math.max(1e-6, summaries.haloVelocity.q84 - summaries.haloVelocity.q16);
+  const scaleWidth = Math.max(1e-6, summaries.haloScale.q84 - summaries.haloScale.q16);
+  const velocityMin = Math.max(priors.haloVelocity[0], summaries.haloVelocity.median - velocityWidth * 4);
+  const velocityMax = Math.min(priors.haloVelocity[1], summaries.haloVelocity.median + velocityWidth * 4);
+  const scaleMin = Math.max(priors.haloScale[0], summaries.haloScale.median - scaleWidth * 4);
+  const scaleMax = Math.min(priors.haloScale[1], summaries.haloScale.median + scaleWidth * 4);
+  const x = value => scatter.left + (value - velocityMin) / (velocityMax - velocityMin) * (scatter.right - scatter.left);
+  const y = value => scatter.bottom - (value - scaleMin) / (scaleMax - scaleMin) * (scatter.bottom - scatter.top);
+
+  context.strokeStyle = '#4b6b86';
+  context.strokeRect(scatter.left, scatter.top, scatter.right - scatter.left, scatter.bottom - scatter.top);
+  context.fillStyle = 'rgba(84, 184, 234, 0.22)';
+  const sampleStep = Math.max(1, Math.ceil(samples.length / 900));
+  for (let index = 0; index < samples.length; index += sampleStep) {
+    const sample = samples[index];
+    context.fillRect(x(sample.haloVelocity) - 1, y(sample.haloScale) - 1, 2, 2);
+  }
+  context.strokeStyle = '#f9c74f';
+  context.setLineDash([5, 4]);
+  context.beginPath();
+  context.moveTo(x(summaries.haloVelocity.median), scatter.top);
+  context.lineTo(x(summaries.haloVelocity.median), scatter.bottom);
+  context.moveTo(scatter.left, y(summaries.haloScale.median));
+  context.lineTo(scatter.right, y(summaries.haloScale.median));
+  context.stroke();
+  context.setLineDash([]);
+  context.fillStyle = '#dce4ef';
+  context.font = '11px ui-monospace, Consolas, monospace';
+  context.textAlign = 'center';
+  context.fillText('Halo velocity [km/s]', (scatter.left + scatter.right) / 2, height - 15);
+  context.save();
+  context.translate(16, (scatter.top + scatter.bottom) / 2);
+  context.rotate(-Math.PI / 2);
+  context.fillText('Scale radius [kpc]', 0, 0);
+  context.restore();
+
+  const histogramLeft = Math.max(scatter.right + 34, width * 0.63);
+  const histogramWidth = Math.max(80, width - histogramLeft - 18);
+  const labels = {
+    massToLightDisk: 'Disc M/L',
+    haloVelocity: 'Halo velocity',
+    haloScale: 'Scale radius'
+  };
+  state.posterior.parameterKeys.forEach((key, panelIndex) => {
+    const values = samples.map(sample => sample[key]);
+    const [minimum, maximum] = priors[key];
+    const bins = Array(22).fill(0);
+    for (const value of values) {
+      const bin = Math.min(bins.length - 1, Math.max(0, Math.floor((value - minimum) / (maximum - minimum) * bins.length)));
+      bins[bin] += 1;
+    }
+    const panelTop = 18 + panelIndex * ((height - 28) / 3);
+    const panelHeight = (height - 40) / 3;
+    const maximumCount = Math.max(...bins, 1);
+    context.fillStyle = '#c8d1df';
+    context.font = '700 11px system-ui, sans-serif';
+    context.textAlign = 'left';
+    context.fillText(labels[key], histogramLeft, panelTop + 9);
+    context.fillStyle = '#a8b4c8';
+    context.font = '10px ui-monospace, Consolas, monospace';
+    context.fillText(`${formatNumber(summaries[key].median, 3)} [${formatNumber(summaries[key].q16, 3)}, ${formatNumber(summaries[key].q84, 3)}]`, histogramLeft, panelTop + 23);
+    context.fillStyle = '#54b8ea';
+    bins.forEach((count, index) => {
+      const barWidth = histogramWidth / bins.length;
+      const barHeight = count / maximumCount * (panelHeight - 38);
+      context.fillRect(histogramLeft + index * barWidth, panelTop + panelHeight - 5 - barHeight, Math.max(1, barWidth - 1), barHeight);
+    });
+  });
+}
+
+function renderPosterior() {
+  drawPosterior();
+  if (!state.posterior) return;
+  const { diagnostics, summaries, samples, config } = state.posterior;
+  const metrics = [
+    ['Max split R-hat', formatNumber(diagnostics.maxRhat, 3), diagnostics.maxRhat < 1.05 ? 'target met (< 1.05)' : 'review convergence'],
+    ['Minimum ESS', formatNumber(diagnostics.minEss, 0), 'effective draws'],
+    ['Acceptance', `${formatNumber(diagnostics.meanAcceptance * 100, 1)}%`, 'across four chains']
+  ];
+  $('posteriorMetrics').replaceChildren(...metrics.map(([label, value, note]) => {
+    const card = document.createElement('div');
+    card.className = 'posterior-metric';
+    const span = document.createElement('span');
+    span.textContent = label;
+    const strong = document.createElement('strong');
+    strong.textContent = value;
+    const small = document.createElement('small');
+    small.textContent = note;
+    card.append(span, strong, small);
+    return card;
+  }));
+  const labels = { massToLightDisk: 'Disc M/L', haloVelocity: 'Halo velocity [km/s]', haloScale: 'Scale radius [kpc]' };
+  const rows = state.posterior.parameterKeys.map(key => {
+    const summary = summaries[key];
+    return `<tr><th scope="row">${labels[key]}</th><td>${formatNumber(summary.q16, 4)}</td><td>${formatNumber(summary.median, 4)}</td><td>${formatNumber(summary.q84, 4)}</td><td>${formatNumber(summary.rhat, 4)}</td><td>${formatNumber(summary.ess, 0)}</td></tr>`;
+  });
+  $('posteriorRows').innerHTML = rows.join('');
+  $('posteriorStatus').textContent = `${samples.length.toLocaleString('en-GB')} retained samples for ${state.reference.galaxy} with the ${state.params.haloModel.toUpperCase()} halo; seed ${config.seed}.`;
+  $('posteriorSummary').textContent = `Posterior for ${state.reference.galaxy}: disc mass-to-light ratio ${formatNumber(summaries.massToLightDisk.median, 3)}, halo velocity ${formatNumber(summaries.haloVelocity.median, 2)} kilometres per second and scale radius ${formatNumber(summaries.haloScale.median, 2)} kiloparsecs. Maximum split R-hat is ${formatNumber(diagnostics.maxRhat, 3)} and minimum effective sample size is ${formatNumber(diagnostics.minEss, 0)}.`;
+  $('exportPosterior').disabled = false;
+}
+
+function posteriorPriors() {
+  const definitions = [
+    ['massToLightDisk', 'priorMlMin', 'priorMlMax'],
+    ['haloVelocity', 'priorVelocityMin', 'priorVelocityMax'],
+    ['haloScale', 'priorScaleMin', 'priorScaleMax']
+  ];
+  const priors = {};
+  let valid = true;
+  for (const [key, minimumId, maximumId] of definitions) {
+    const minimumInput = $(minimumId);
+    const maximumInput = $(maximumId);
+    const minimum = Number(minimumInput.value);
+    const maximum = Number(maximumInput.value);
+    const message = Number.isFinite(minimum) && Number.isFinite(maximum) && minimum < maximum ? '' : 'Maximum must be greater than minimum.';
+    maximumInput.setCustomValidity(message);
+    if (message) valid = false;
+    priors[key] = [minimum, maximum];
+  }
+  if (!valid) $('priorForm').reportValidity();
+  return valid ? priors : null;
+}
+
+function exportPosterior() {
+  if (!state.posterior) return;
+  const header = ['chain', 'draw', 'mass_to_light_disk', 'halo_velocity_kms', 'halo_scale_kpc'];
+  const rows = [header];
+  state.posterior.chains.forEach((chain, chainIndex) => {
+    chain.forEach((sample, drawIndex) => rows.push([chainIndex + 1, drawIndex + 1, sample.massToLightDisk, sample.haloVelocity, sample.haloScale]));
+  });
+  download(`${state.reference.galaxy_id.toLowerCase()}-${state.params.haloModel}-posterior.csv`, 'text/csv;charset=utf-8', rows.map(row => row.join(',')).join('\n'));
+}
+
 function download(name, type, content) {
   const link = document.createElement('a');
   link.href = URL.createObjectURL(new Blob([content], { type }));
@@ -440,8 +610,8 @@ function exportSvg() {
     const path = series.x.map((radius, index) => `${index ? 'L' : 'M'}${x(radius).toFixed(2)},${y(series.y[index]).toFixed(2)}`).join(' ');
     return `<path d="${path}" fill="none" stroke="${series.color}" stroke-width="${series.id === 'total' ? 3 : 2}"${series.dash?.length ? ` stroke-dasharray="${series.dash.join(' ')}"` : ''}/>`;
   }).join('');
-  const observations = points.map(point => `<g><line x1="${x(point.radius)}" x2="${x(point.radius)}" y1="${y(point.observed - point.uncertainty)}" y2="${y(point.observed + point.uncertainty)}" stroke="#ff9f6e"/><circle cx="${x(point.radius)}" cy="${y(point.observed)}" r="3" fill="#ff9f6e"/></g>`).join('');
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><title>${escape(state.reference.galaxy)} rotation-curve decomposition</title><desc>Observed SPARC velocities with gas, stellar disc, ${escape(state.params.haloModel)} halo and total model.</desc><rect width="100%" height="100%" fill="#111925"/><line x1="${left}" y1="${top}" x2="${left}" y2="${bottom}" stroke="#8290a6"/><line x1="${left}" y1="${bottom}" x2="${right}" y2="${bottom}" stroke="#8290a6"/>${paths}${observations}<text x="600" y="620" fill="#dce4ef" text-anchor="middle">Galactocentric radius [kpc]</text><text x="28" y="320" fill="#dce4ef" text-anchor="middle" transform="rotate(-90 28 320)">Circular velocity [km/s]</text></svg>`;
+  const observations = points.map(point => `<g><line x1="${x(point.radius)}" x2="${x(point.radius)}" y1="${y(point.observed - point.uncertainty)}" y2="${y(point.observed + point.uncertainty)}" stroke="#f4b860"/><circle cx="${x(point.radius)}" cy="${y(point.observed)}" r="3" fill="#f4b860"/></g>`).join('');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><title>${escape(state.reference.galaxy)} rotation-curve decomposition</title><desc>Observed SPARC velocities with gas, stellar disc, ${escape(state.params.haloModel)} halo and total model.</desc><rect width="100%" height="100%" fill="#0d1b2a"/><line x1="${left}" y1="${top}" x2="${left}" y2="${bottom}" stroke="#8290a6"/><line x1="${left}" y1="${bottom}" x2="${right}" y2="${bottom}" stroke="#8290a6"/>${paths}${observations}<text x="600" y="620" fill="#f4f7fb" text-anchor="middle">Galactocentric radius [kpc]</text><text x="28" y="320" fill="#f4f7fb" text-anchor="middle" transform="rotate(-90 28 320)">Circular velocity [km/s]</text></svg>`;
   download(`${state.reference.galaxy_id.toLowerCase()}-${state.params.haloModel}-fit.svg`, 'image/svg+xml;charset=utf-8', svg);
 }
 
@@ -459,10 +629,22 @@ $('haloModel').addEventListener('change', event => {
 });
 
 $('fitModel').addEventListener('click', () => {
-  setBusy(true);
+  setBusy(true, 'fit');
   $('fitStatus').textContent = 'Searching grid';
   runModel('fit');
 });
+
+$('priorForm').addEventListener('submit', event => {
+  event.preventDefault();
+  const priors = posteriorPriors();
+  if (!priors) return;
+  clearPosterior('Sampling four chains in the physics worker…');
+  setBusy(true, 'sample');
+  $('fitStatus').textContent = 'Posterior sampling';
+  runModel('sample', { priors, chainCount: 4, iterations: 2600, burnIn: 1000, thin: 3, seed: 20260927 });
+});
+
+$('exportPosterior').addEventListener('click', exportPosterior);
 
 $('reset').addEventListener('click', () => {
   state.params = { haloModel: 'piso', massToLightDisk: 0.5, massToLightBulge: 0.7, haloVelocity: 170, haloScale: 5 };
@@ -474,6 +656,7 @@ $('exportCsv').addEventListener('click', exportCsv);
 $('exportSvg').addEventListener('click', exportSvg);
 
 buildControls();
+drawPosterior();
 loadCatalog()
   .then(() => runModel())
   .catch(error => {
@@ -483,5 +666,6 @@ loadCatalog()
 
 const resizeObserver = new ResizeObserver(() => {
   if (state.result) renderAll();
+  drawPosterior();
 });
 for (const canvas of document.querySelectorAll('canvas')) resizeObserver.observe(canvas);

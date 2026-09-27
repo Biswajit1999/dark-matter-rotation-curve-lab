@@ -1,6 +1,6 @@
 {
   "name": "dark-matter-evidence-lab",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-beta.1",
   "private": true,
   "description": "Evidence-first, reproducible dark-matter exploration across galaxy rotation curves, cluster lensing, cosmology and detector technology.",
   "scripts": {
