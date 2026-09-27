@@ -44,6 +44,8 @@ test('weighted likelihood returns one residual per observation', () => {
   assert.ok(Number.isFinite(stats.chiSquared));
   assert.ok(stats.chiSquared > 0);
   assert.equal(stats.degreesOfFreedom, 40);
+  assert.ok(Number.isFinite(stats.bic));
+  assert.ok(stats.bic > stats.aic);
 });
 
 test('all three halo models produce complete, finite evaluations', () => {
@@ -90,4 +92,55 @@ test('deterministic posterior sampling respects priors and reports diagnostics',
   assert.ok(Number.isFinite(posterior.diagnostics.maxRhat));
   assert.ok(Number.isFinite(posterior.diagnostics.minEss));
   assert.ok(posterior.diagnostics.meanAcceptance > 0 && posterior.diagnostics.meanAcceptance < 1);
+  assert.equal(posterior.predictive.intervals.length, reference.points.length);
+  assert.ok(posterior.predictive.intervals.every(interval => (
+    interval.predictiveQ16 <= interval.predictiveMedian && interval.predictiveMedian <= interval.predictiveQ84
+  )));
+  assert.ok(posterior.predictive.coverage68 >= 0 && posterior.predictive.coverage68 <= 1);
+  assert.ok(posterior.predictive.bayesianPValue >= 0 && posterior.predictive.bayesianPValue <= 1);
+});
+
+test('synthetic known-truth galaxy is recovered within two posterior interval widths', () => {
+  const truth = {
+    ...defaultParams,
+    massToLightDisk: 0.55,
+    haloVelocity: 180,
+    haloScale: 6
+  };
+  let randomState = 24680;
+  const random = () => {
+    randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0;
+    return randomState / 4294967296;
+  };
+  const normal = () => Math.sqrt(-2 * Math.log(Math.max(random(), 1e-12))) * Math.cos(2 * Math.PI * random());
+  const points = reference.points.map(point => ({ ...point, y_err: 7 }));
+  points.forEach(point => {
+    point.y = physics.componentsAt(truth, points, point.x).total + point.y_err * normal();
+  });
+  const synthetic = { ...reference, galaxy: 'Synthetic known-truth fixture', n_points: points.length, points };
+  const posterior = physics.samplePosterior(
+    { ...truth, massToLightDisk: 0.45, haloVelocity: 165, haloScale: 5 },
+    synthetic,
+    {
+      priors: {
+        massToLightDisk: [0.2, 0.9],
+        haloVelocity: [120, 240],
+        haloScale: [2, 12]
+      },
+      chainCount: 4,
+      iterations: 1800,
+      burnIn: 600,
+      thin: 2,
+      seed: 731
+    }
+  ).posterior;
+
+  for (const key of posterior.parameterKeys) {
+    const summary = posterior.summaries[key];
+    const halfWidth68 = Math.max(1e-12, (summary.q84 - summary.q16) / 2);
+    assert.ok(Math.abs(summary.median - truth[key]) <= 2 * halfWidth68, `${key} truth was not recovered`);
+  }
+  assert.ok(posterior.diagnostics.maxRhat < 1.05);
+  assert.ok(posterior.predictive.coverage68 > 0.5 && posterior.predictive.coverage68 < 0.9);
+  assert.ok(posterior.predictive.bayesianPValue > 0.1 && posterior.predictive.bayesianPValue < 0.9);
 });

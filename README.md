@@ -26,7 +26,7 @@ active application now:
 - evaluates pseudo-isothermal, NFW and Burkert halo profiles in a shared,
   unit-documented module;
 - computes a weighted likelihood from the quoted `e_Vobs` values, with χ²,
-  reduced χ², log likelihood, AIC and weighted RMS diagnostics;
+  reduced χ², log likelihood, AIC, BIC and weighted RMS diagnostics;
 - reports the outer halo share as a velocity-squared decomposition, not as an
   exact deprojected mass fraction;
 - plots standardised residuals and a real Δχ² response surface;
@@ -43,7 +43,11 @@ active application now:
   its later stages as conditional research directions, not mission forecasts.
 - provides explicit uniform prior bounds, deterministic adaptive Metropolis
   chains, 68% credible intervals, split-R-hat, effective sample size, parameter
-  covariance visualisation and downloadable posterior samples.
+  covariance visualisation and downloadable posterior samples;
+- generates deterministic posterior predictive intervals, reports predictive
+  coverage and a discrepancy-based Bayesian posterior-predictive p-value, and
+  exports the interval table as CSV;
+- verifies known-truth recovery on a deterministic synthetic galaxy fixture.
 
 ## Development phases
 
@@ -145,12 +149,17 @@ all prior bounds and records the sampler configuration and seed. Proposal
 covariance is adapted only during warm-up; retained draws are not used to tune
 the sampler. The interface reports median and 16th/84th percentiles, split
 R-hat, an autocorrelation-based effective sample-size estimate and acceptance
-rate. Samples can be exported as CSV with chain and draw identifiers.
+rate. It also propagates retained draws through the rotation model and quoted
+random errors to form a 68% posterior predictive interval at every observed
+radius. Predictive coverage and a discrepancy-based Bayesian p-value are model
+checks, not probabilities that a halo family is true. Samples and predictive
+intervals can be exported as separate CSV files.
 
 This is a transparent teaching and diagnostic implementation, not a substitute
 for a peer-reviewed inference workflow. Scientific publication should confirm
 results with a maintained inference package and include prior-sensitivity,
-synthetic-coverage and posterior-predictive tests.
+repeated synthetic-coverage calibration and posterior-predictive tests using a
+complete treatment of correlated systematics.
 
 ## Validate
 

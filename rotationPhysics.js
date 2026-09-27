@@ -106,6 +106,7 @@
       weightedRmsKmS: Math.sqrt(weightedSquaredResidual / Math.max(sumWeights, 1e-12)),
       logLikelihood: -0.5 * chiSquared,
       aic: chiSquared + 2 * parameterCount,
+      bic: chiSquared + parameterCount * Math.log(points.length),
       degreesOfFreedom,
       residuals
     };
@@ -163,6 +164,7 @@
         weighted_rms_kms: statistics.weightedRmsKmS,
         log_likelihood: statistics.logLikelihood,
         aic: statistics.aic,
+        bic: statistics.bic,
         outer_dark_fraction: clamp(outerDarkFraction, 0, 1)
       },
       heatmap: includeGrid ? responseGrid(params, points) : null
@@ -285,6 +287,61 @@
     return lower;
   }
 
+  function posteriorPredictive(samples, params, points, seed, maximumDraws = 600) {
+    if (!samples.length || !points.length) throw new Error('Posterior predictive evaluation requires samples and observations.');
+    const random = seededRandom((Number(seed) ^ 0x9E3779B9) >>> 0);
+    const drawStep = Math.max(1, Math.ceil(samples.length / maximumDraws));
+    const selected = samples.filter((_, index) => index % drawStep === 0).slice(0, maximumDraws);
+    const latentByPoint = points.map(() => []);
+    const replicatedByPoint = points.map(() => []);
+    const observedDiscrepancies = [];
+    const replicatedDiscrepancies = [];
+
+    for (const sample of selected) {
+      const candidate = { ...params, ...sample };
+      let observedDiscrepancy = 0;
+      let replicatedDiscrepancy = 0;
+      points.forEach((point, pointIndex) => {
+        const prediction = componentsAt(candidate, points, point.x).total;
+        const sigma = Math.max(Number(point.y_err), 1e-6);
+        const replicated = prediction + normalRandom(random) * sigma;
+        latentByPoint[pointIndex].push(prediction);
+        replicatedByPoint[pointIndex].push(replicated);
+        observedDiscrepancy += ((Number(point.y) - prediction) / sigma) ** 2;
+        replicatedDiscrepancy += ((replicated - prediction) / sigma) ** 2;
+      });
+      observedDiscrepancies.push(observedDiscrepancy);
+      replicatedDiscrepancies.push(replicatedDiscrepancy);
+    }
+
+    const intervals = points.map((point, pointIndex) => ({
+      radius: Number(point.x),
+      observed: Number(point.y),
+      uncertainty: Number(point.y_err),
+      modelQ16: quantile(latentByPoint[pointIndex], 0.16),
+      modelMedian: quantile(latentByPoint[pointIndex], 0.5),
+      modelQ84: quantile(latentByPoint[pointIndex], 0.84),
+      predictiveQ16: quantile(replicatedByPoint[pointIndex], 0.16),
+      predictiveMedian: quantile(replicatedByPoint[pointIndex], 0.5),
+      predictiveQ84: quantile(replicatedByPoint[pointIndex], 0.84)
+    }));
+    const covered = intervals.filter(interval => (
+      interval.observed >= interval.predictiveQ16 && interval.observed <= interval.predictiveQ84
+    )).length;
+    const replicatedAtLeastObserved = replicatedDiscrepancies.filter((value, index) => value >= observedDiscrepancies[index]).length;
+
+    return {
+      drawsUsed: selected.length,
+      intervalProbability: 0.68,
+      intervals,
+      coverage68: covered / intervals.length,
+      bayesianPValue: replicatedAtLeastObserved / selected.length,
+      observedDiscrepancyMedian: quantile(observedDiscrepancies, 0.5),
+      replicatedDiscrepancyMedian: quantile(replicatedDiscrepancies, 0.5),
+      randomSeed: (Number(seed) ^ 0x9E3779B9) >>> 0
+    };
+  }
+
   function samplePosterior(params, reference, options = {}) {
     const keys = ['massToLightDisk', 'haloVelocity', 'haloScale'];
     const defaultPriors = {
@@ -388,6 +445,7 @@
       ...params,
       ...Object.fromEntries(keys.map(key => [key, summaries[key].median]))
     };
+    const predictive = posteriorPredictive(samples, params, reference.points, seed);
     return {
       params: posteriorParams,
       result: evaluate(posteriorParams, reference, true),
@@ -397,6 +455,7 @@
         chains,
         samples,
         summaries,
+        predictive,
         diagnostics: {
           acceptanceRates,
           meanAcceptance: acceptanceRates.reduce((sum, value) => sum + value, 0) / acceptanceRates.length,
@@ -416,6 +475,7 @@
     haloVelocity,
     nfwVelocity,
     pseudoIsothermalVelocity,
+    posteriorPredictive,
     samplePosterior,
     signedSquare,
     weightedStatistics

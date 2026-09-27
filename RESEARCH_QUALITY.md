@@ -21,17 +21,22 @@ not establish.
 7. the page exposes a skip link, chart descriptions, a data table and reduced
    motion styling;
 8. posterior sampling stays inside explicit priors, uses a deterministic seed
-   and reports split-R-hat, effective sample size and acceptance diagnostics.
+   and reports split-R-hat, effective sample size and acceptance diagnostics;
+9. posterior predictive intervals are finite and ordered, with reproducible
+   predictive random draws, coverage and a discrepancy-based Bayesian p-value;
+10. a deterministic noisy synthetic galaxy recovers its known disc and halo
+    parameters within two 68% posterior interval half-widths.
 
 ## Guarantees requiring future work
 
 The current tests do not validate distance or inclination marginalisation,
-correlated systematics, posterior calibration or predictive coverage, evidence estimation, population
-selection or agreement with an independent fitting package. The ten systems
-are an intentionally varied demonstration set, not a statistically complete
-sample. Grid minimisation
-is deterministic exploration, not Bayesian inference. A later release should
-add synthetic coverage tests and TypeScript/Python parity fixtures before
+correlated systematics, repeated-simulation posterior calibration, evidence
+estimation, population selection or agreement with an independent fitting
+package. The one synthetic recovery fixture is a regression test, not a
+coverage study. The ten systems are an intentionally varied demonstration set,
+not a statistically complete sample. Grid minimisation is deterministic
+exploration, not Bayesian inference. A later release should add repeated
+synthetic coverage experiments and JavaScript/Python parity fixtures before
 claiming research-grade parameter constraints.
 
 ## Claim language

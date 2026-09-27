@@ -18,6 +18,7 @@ const METRIC_LABELS = {
   weighted_rms_kms: ['Weighted RMS', 'km/s'],
   log_likelihood: ['Log likelihood', '−χ² / 2'],
   aic: ['AIC', '3 fitted parameters'],
+  bic: ['BIC', '3 parameters; n observations'],
   outer_dark_fraction: ['Outer halo share', 'v² halo / v² total']
 };
 
@@ -164,7 +165,9 @@ function clearPosterior(message = 'Posterior not run for this galaxy and halo mo
   $('posteriorStatus').textContent = message;
   $('posteriorMetrics').replaceChildren();
   $('posteriorRows').innerHTML = '<tr><td colspan="6">No posterior samples yet.</td></tr>';
+  $('predictiveRows').innerHTML = '<tr><td colspan="7">No posterior predictive intervals yet.</td></tr>';
   $('exportPosterior').disabled = true;
+  $('exportPredictive').disabled = true;
   drawPosterior();
 }
 
@@ -211,7 +214,7 @@ function prepareCanvas(canvas) {
 
 function drawAxes(context, dimensions, bounds, labels) {
   const { width, height } = dimensions;
-  const plot = { left: 64, top: 22, right: width - 20, bottom: height - 48 };
+  const plot = { left: 64, top: labels.top || 22, right: width - 20, bottom: height - 48 };
   context.font = '12px ui-monospace, SFMono-Regular, Consolas, monospace';
   context.lineWidth = 1;
   context.textBaseline = 'middle';
@@ -255,9 +258,53 @@ function drawSeries() {
   const canvas = $('seriesCanvas');
   const { context, width, height } = prepareCanvas(canvas);
   const points = state.result.observed;
-  const maxY = Math.max(...points.map(point => point.observed + point.uncertainty), ...state.result.series.flatMap(series => series.y));
+  const predictive = state.posterior?.predictive;
+  const legendItems = [
+    { name: 'Observed ±1σ', color: '#f4b860', dash: [] },
+    ...(predictive ? [{ name: '68% predictive interval', color: '#54b8ea', dash: [3, 4], fill: true }] : []),
+    ...state.result.series
+  ];
+  const columns = width < 720 ? 2 : legendItems.length;
+  const legendRows = Math.ceil(legendItems.length / columns);
+  const predictiveMaximum = predictive ? Math.max(...predictive.intervals.map(interval => interval.predictiveQ84)) : 0;
+  const maxY = Math.max(predictiveMaximum, ...points.map(point => point.observed + point.uncertainty), ...state.result.series.flatMap(series => series.y));
   const bounds = { minX: 0, maxX: points.at(-1).radius, minY: 0, maxY: Math.ceil(maxY / 20) * 20 };
-  const { scaleX, scaleY } = drawAxes(context, { width, height }, bounds, { x: 'Galactocentric radius [kpc]', y: 'Circular velocity [km/s]' });
+  const { scaleX, scaleY } = drawAxes(context, { width, height }, bounds, {
+    x: 'Galactocentric radius [kpc]',
+    y: 'Circular velocity [km/s]',
+    top: 28 + legendRows * 19
+  });
+
+  if (predictive?.intervals?.length) {
+    const intervals = predictive.intervals;
+    context.fillStyle = 'rgba(84, 184, 234, 0.16)';
+    context.beginPath();
+    intervals.forEach((interval, index) => {
+      const x = scaleX(interval.radius);
+      const y = scaleY(interval.predictiveQ84);
+      if (index === 0) context.moveTo(x, y);
+      else context.lineTo(x, y);
+    });
+    for (let index = intervals.length - 1; index >= 0; index -= 1) {
+      context.lineTo(scaleX(intervals[index].radius), scaleY(intervals[index].predictiveQ16));
+    }
+    context.closePath();
+    context.fill();
+    context.strokeStyle = 'rgba(84, 184, 234, 0.7)';
+    context.lineWidth = 1;
+    context.setLineDash([3, 4]);
+    for (const key of ['predictiveQ16', 'predictiveQ84']) {
+      context.beginPath();
+      intervals.forEach((interval, index) => {
+        const x = scaleX(interval.radius);
+        const y = scaleY(interval[key]);
+        if (index === 0) context.moveTo(x, y);
+        else context.lineTo(x, y);
+      });
+      context.stroke();
+    }
+    context.setLineDash([]);
+  }
 
   for (const series of state.result.series) {
     context.strokeStyle = series.color;
@@ -293,28 +340,36 @@ function drawSeries() {
     context.fill();
   }
 
-  const legendItems = [{ name: 'Observed ±1σ', color: '#f4b860', dash: [] }, ...state.result.series];
-  const columns = width < 720 ? 2 : legendItems.length;
   const itemWidth = Math.min(160, (width - 88) / columns);
   legendItems.forEach((item, index) => {
     const row = Math.floor(index / columns);
     const column = index % columns;
     const x = 76 + column * itemWidth;
     const y = 34 + row * 19;
-    context.strokeStyle = item.color;
-    context.lineWidth = 2;
-    context.setLineDash(item.dash || []);
-    context.beginPath();
-    context.moveTo(x, y);
-    context.lineTo(x + 20, y);
-    context.stroke();
+    if (item.fill) {
+      context.fillStyle = 'rgba(84, 184, 234, 0.24)';
+      context.fillRect(x, y - 5, 20, 10);
+      context.strokeStyle = item.color;
+      context.strokeRect(x, y - 5, 20, 10);
+    } else {
+      context.strokeStyle = item.color;
+      context.lineWidth = 2;
+      context.setLineDash(item.dash || []);
+      context.beginPath();
+      context.moveTo(x, y);
+      context.lineTo(x + 20, y);
+      context.stroke();
+    }
     context.setLineDash([]);
     context.fillStyle = '#dce4ef';
     context.font = '11px system-ui, sans-serif';
     context.textAlign = 'left';
     context.fillText(item.name, x + 26, y);
   });
-  $('curveSummary').textContent = `${state.reference.galaxy} has ${points.length} observed velocities from ${formatNumber(points[0].radius)} to ${formatNumber(points.at(-1).radius)} kpc. The current ${state.params.haloModel.toUpperCase()} model has reduced chi-squared ${formatNumber(state.result.metrics.reduced_chi_squared, 2)}.`;
+  const predictiveSummary = predictive
+    ? ` The shaded 68% posterior predictive interval covers ${formatNumber(predictive.coverage68 * 100, 1)}% of the observed velocities under the selected model, priors and quoted random uncertainties.`
+    : '';
+  $('curveSummary').textContent = `${state.reference.galaxy} has ${points.length} observed velocities from ${formatNumber(points[0].radius)} to ${formatNumber(points.at(-1).radius)} kpc. The current ${state.params.haloModel.toUpperCase()} model has reduced chi-squared ${formatNumber(state.result.metrics.reduced_chi_squared, 2)}.${predictiveSummary}`;
 }
 
 function drawResiduals() {
@@ -514,11 +569,13 @@ function drawPosterior() {
 function renderPosterior() {
   drawPosterior();
   if (!state.posterior) return;
-  const { diagnostics, summaries, samples, config } = state.posterior;
+  const { diagnostics, summaries, samples, config, predictive } = state.posterior;
   const metrics = [
     ['Max split R-hat', formatNumber(diagnostics.maxRhat, 3), diagnostics.maxRhat < 1.05 ? 'target met (< 1.05)' : 'review convergence'],
     ['Minimum ESS', formatNumber(diagnostics.minEss, 0), 'effective draws'],
-    ['Acceptance', `${formatNumber(diagnostics.meanAcceptance * 100, 1)}%`, 'across four chains']
+    ['Acceptance', `${formatNumber(diagnostics.meanAcceptance * 100, 1)}%`, 'across four chains'],
+    ['68% coverage', `${formatNumber(predictive.coverage68 * 100, 1)}%`, `${predictive.intervals.length} observed radii`],
+    ['PPC p-value', formatNumber(predictive.bayesianPValue, 3), 'extremes flag mismatch']
   ];
   $('posteriorMetrics').replaceChildren(...metrics.map(([label, value, note]) => {
     const card = document.createElement('div');
@@ -538,9 +595,11 @@ function renderPosterior() {
     return `<tr><th scope="row">${labels[key]}</th><td>${formatNumber(summary.q16, 4)}</td><td>${formatNumber(summary.median, 4)}</td><td>${formatNumber(summary.q84, 4)}</td><td>${formatNumber(summary.rhat, 4)}</td><td>${formatNumber(summary.ess, 0)}</td></tr>`;
   });
   $('posteriorRows').innerHTML = rows.join('');
-  $('posteriorStatus').textContent = `${samples.length.toLocaleString('en-GB')} retained samples for ${state.reference.galaxy} with the ${state.params.haloModel.toUpperCase()} halo; seed ${config.seed}.`;
-  $('posteriorSummary').textContent = `Posterior for ${state.reference.galaxy}: disc mass-to-light ratio ${formatNumber(summaries.massToLightDisk.median, 3)}, halo velocity ${formatNumber(summaries.haloVelocity.median, 2)} kilometres per second and scale radius ${formatNumber(summaries.haloScale.median, 2)} kiloparsecs. Maximum split R-hat is ${formatNumber(diagnostics.maxRhat, 3)} and minimum effective sample size is ${formatNumber(diagnostics.minEss, 0)}.`;
+  $('predictiveRows').innerHTML = predictive.intervals.map(interval => `<tr><th scope="row">${formatNumber(interval.radius, 3)}</th><td>${formatNumber(interval.observed, 3)}</td><td>${formatNumber(interval.modelQ16, 3)}</td><td>${formatNumber(interval.modelMedian, 3)}</td><td>${formatNumber(interval.modelQ84, 3)}</td><td>${formatNumber(interval.predictiveQ16, 3)}</td><td>${formatNumber(interval.predictiveQ84, 3)}</td></tr>`).join('');
+  $('posteriorStatus').textContent = `${samples.length.toLocaleString('en-GB')} retained samples and ${predictive.drawsUsed.toLocaleString('en-GB')} predictive draws for ${state.reference.galaxy} with the ${state.params.haloModel.toUpperCase()} halo; seed ${config.seed}.`;
+  $('posteriorSummary').textContent = `Posterior for ${state.reference.galaxy}: disc mass-to-light ratio ${formatNumber(summaries.massToLightDisk.median, 3)}, halo velocity ${formatNumber(summaries.haloVelocity.median, 2)} kilometres per second and scale radius ${formatNumber(summaries.haloScale.median, 2)} kiloparsecs. Maximum split R-hat is ${formatNumber(diagnostics.maxRhat, 3)}, minimum effective sample size is ${formatNumber(diagnostics.minEss, 0)}, the 68% posterior predictive interval covers ${formatNumber(predictive.coverage68 * 100, 1)}% of measured velocities, and the posterior-predictive discrepancy p-value is ${formatNumber(predictive.bayesianPValue, 3)}. This check is conditional on the selected halo family, priors and quoted independent random errors.`;
   $('exportPosterior').disabled = false;
+  $('exportPredictive').disabled = false;
 }
 
 function posteriorPriors() {
@@ -573,6 +632,23 @@ function exportPosterior() {
     chain.forEach((sample, drawIndex) => rows.push([chainIndex + 1, drawIndex + 1, sample.massToLightDisk, sample.haloVelocity, sample.haloScale]));
   });
   download(`${state.reference.galaxy_id.toLowerCase()}-${state.params.haloModel}-posterior.csv`, 'text/csv;charset=utf-8', rows.map(row => row.join(',')).join('\n'));
+}
+
+function exportPredictive() {
+  if (!state.posterior?.predictive) return;
+  const header = ['radius_kpc', 'observed_kms', 'uncertainty_kms', 'model_q16_kms', 'model_median_kms', 'model_q84_kms', 'predictive_q16_kms', 'predictive_median_kms', 'predictive_q84_kms'];
+  const rows = state.posterior.predictive.intervals.map(interval => [
+    interval.radius,
+    interval.observed,
+    interval.uncertainty,
+    interval.modelQ16,
+    interval.modelMedian,
+    interval.modelQ84,
+    interval.predictiveQ16,
+    interval.predictiveMedian,
+    interval.predictiveQ84
+  ]);
+  download(`${state.reference.galaxy_id.toLowerCase()}-${state.params.haloModel}-posterior-predictive.csv`, 'text/csv;charset=utf-8', [header, ...rows].map(row => row.join(',')).join('\n'));
 }
 
 function download(name, type, content) {
@@ -645,6 +721,7 @@ $('priorForm').addEventListener('submit', event => {
 });
 
 $('exportPosterior').addEventListener('click', exportPosterior);
+$('exportPredictive').addEventListener('click', exportPredictive);
 
 $('reset').addEventListener('click', () => {
   state.params = { haloModel: 'piso', massToLightDisk: 0.5, massToLightBulge: 0.7, haloVelocity: 170, haloScale: 5 };
