@@ -1,284 +1,164 @@
-# Dark Matter Rotation Curve Lab
+# Dark Matter Evidence Lab
 
-Disk, bulge and halo decomposition for spiral-galaxy rotation curves.
+Dark Matter Evidence Lab is a reproducible interactive research and teaching
+environment for a precise question: what additional gravitating component is
+required when the published gas and stellar mass model does not reproduce a
+galaxy's observed circular velocity?
 
-Created and maintained by Biswajit Jana.
+The current release is deliberately narrow. It fits the 43-point **NGC 3198**
+rotation curve from the SPARC Newtonian mass-model table and displays the
+observations, quoted random uncertainties, published gas and stellar-disc
+contributions, a selected halo profile, the total model, standardised
+residuals and a two-parameter Δχ² surface. It does not identify a dark-matter
+particle and it does not treat an interactive grid minimum as a publication
+quality posterior.
 
-Private research/teaching tool. It is a zero-build, zero-dependency browser
-lab: open `index.html`, no npm install, no bundler. The circular-velocity
-model runs in a Web Worker so the UI thread stays free for the Canvas plot
-and the mass-decomposition heatmap.
+## What changed in v2
 
-## Scientific Purpose
+The pre-upgrade teaching application is preserved at the `v1-legacy` tag. The
+active application now:
 
-Spiral galaxies do not rotate the way visible (baryonic) matter alone would
-predict. If all the mass were in the stars and gas we can see, circular
-velocity should fall off as `v(r) ~ sqrt(1/r)` beyond the point where most of
-the light is enclosed (Keplerian decline). Instead, 21 cm HI and optical
-rotation curves stay approximately flat out to tens of kiloparsecs. This
-"flat rotation curve" problem is one of the classical lines of dynamical
-evidence for dark matter.
+- uses the SPARC `Vgas`, `Vdisk` and `Vbul` columns instead of invented
+  exponential-like velocity proxies;
+- evaluates pseudo-isothermal, NFW and Burkert halo profiles in a shared,
+  unit-documented module;
+- computes a weighted likelihood from the quoted `e_Vobs` values, with χ²,
+  reduced χ², log likelihood, AIC and weighted RMS diagnostics;
+- reports the outer halo share as a velocity-squared decomposition, not as an
+  exact deprojected mass fraction;
+- plots standardised residuals and a real Δχ² response surface;
+- provides an accessible HTML data table plus CSV and SVG exports;
+- ignores stale Worker responses, keeps numerical work off the UI thread and
+  supports reduced motion, visible focus and responsive layouts;
+- pins the upstream table checksum and supplies a deterministic ingestion
+  script and analytic tests.
 
-The historical case was made by Vera Rubin and Kent Ford in a series of
-optical spectroscopy studies through the 1970s, extended to a large sample of
-Sc spiral galaxies with Norbert Thonnard (Rubin, Ford & Thonnard 1980). Their
-measured curves stayed flat instead of declining, implying substantial mass
-at large radius that emits no detectable light — i.e. a dark, extended halo.
+## Run locally
 
-This lab lets you build a rotation curve as the quadrature sum of disk,
-bulge and halo contributions, compare it against real anchor points from the
-Milky Way's rotation curve, and see interactively how much of the flat part
-at large radius has to come from the halo term rather than the visible
-components.
-
-## Circular Velocity and Mass Decomposition
-
-For a tracer star on a circular orbit at galactocentric radius `r`, the
-circular speed set by the enclosed gravitating mass `M(r)` is
-
-```
-v_c(r) = sqrt( G * M(r) / r )
-```
-
-When several mass components (disk, bulge, halo) contribute independently to
-the radial force, their circular velocities add in quadrature:
-
-```
-v_total(r) = sqrt( v_disk(r)^2 + v_bulge(r)^2 + v_halo(r)^2 )
-```
-
-That quadrature sum is exactly what `physicsWorker.js` computes for the
-`rotation` lab. It is not a full gravitational N-body or Jeans solve — it is
-a standard component-superposition rotation-curve model, the same structural
-approach used in textbook and observational rotation-curve fitting.
-
-### Component models used in this repository
-
-The worker's `rotation(p)` function (`physicsWorker.js`) implements, for
-parameters `diskMass`, `bulgeMass`, `haloV`, `haloCore`:
-
-**Disk** — a thin, radially truncated exponential-like disk term:
-
-```
-v_disk(r) = 185 * sqrt(diskMass) * r / (r + 3) * exp(-r / 55)
-```
-
-The `r / (r + 3)` factor gives the characteristic disk rise from the center,
-and the outer `exp(-r / 55)` softens the contribution at very large radius,
-consistent with the declining surface density of an exponential stellar
-disk (`Σ(r) ∝ exp(-r / r_d)`).
-
-**Bulge** — a compact, centrally concentrated component:
-
-```
-v_bulge(r) = 150 * sqrt(bulgeMass) * exp(-r / 4)
-```
-
-This is a compact-bulge proxy: it contributes strongly within a few kpc and
-decays quickly, in the same spirit as a de Vaucouleurs / Hernquist bulge
-profile whose rotation contribution is centrally peaked and falls off well
-inside the disk scale length.
-
-**Halo** — a pseudo-isothermal sphere:
-
-```
-v_halo(r) = haloV * sqrt( 1 - (haloCore / r) * atan(r / haloCore) )
-```
-
-This is the classic cored (pseudo-)isothermal-sphere rotation curve: it
-rises from the center, flattens once `r >> haloCore`, and asymptotes to the
-plateau speed `haloV` — which is precisely the flat-rotation-curve behavior
-that motivates the dark matter interpretation. `haloCore` is the halo core
-radius; `haloV` is the asymptotic (flat) circular speed contributed by the
-halo alone.
-
-The pseudo-isothermal profile is one of two standard halo parameterizations
-used in rotation-curve fitting; the other, more commonly used in cosmological
-(cold dark matter) contexts, is the Navarro-Frenk-White (NFW) profile derived
-from N-body simulations of hierarchical structure formation (Navarro, Frenk &
-White 1996):
-
-```
-ρ_NFW(r) = ρ_0 / [ (r / r_s) * (1 + r / r_s)^2 ]
-```
-
-with an associated circular-velocity profile that rises and then declines
-more gently than Keplerian at large `r`. NFW is not currently implemented in
-this repository's worker — the lab uses the pseudo-isothermal form above —
-but it is the natural next halo-model option if this lab is extended, and is
-included here for scientific context.
-
-### Reported metrics
-
-For the current parameter set, the UI panel reports:
-
-- `v_solar` — model circular speed interpolated near the solar circle
-  (`r ≈ 8.2 kpc`), for comparison against the `solar circle` reference point.
-- `v_flat` — the model's circular speed at the largest tabulated radius,
-  i.e. the outer flat-curve value.
-- `halo_fraction` — `haloV / max(v_total)`, a rough proxy for how much of the
-  peak rotation speed is attributable to the halo term rather than disk or
-  bulge.
-- `solar_residual_kms` — `v_solar - v_solar_circle_reference`, the signed
-  difference in km/s between the current model's solar-circle speed and the
-  `solar circle` anchor point (232 km/s) from `data/reference.json`. This
-  turns the fixed reference marker into an actual fit-quality number: drag
-  the sliders until `solar_residual_kms` is close to zero to match the
-  observed Milky Way anchor.
-
-## How It Works
-
-1. **Reference data first.** On load, `app.js` fetches
-   `data/reference.json` — five representative circular-speed anchor points
-   for a Milky-Way-like flat rotation curve (citing Sofue 2020) — and plots
-   them immediately as fixed yellow markers, independent of any model run.
-2. **Interactive parameters.** Four sliders (`diskMass`, `haloV`,
-   `haloCore`, `bulgeMass`) control the disk, halo and bulge terms above.
-   Moving a slider updates `state.params` and triggers a new model run.
-3. **Off-thread computation.** `app.js` posts `{lab: "rotation", params,
-   reference}` to `physicsWorker.js`, which evaluates `v_disk`, `v_bulge`,
-   `v_halo` and their quadrature sum across 650 radii from 0.2 to 30 kpc,
-   plus a 72x72 normalized "mass decomposition" heatmap combining the halo
-   and disk mass scales.
-4. **Render.** The worker posts back `{series, metrics, heatmap}`; `app.js`
-   draws the model curve and reference anchors on a shared axis
-   (`drawSeries`) and the heatmap on a second canvas (`drawHeatmap`), then
-   updates the metrics panel.
-5. **Validation layer.** `scripts/validate.js` and
-   `scripts/validate_repository.mjs` are dependency-free checks (run via
-   `npm run check` / `npm run validate:research`) that confirm required
-   files exist, `data/reference.json` and `data/research-reference.json`
-   parse and contain finite anchor points, both worker/app scripts are
-   syntactically valid, and required citations are present in the README.
-   See `RESEARCH_QUALITY.md` for the scope of that layer.
-
-This same `physicsWorker.js` file also hosts unrelated toy models for other
-labs (CMB spectrum, supernova distance modulus, FRB dispersion, microlensing,
-etc.) behind a `lab` id dispatch table — only the `rotation` entry is used by
-this app.
-
-## Usage
-
-Run a static file server from the repository root (a plain `file://` open
-will not let the Worker fetch `data/reference.json` in all browsers):
+The application remains dependency-free and needs only a static HTTP server:
 
 ```bash
-python -m http.server 8080
+npx serve .
 ```
 
-Open `http://localhost:8080`, then drag the disk mass, bulge mass, halo
-speed and halo core sliders and watch `v_solar`, `v_flat` and
-`halo_fraction` update against the fixed reference anchors. Click **Reset**
-to return all four parameters to their default values.
+Open the URL printed by the server. A direct `file://` URL cannot reliably load
+Web Workers or the JSON dataset in modern browsers.
+
+## Reproduce the dataset
+
+```bash
+npm run data:refresh
+```
+
+`scripts/import_sparc.mjs` downloads the official SPARC
+`MassModels_Lelli2016c.mrt` table, verifies SHA-256
+`9108994b12cc401b94a1768beca61c53ec354779385c9c9cc571049f3043244c`,
+selects the 43 `NGC3198` rows and renames columns without changing values. A
+checksum mismatch stops the import so an upstream change cannot silently alter
+the fixture.
+
+The table defines:
+
+- `Vobs` and `e_Vobs`: observed velocity and its random uncertainty from
+  non-circular motions or kinematic asymmetries;
+- `Vgas`: gas contribution including the SPARC factor 1.33 for helium;
+- `Vdisk` and `Vbul`: stellar contributions at
+  \(\Upsilon_{3.6}=1\ M_\odot/L_\odot\);
+- `SBdisk` and `SBbul`: inclination-corrected surface-brightness profiles.
+
+The quoted random errors do **not** include systematic uncertainty from the
+inclination correction. The current browser fit also fixes SPARC's adopted
+distance of 13.8 Mpc. These limitations are displayed in the interface and are
+the next nuisance parameters to implement.
+
+## Model equations
+
+At every radius the application uses SPARC's sign-preserving convention for
+component accelerations:
+
+```text
+v_bar² = sign(Vgas) Vgas²
+       + Υdisk sign(Vdisk) Vdisk²
+       + Υbul  sign(Vbul)  Vbul²
+
+v_total² = v_bar² + v_halo²
+```
+
+NGC 3198 has no SPARC bulge component, so `Υbul` is fixed and inactive. The
+three halo families are:
+
+```text
+pISO:   v² = v∞² [1 - (rc/r) atan(r/rc)]
+
+NFW:    v² = vs² [ln(1+x) - x/(1+x)] / x
+        x = r/rs,  vs² = 4πGρsrs²
+
+Burkert:v² = vs² {ln[(1+x)²(1+x²)] - 2 atan(x)} / x
+        x = r/r0,  vs² = πGρ0r0²
+```
+
+The weighted likelihood assumes independent Gaussian random errors:
+
+```text
+χ² = Σ [(Vobs - Vmodel) / σV]²
+ln L = -χ² / 2 + constant
+```
+
+That independence assumption is explicit: the current release does not claim
+to model covariance, distance uncertainty, inclination uncertainty or stellar
+population uncertainty beyond the interactive disc mass-to-light ratio.
 
 ## Validate
 
 ```bash
-npm run check              # syntax + reference-data + citation checks
-npm run validate:research  # research-quality reference/anchor checks
+npm run verify
 ```
 
-## Math Appendix
+The verification chain performs JavaScript syntax checks, validates the data
+schema/provenance/citations/accessibility hooks, tests analytic profile limits
+and verifies that every halo family produces finite values for all 43
+observations.
 
-| Symbol | Meaning |
+## Repository map
+
+| Path | Role |
 |---|---|
-| `r` | Galactocentric radius [kpc] |
-| `v_c(r)` | Circular (orbital) velocity at radius `r` [km/s] |
-| `diskMass` | Disk mass scale factor (dimensionless slider, default 1) |
-| `bulgeMass` | Bulge mass scale factor (dimensionless slider, default 0.65) |
-| `haloV` | Halo asymptotic circular speed [km/s] |
-| `haloCore` | Halo core radius [kpc] |
+| `index.html` | Semantic workstation, controls, chart descriptions and table |
+| `styles.css` | Responsive semantic-token theme and focus/reduced-motion states |
+| `app.js` | UI state, high-DPI plotting, exports and Worker request ordering |
+| `rotationPhysics.js` | Tested halo profiles, SPARC decomposition and likelihood |
+| `physicsWorker.js` | Off-thread evaluation and deterministic grid fit |
+| `data/reference.json` | NGC 3198 values plus column and provenance metadata |
+| `scripts/import_sparc.mjs` | Checksum-pinned SPARC ingestion |
+| `tests/rotationPhysics.test.js` | Analytic, data and finite-output tests |
 
-Disk term:
-`v_disk(r) = 185 * sqrt(diskMass) * r / (r + 3) * exp(-r / 55)`
+## Research boundaries
 
-Bulge term:
-`v_bulge(r) = 150 * sqrt(bulgeMass) * exp(-r / 4)`
+- A low χ² for one profile does not establish that profile as uniquely true.
+- SPARC random uncertainties are not the complete error budget.
+- `v_halo²/v_total²` at one radius is a force decomposition, not an exact
+  three-dimensional enclosed dark-matter mass fraction for a flattened disc.
+- NGC 3198 is one galaxy; population statements require a quality-controlled
+  multi-galaxy analysis and a selection function.
+- Rotation curves constrain the gravitational field. They do not establish
+  the microscopic identity of dark matter.
 
-Pseudo-isothermal halo term:
-`v_halo(r) = haloV * sqrt(1 - (haloCore / r) * atan(r / haloCore))`
-
-Total (quadrature sum of independent components):
-`v_total(r) = sqrt(v_disk(r)^2 + v_bulge(r)^2 + v_halo(r)^2)`
-
-General definition each term approximates (spherically-averaged enclosed
-mass form):
-`v_c(r) = sqrt(G * M(r) / r)`
-
-NFW halo density profile (background/context, not implemented here):
-`ρ_NFW(r) = ρ_0 / [ (r / r_s) * (1 + r / r_s)^2 ]`
-
-## Architecture
-
-- `index.html`: mission-control interface.
-- `styles.css`: dense dark scientific dashboard.
-- `app.js`: UI state, Canvas rendering and worker orchestration.
-- `physicsWorker.js`: numerical rotation-curve model (`rotation(p)`) and
-  mass-decomposition heatmap generation, alongside unrelated lab models
-  behind the same dispatch table.
-- `data/reference.json`: auditable Milky-Way rotation-curve anchor points.
-- `data/research-reference.json`: benchmark anchors for the validation
-  script.
-- `research-overlay.js`: optional mission-control quality/telemetry panel.
-- `scripts/validate.js`, `scripts/validate_repository.mjs`: no-dependency
-  repository validation.
-
-## Reference Data
-
-Representative circular-speed anchors for a flat Galactic rotation curve
-(inner Galaxy, solar-neighbourhood rise, solar circle, outer disk,
-halo-supported outer curve), used both for on-screen comparison and for
-browser validation. See `data/reference.json`.
+See [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md) for the validation contract and
+the project-level blueprint in the parent workspace for the staged expansion
+into dwarf dynamics, lensing, clusters, cosmology and particle-search limits.
 
 ## References
 
-- Rubin, V.C., Ford Jr, W.K. and Thonnard, N., 1980. Rotational properties
-  of 21 Sc galaxies with a large range of luminosities and radii. The
-  Astrophysical Journal, 238, pp.471-487.
-- Navarro, J.F., Frenk, C.S. and White, S.D.M., 1996. The structure of cold
-  dark matter halos. The Astrophysical Journal, 462, p.563.
-- Sofue, Y., 2020. Rotation curve of the Milky Way and the dark matter
-  density. Galaxies, 8(2), p.37.
-- Lelli, F., McGaugh, S.S. and Schombert, J.M., 2016. SPARC: Mass models
-  for 175 disk galaxies with Spitzer photometry and accurate rotation
-  curves. The Astronomical Journal, 152(6), p.157.
-
-## Reference Data: A Real Galaxy, Not a Milky Way Sketch
-
-`data/reference.json` no longer holds five illustrative Milky-Way-like points -- it holds the
-**actual 43-point observed rotation curve of NGC 3198**, a textbook flat-rotation-curve spiral
-galaxy, pulled directly from the public **SPARC** (Spitzer Photometry and Accurate Rotation
-Curves) database mass-models table (`MassModels_Lelli2016c.mrt`, Lelli, McGaugh & Schombert
-2016). Each point carries its real measured velocity uncertainty, rendered as an error bar on
-the plot. The worker's radius axis now extends to 46 kpc to cover NGC 3198's full observed
-range, and the `data_rms_kms` telemetry metric reports the live RMS of the disk+bulge+halo
-model against these real data points (replacing the previous Milky-Way-specific
-`solar_residual_kms`, which no longer applies to an external galaxy).
-
-## What the Flat Curve Actually Weighs: Dynamical Mass and Dark Matter Fraction
-
-Two more metrics turn the rotation curve into an actual galaxy weighing: `dynamical_mass_1e10_Msun`
-and `dark_matter_fraction` apply `M(R) = v^2 R / G` (the standard technique for weighing a
-galaxy from its rotation curve, e.g. Sofue, 2020, *Galaxies*, 8(2), p.37) at NGC 3198's
-outermost observed radius (`~44 kpc`).
-
-At the default parameters this gives a dynamical mass of roughly `3.2 x 10^11 Msun` enclosed
-within `44 kpc` -- and comparing that to the disk+bulge (baryonic) velocity contribution's own
-share of the total (mass scales with `v^2` in a roughly spherical potential, so
-`(v_baryon/v_total)^2` approximates the baryonic mass fraction) gives a dark matter fraction of
-roughly **80%** at that radius. This is the actual historical result: Rubin, Ford & Thonnard
-(1980) found spiral-galaxy rotation curves staying flat far beyond where the visible disk light
-falls off, meaning most of a galaxy's *mass* lies in an extended, invisible halo -- not a
-qualitative claim, but a number you can read directly off this plot.
-
-**Caveat stated deliberately:** the `(v_baryon/v_total)^2` mass-fraction approximation is a
-standard textbook shortcut, not an exact deprojection -- it assumes a simplified spherical mass
-distribution and ignores the different radial profiles of disk, bulge and halo components. A
-real mass decomposition uses the full Poisson-equation relation between each component's
-density profile and its rotation-curve contribution.
-
-## Research Quality Upgrade
-
-See [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md) for the validation layer,
-reference anchors, equations and research boundaries added to this
-repository.
+- Lelli, F., McGaugh, S. S. and Schombert, J. M. (2016), “SPARC: Mass
+  Models for 175 Disk Galaxies with Spitzer Photometry and Accurate Rotation
+  Curves”, *The Astronomical Journal* 152, 157.
+  https://doi.org/10.3847/0004-6256/152/6/157
+- de Blok, W. J. G. et al. (2008), “High-Resolution Rotation Curves and
+  Galaxy Mass Models from THINGS”, *The Astronomical Journal* 136, 2648.
+  https://doi.org/10.1088/0004-6256/136/6/2648
+- Navarro, J. F., Frenk, C. S. and White, S. D. M. (1996), “The Structure
+  of Cold Dark Matter Halos”, *The Astrophysical Journal* 462, 563.
+  https://doi.org/10.1086/177173
+- Burkert, A. (1995), “The Structure of Dark Matter Halos in Dwarf
+  Galaxies”, *The Astrophysical Journal Letters* 447, L25.
+  https://doi.org/10.1086/309560

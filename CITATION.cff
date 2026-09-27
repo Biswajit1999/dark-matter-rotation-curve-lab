@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this software, cite this repository and the SPARC source paper."
+title: "Dark Matter Evidence Lab"
+type: software
+version: "2.0.0-alpha.1"
+date-released: 2026-09-27
+authors:
+  - family-names: Jana
+    given-names: Biswajit
+    orcid: "https://orcid.org/0009-0002-2411-1891"
+repository-code: "https://github.com/Biswajit1999/dark-matter-rotation-curve-lab"
+license: MIT
+preferred-citation:
+  type: article
+  title: "SPARC: Mass Models for 175 Disk Galaxies with Spitzer Photometry and Accurate Rotation Curves"
+  authors:
+    - family-names: Lelli
+      given-names: Federico
+    - family-names: McGaugh
+      given-names: Stacy S.
+    - family-names: Schombert
+      given-names: James M.
+  journal: "The Astronomical Journal"
+  volume: 152
+  issue: 6
+  year: 2016
+  doi: "10.3847/0004-6256/152/6/157"

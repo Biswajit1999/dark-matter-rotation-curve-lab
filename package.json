@@ -1,11 +1,14 @@
 {
-  "name": "dark-matter-rotation-curve-lab",
-  "version": "1.0.0",
+  "name": "dark-matter-evidence-lab",
+  "version": "2.0.0-alpha.1",
   "private": true,
-  "description": "Disk, bulge and halo decomposition for spiral-galaxy rotation curves.",
+  "description": "Evidence-first, reproducible modelling of the NGC 3198 SPARC rotation curve.",
   "scripts": {
-    "check": "node --check app.js && node --check physicsWorker.js && node --check scripts/validate.js && node scripts/validate.js",
-    "validate:research": "node scripts/validate_repository.mjs"
+    "check": "node --check app.js && node --check physicsWorker.js && node --check rotationPhysics.js && node --check scripts/import_sparc.mjs && node scripts/validate.js",
+    "test": "node --test tests/rotationPhysics.test.js",
+    "validate:research": "node scripts/validate_repository.mjs",
+    "data:refresh": "node scripts/import_sparc.mjs",
+    "verify": "npm run check && npm test && npm run validate:research"
   },
   "keywords": [
     "astrophysics",

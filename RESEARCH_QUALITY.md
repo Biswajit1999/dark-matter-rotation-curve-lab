@@ -1,25 +1,36 @@
-# Research Quality Upgrade
+# Research quality contract
 
-This repository has been upgraded with a compact research-quality layer: reference anchors, validation checks, and explicit scientific/software boundaries.
+This file describes what repository validation establishes and what it does
+not establish.
 
-## Scope
+## Automated guarantees
 
-Private dark-matter rotation-curve lab for disk, bulge and halo decomposition with reference anchors.
+`npm run verify` checks that:
 
-## Equations And Models
+1. the NGC 3198 fixture contains exactly 43 strictly ordered measurements;
+2. observed values, uncertainties and SPARC baryonic columns are finite and
+   every uncertainty is positive;
+3. the official upstream URL, transformation list and pinned SHA-256 checksum
+   are recorded;
+4. pseudo-isothermal, NFW and Burkert velocities remain finite at small and
+   large radii;
+5. disc mass-to-light scaling follows \(v_\star\propto\sqrt{\Upsilon}\);
+6. all models return one standardised residual per observation;
+7. the page exposes a skip link, chart descriptions, a data table and reduced
+   motion styling.
 
-- Repository metadata completeness
-- Reference-data finite anchor validation
-- Reproducible source integrity
+## Guarantees requiring future work
 
-## Reference Anchors
+The current tests do not validate distance or inclination marginalisation,
+correlated systematics, posterior calibration, evidence estimation, population
+selection or agreement with an independent fitting package. Grid minimisation
+is deterministic exploration, not Bayesian inference. A later release should
+add synthetic coverage tests and TypeScript/Python parity fixtures before
+claiming research-grade parameter constraints.
 
-The file `data/research-reference.json` stores benchmark anchors used by `scripts/validate_repository.mjs`. These are intentionally small and auditable so the repository can be checked without network access.
+## Claim language
 
-## Browser Upgrade
-
-If this repository contains a browser interface, `research-overlay.js` adds a non-invasive mission-control quality panel with validation status and benchmark telemetry.
-
-## References
-
-- Wilson, G. et al., 2017. Good enough practices in scientific computing. PLOS Computational Biology, 13(6), p.e1005510.
+Use “halo velocity-squared share at the outermost measured radius”, not “dark
+matter mass fraction”. Use “best point on the displayed grid”, not “measured
+halo parameters”. Describe the result as evidence for a mass discrepancy under
+the stated dynamical assumptions, never as detection of a dark-matter particle.
