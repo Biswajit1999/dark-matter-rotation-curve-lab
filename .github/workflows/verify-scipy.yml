@@ -1,0 +1,44 @@
+name: Independent SciPy validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "validation/**"
+      - "rotationPhysics.js"
+      - "data/reference.json"
+      - ".github/workflows/verify-scipy.yml"
+  push:
+    branches: [main]
+    paths:
+      - "validation/**"
+      - "rotationPhysics.js"
+      - "data/reference.json"
+      - ".github/workflows/verify-scipy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scipy-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: validation/requirements.txt
+      - name: Install validation dependencies
+        run: python -m pip install -r validation/requirements.txt
+      - name: Run independent NGC 3198 fits
+        run: python validation/rotation_scipy.py --write
+      - name: Upload fit snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: scipy-reference-fit
+          path: validation/scipy_reference_fit.json
+          if-no-files-found: error
