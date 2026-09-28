@@ -11,7 +11,7 @@
   <meta property="og:type" content="website">
   <meta name="keywords" content="dark matter, astrophysics, cosmology, galaxy rotation curves, SPARC, gravitational lensing, Bullet Cluster, Bayesian inference, CMB, dark energy, open science">
   <title>Dark Matter Evidence Lab — From Light to Gravity</title>
-  <link rel="stylesheet" href="styles.css?v=3.0.0-beta.3">
+  <link rel="stylesheet" href="styles.css?v=3.0.0-beta.4">
 </head>
 <body class="mode-research">
   <a class="skip-link" href="#main-content">Skip to analysis</a>
@@ -822,6 +822,60 @@
           <div class="validity-panel"><span class="epistemic-label">Model boundary</span><h3 id="futureValidityTitle">Illustrative contact scale only</h3><p id="futureValidity">A real exclusion or sensitivity curve must specify an interaction operator, target response, detector exposure and statistical treatment.</p></div>
         </div>
       </div>
+      <section class="dimension-hypothesis" aria-labelledby="dimension-question">
+        <div class="section-heading compact-heading">
+          <div><p class="kicker">Hypothesis laboratory</p><h3 id="dimension-question">Is dark matter hidden in another dimension?</h3></div>
+          <p>No extra spatial dimension is required for matter to be electromagnetically dark. A particle in ordinary 3+1-dimensional spacetime can simply lack a useful electromagnetic coupling. Extra-dimensional models are separate, testable beyond-Standard-Model hypotheses.</p>
+        </div>
+        <div class="dimension-grid">
+          <article>
+            <span class="certainty-tag certainty-active">baseline physics</span>
+            <h4>3 spatial dimensions + time</h4>
+            <p>Weak or absent electromagnetic coupling is enough to prevent ordinary imaging. Gravity can still reveal the mass distribution.</p>
+            <div class="dimension-diagram" aria-label="Ordinary spacetime dark matter concept"><span>ordinary spacetime</span><i>photons</i><b>dark state</b><em>gravity</em></div>
+          </article>
+          <article>
+            <span class="certainty-tag certainty-speculative">hypothesis</span>
+            <h4>3+1+n dimensions</h4>
+            <p>Kaluza–Klein, braneworld or bulk-state scenarios can introduce additional states or mediators, but must earn their place through observable deviations—not visual intuition.</p>
+            <div class="dimension-diagram extra" aria-label="Extra-dimensional hypothesis concept"><span>visible brane</span><i>compact/bulk dimension</i><b>hypothetical state</b><em>testable signature?</em></div>
+          </article>
+          <article>
+            <span class="epistemic-label">Discriminating question</span>
+            <h4>What measurement would tell the scenarios apart?</h4>
+            <p>Collider spectra, modified force laws, missing-energy signatures or other model-specific observables must differ from an ordinary weakly coupled dark sector. “We cannot see it” alone is not evidence for extra dimensions.</p>
+            <a href="https://pdg.lbl.gov/" target="_blank" rel="noopener noreferrer">Particle Data Group reviews</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="engine-lab" aria-labelledby="engine-title">
+        <div class="section-heading compact-heading">
+          <div><p class="kicker">Discovery-dependent engineering</p><h3 id="engine-title">Could dark matter power or propel a spacecraft?</h3></div>
+          <p>Only after specifying interaction, capture, energy transfer and momentum transfer. This calculator makes the missing physics explicit and treats a failed engine as a useful result.</p>
+        </div>
+        <div class="engine-decision-tree" aria-label="Dark matter technology decision tree">
+          <span>identity known?</span><b>→ coupling?</b><b>→ controllable?</b><b>→ capture?</b><b>→ energy transfer?</b><b>→ directed momentum?</b><strong>→ engineering</strong>
+        </div>
+        <div class="engine-layout">
+          <form class="future-controls" id="engineForm">
+            <h4>Assumption ledger</h4>
+            <div class="range-field"><div class="range-label"><label for="engineArea">Collector area</label><output id="engineAreaOutput" for="engineArea">10⁶ m²</output></div><input id="engineArea" type="range" min="0" max="8" step="1" value="6"></div>
+            <div class="range-field"><div class="range-label"><label for="engineMass">Spacecraft mass</label><output id="engineMassOutput" for="engineMass">10⁵ kg</output></div><input id="engineMass" type="range" min="2" max="8" step="1" value="5"></div>
+            <div class="range-field"><div class="range-label"><label for="engineColumn">Target column</label><output id="engineColumnOutput" for="engineColumn">10³⁰ cm⁻²</output></div><input id="engineColumn" type="range" min="20" max="35" step="1" value="30"></div>
+            <div class="range-field"><div class="range-label"><label for="engineCapture">Engineering capture factor</label><output id="engineCaptureOutput" for="engineCapture">100%</output></div><input id="engineCapture" type="range" min="0" max="1" step="0.01" value="1"></div>
+            <div class="range-field"><div class="range-label"><label for="engineConversion">Mass-energy conversion efficiency</label><output id="engineConversionOutput" for="engineConversion">100%</output></div><input id="engineConversion" type="range" min="0" max="1" step="0.01" value="1"></div>
+            <div class="range-field"><div class="range-label"><label for="engineMomentum">Momentum-transfer factor</label><output id="engineMomentumOutput" for="engineMomentum">1.00</output></div><input id="engineMomentum" type="range" min="0" max="2" step="0.05" value="1"></div>
+            <p class="method-note">Cross section and local density are inherited from the encounter sandbox above. The target column is a deliberately simplified optical-depth proxy. No known material can be assumed to capture dark matter with the selected efficiencies.</p>
+          </form>
+          <div>
+            <div id="engineMetrics" class="future-metrics engine-metrics" aria-live="polite"></div>
+            <div id="engineVerdict" class="validity-panel"></div>
+            <p id="engineSummary" class="sr-summary">Engine feasibility calculation is loading.</p>
+          </div>
+        </div>
+      </section>
+
       <div class="frontier-heading"><p class="kicker">Research Frontier</p><h3>What is known, unknown and decisive</h3></div>
       <div id="frontierGrid" class="frontier-grid"></div>
       <details>
@@ -903,11 +957,11 @@
       <a href="https://orcid.org/0009-0002-2411-1891" target="_blank" rel="noopener noreferrer">ORCID</a>
     </nav>
   </footer>
-  <script src="rotationPhysics.js?v=3.0.0-beta.3"></script>
-  <script src="lensingPhysics.js?v=3.0.0-beta.3"></script>
-  <script src="cosmologyPhysics.js?v=3.0.0-beta.3"></script>
-  <script src="futuresPhysics.js?v=3.0.0-beta.3"></script>
-  <script src="app.js?v=3.0.0-beta.3"></script>
+  <script src="rotationPhysics.js?v=3.0.0-beta.4"></script>
+  <script src="lensingPhysics.js?v=3.0.0-beta.4"></script>
+  <script src="cosmologyPhysics.js?v=3.0.0-beta.4"></script>
+  <script src="futuresPhysics.js?v=3.0.0-beta.4"></script>
+  <script src="app.js?v=3.0.0-beta.4"></script>
   <script type="module" src="motionSystem.mjs"></script>
 </body>
 </html>
