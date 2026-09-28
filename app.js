@@ -300,7 +300,7 @@ function drawDiagnostics() {
 
   const { chains, parameterKeys, priors, summaries } = state.posterior;
   const labels = { massToLightDisk: 'Disc M/L', haloVelocity: 'Halo velocity', haloScale: 'Scale radius' };
-  const colours = ['#54b8ea', '#f4b860', '#b1a7ff', '#67d6c0', '#ff8d7d', '#d9e4f2'];
+  const colours = ['#d45f3b', '#e4a33a', '#a77a52', '#7a5db0', '#b43d35', '#c9beb0'];
 
   {
     const { context, width, height } = prepareCanvas(traceCanvas);
@@ -485,9 +485,9 @@ function drawSeries() {
   const visibleIds = new Set(stageSeries[state.storyStage] || stageSeries.lab);
   const visibleSeries = state.result.series.filter(series => visibleIds.has(series.id));
   const legendItems = [
-    { name: 'Observed ±1σ', color: '#f4b860', dash: [] },
-    ...(priorPredictive ? [{ name: '90% prior-predictive interval', color: '#b1a7ff', dash: [6, 5], fill: 'prior' }] : []),
-    ...(predictive ? [{ name: '68% posterior-predictive interval', color: '#54b8ea', dash: [3, 4], fill: 'posterior' }] : []),
+    { name: 'Observed ±1σ', color: '#e4a33a', dash: [] },
+    ...(priorPredictive ? [{ name: '90% prior-predictive interval', color: '#a77a52', dash: [6, 5], fill: 'prior' }] : []),
+    ...(predictive ? [{ name: '68% posterior-predictive interval', color: '#d45f3b', dash: [3, 4], fill: 'posterior' }] : []),
     ...visibleSeries
   ];
   const columns = width < 720 ? 2 : legendItems.length;
@@ -580,7 +580,7 @@ function drawSeries() {
   for (const point of points) {
     const x = scaleX(point.radius);
     const y = scaleY(point.observed);
-    context.strokeStyle = '#f4b860';
+    context.strokeStyle = '#e4a33a';
     context.lineWidth = 1;
     context.beginPath();
     context.moveTo(x, scaleY(point.observed - point.uncertainty));
@@ -590,7 +590,7 @@ function drawSeries() {
     context.moveTo(x - 3, scaleY(point.observed + point.uncertainty));
     context.lineTo(x + 3, scaleY(point.observed + point.uncertainty));
     context.stroke();
-    context.fillStyle = '#f4b860';
+    context.fillStyle = '#e4a33a';
     context.beginPath();
     context.arc(x, y, 2.8, 0, Math.PI * 2);
     context.fill();
@@ -655,7 +655,7 @@ function drawResiduals() {
   }
   context.setLineDash([]);
   for (const item of residuals) {
-    context.fillStyle = Math.abs(item.standardised) > 3 ? '#ff7b8b' : '#54b8ea';
+    context.fillStyle = Math.abs(item.standardised) > 3 ? '#ff7b8b' : '#d45f3b';
     context.beginPath();
     context.arc(scaleX(item.radius), scaleY(item.standardised), 3, 0, Math.PI * 2);
     context.fill();
@@ -749,7 +749,7 @@ function drawPosterior() {
   const canvas = $('posteriorCanvas');
   if (!canvas) return;
   const { context, width, height } = prepareCanvas(canvas);
-  context.fillStyle = '#091725';
+  context.fillStyle = '#191512';
   context.fillRect(0, 0, width, height);
   if (!state.posterior) {
     context.fillStyle = '#a8b4c8';
@@ -822,7 +822,7 @@ function drawPosterior() {
     context.fillStyle = '#a8b4c8';
     context.font = '10px ui-monospace, Consolas, monospace';
     context.fillText(`${formatNumber(summaries[key].median, 3)} [${formatNumber(summaries[key].q16, 3)}, ${formatNumber(summaries[key].q84, 3)}]`, histogramLeft, panelTop + 23);
-    context.fillStyle = '#54b8ea';
+    context.fillStyle = '#d45f3b';
     bins.forEach((count, index) => {
       const barWidth = histogramWidth / bins.length;
       const barHeight = count / maximumCount * (panelHeight - 38);
@@ -952,8 +952,8 @@ function exportSvg() {
     const path = series.x.map((radius, index) => `${index ? 'L' : 'M'}${x(radius).toFixed(2)},${y(series.y[index]).toFixed(2)}`).join(' ');
     return `<path d="${path}" fill="none" stroke="${series.color}" stroke-width="${series.id === 'total' ? 3 : 2}"${series.dash?.length ? ` stroke-dasharray="${series.dash.join(' ')}"` : ''}/>`;
   }).join('');
-  const observations = points.map(point => `<g><line x1="${x(point.radius)}" x2="${x(point.radius)}" y1="${y(point.observed - point.uncertainty)}" y2="${y(point.observed + point.uncertainty)}" stroke="#f4b860"/><circle cx="${x(point.radius)}" cy="${y(point.observed)}" r="3" fill="#f4b860"/></g>`).join('');
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><title>${escape(state.reference.galaxy)} rotation-curve decomposition</title><desc>Observed SPARC velocities with gas, stellar disc, ${escape(state.params.haloModel)} halo and total model.</desc><rect width="100%" height="100%" fill="#0d1b2a"/><line x1="${left}" y1="${top}" x2="${left}" y2="${bottom}" stroke="#8290a6"/><line x1="${left}" y1="${bottom}" x2="${right}" y2="${bottom}" stroke="#8290a6"/>${paths}${observations}<text x="600" y="620" fill="#f4f7fb" text-anchor="middle">Galactocentric radius [kpc]</text><text x="28" y="320" fill="#f4f7fb" text-anchor="middle" transform="rotate(-90 28 320)">Circular velocity [km/s]</text></svg>`;
+  const observations = points.map(point => `<g><line x1="${x(point.radius)}" x2="${x(point.radius)}" y1="${y(point.observed - point.uncertainty)}" y2="${y(point.observed + point.uncertainty)}" stroke="#e4a33a"/><circle cx="${x(point.radius)}" cy="${y(point.observed)}" r="3" fill="#e4a33a"/></g>`).join('');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><title>${escape(state.reference.galaxy)} rotation-curve decomposition</title><desc>Observed SPARC velocities with gas, stellar disc, ${escape(state.params.haloModel)} halo and total model.</desc><rect width="100%" height="100%" fill="#0d1b2a"/><line x1="${left}" y1="${top}" x2="${left}" y2="${bottom}" stroke="#8290a6"/><line x1="${left}" y1="${bottom}" x2="${right}" y2="${bottom}" stroke="#8290a6"/>${paths}${observations}<text x="600" y="620" fill="#f7f2e9" text-anchor="middle">Galactocentric radius [kpc]</text><text x="28" y="320" fill="#f7f2e9" text-anchor="middle" transform="rotate(-90 28 320)">Circular velocity [km/s]</text></svg>`;
   download(`${state.reference.galaxy_id.toLowerCase()}-${state.params.haloModel}-fit.svg`, 'image/svg+xml;charset=utf-8', svg);
 }
 
@@ -990,8 +990,8 @@ function drawChallengeCurve(rows) {
   const scales = drawAxes(context, { width, height }, { minX: 0, maxX: rows.at(-1).radius, minY: 0, maxY }, { x: 'Radius [kpc]', y: 'Circular velocity [km/s]' });
   const series = [
     { key: 'baryonic', colour: '#9bdcf7', dash: [5, 5], label: 'Baryons only' },
-    { key: 'phenomenological', colour: '#b1a7ff', dash: [], label: state.challenge.relation === 'rar' ? 'Empirical RAR' : 'Simple ν' },
-    { key: 'halo', colour: '#54b8ea', dash: [], label: `Current ${state.params.haloModel.toUpperCase()} halo` }
+    { key: 'phenomenological', colour: '#a77a52', dash: [], label: state.challenge.relation === 'rar' ? 'Empirical RAR' : 'Simple ν' },
+    { key: 'halo', colour: '#d45f3b', dash: [], label: `Current ${state.params.haloModel.toUpperCase()} halo` }
   ];
   for (const item of series) {
     context.beginPath(); context.strokeStyle = item.colour; context.lineWidth = item.key === 'phenomenological' ? 2.7 : 1.8; context.setLineDash(item.dash);
@@ -1001,13 +1001,13 @@ function drawChallengeCurve(rows) {
   context.setLineDash([]);
   for (const row of rows) {
     const x = scales.scaleX(row.radius); const y = scales.scaleY(row.observed);
-    context.strokeStyle = '#f4b860'; context.lineWidth = 1; context.beginPath();
+    context.strokeStyle = '#e4a33a'; context.lineWidth = 1; context.beginPath();
     context.moveTo(x, scales.scaleY(row.observed - row.uncertainty)); context.lineTo(x, scales.scaleY(row.observed + row.uncertainty)); context.stroke();
-    context.fillStyle = '#f4b860'; context.beginPath(); context.arc(x, y, 2.5, 0, Math.PI * 2); context.fill();
+    context.fillStyle = '#e4a33a'; context.beginPath(); context.arc(x, y, 2.5, 0, Math.PI * 2); context.fill();
   }
   context.font = '11px ui-monospace, monospace'; context.textAlign = 'left';
   series.forEach((item, index) => { context.fillStyle = item.colour; context.fillText(`${item.key === 'baryonic' ? '– –' : '━━'} ${item.label}`, scales.plot.left + 8, scales.plot.top + 12 + index * 16); });
-  context.fillStyle = '#f4b860'; context.fillText('● Observed ± σ', scales.plot.left + 8, scales.plot.top + 60);
+  context.fillStyle = '#e4a33a'; context.fillText('● Observed ± σ', scales.plot.left + 8, scales.plot.top + 60);
 }
 
 function drawChallengeResiduals(rows) {
@@ -1019,12 +1019,12 @@ function drawChallengeResiduals(rows) {
   context.moveTo(scales.plot.left, scales.scaleY(0)); context.lineTo(scales.plot.right, scales.scaleY(0)); context.stroke();
   for (const row of rows) {
     const x = scales.scaleX(row.radius);
-    context.fillStyle = '#b1a7ff'; context.beginPath(); context.arc(x, scales.scaleY(row.phenomenologicalResidual), 3, 0, Math.PI * 2); context.fill();
-    context.fillStyle = '#54b8ea'; context.fillRect(x - 2.5, scales.scaleY(row.haloResidual) - 2.5, 5, 5);
+    context.fillStyle = '#a77a52'; context.beginPath(); context.arc(x, scales.scaleY(row.phenomenologicalResidual), 3, 0, Math.PI * 2); context.fill();
+    context.fillStyle = '#d45f3b'; context.fillRect(x - 2.5, scales.scaleY(row.haloResidual) - 2.5, 5, 5);
   }
   context.font = '11px ui-monospace, monospace'; context.textAlign = 'left';
-  context.fillStyle = '#b1a7ff'; context.fillText('● Phenomenological', scales.plot.left + 8, scales.plot.top + 12);
-  context.fillStyle = '#54b8ea'; context.fillText('■ Current halo', scales.plot.left + 8, scales.plot.top + 28);
+  context.fillStyle = '#a77a52'; context.fillText('● Phenomenological', scales.plot.left + 8, scales.plot.top + 12);
+  context.fillStyle = '#d45f3b'; context.fillText('■ Current halo', scales.plot.left + 8, scales.plot.top + 28);
 }
 
 function comparisonMetrics(rows, key) {
@@ -1101,7 +1101,7 @@ function drawClusterContours(context, point, width, height, index, showUncertain
   context.fillText(`M${index + 1}`, x, y + 4);
   if (showUncertainty) {
     context.setLineDash([5, 5]);
-    context.strokeStyle = '#f4f7fb';
+    context.strokeStyle = '#f7f2e9';
     context.lineWidth = 1;
     context.beginPath(); context.arc(x, y, 16, 0, Math.PI * 2); context.stroke();
     context.setLineDash([]);
@@ -1114,7 +1114,7 @@ function drawClusterMap() {
   const layers = activeClusterLayers();
   const { context, width, height } = prepareCanvas($('clusterCanvas'));
   const background = context.createLinearGradient(0, 0, width, height);
-  background.addColorStop(0, '#07111f');
+  background.addColorStop(0, '#191512');
   background.addColorStop(1, '#13263a');
   context.fillStyle = background;
   context.fillRect(0, 0, width, height);
@@ -1162,10 +1162,10 @@ function drawClusterMap() {
         const radius = 7 + (index * 13) % 62;
         const x = point[0] * width + Math.cos(angle) * radius;
         const y = point[1] * height + Math.sin(angle) * radius * 0.62;
-        context.fillStyle = index % 3 ? '#f4f7fb' : '#f4b860';
+        context.fillStyle = index % 3 ? '#f7f2e9' : '#e4a33a';
         context.beginPath(); context.arc(x, y, index % 5 === 0 ? 2.8 : 1.7, 0, Math.PI * 2); context.fill();
       }
-      context.strokeStyle = '#f4f7fb'; context.lineWidth = 1.3;
+      context.strokeStyle = '#f7f2e9'; context.lineWidth = 1.3;
       const x = point[0] * width; const y = point[1] * height;
       context.beginPath(); context.moveTo(x - 8, y); context.lineTo(x + 8, y); context.moveTo(x, y - 8); context.lineTo(x, y + 8); context.stroke();
     }
@@ -1175,7 +1175,7 @@ function drawClusterMap() {
 
   context.fillStyle = 'rgba(7, 17, 31, 0.88)';
   context.fillRect(12, 12, Math.min(width - 24, 330), 34);
-  context.fillStyle = '#f4f7fb'; context.font = '12px ui-monospace, monospace'; context.textAlign = 'left';
+  context.fillStyle = '#f7f2e9'; context.font = '12px ui-monospace, monospace'; context.textAlign = 'left';
   context.fillText(`${cluster.name} · layer reconstruction`, 24, 33);
 }
 
@@ -1234,10 +1234,10 @@ function drawCosmology() {
   const bounds = { minX: -6, maxX: 0, minY: 0, maxY: 1 };
   const scales = drawPopulationAxes(context, width, height, bounds, { x: 'log₁₀ scale factor a', y: 'fraction of H²' });
   const series = [
-    { key: 'radiation', label: 'Radiation', colour: '#f4b860', dash: [] },
-    { key: 'baryons', label: 'Baryons', colour: '#f4f7fb', dash: [7, 4] },
-    { key: 'darkMatter', label: 'Cold dark matter', colour: '#54b8ea', dash: [] },
-    { key: 'darkEnergy', label: 'Dark energy', colour: '#b1a7ff', dash: [2, 4] }
+    { key: 'radiation', label: 'Radiation', colour: '#e4a33a', dash: [] },
+    { key: 'baryons', label: 'Baryons', colour: '#f7f2e9', dash: [7, 4] },
+    { key: 'darkMatter', label: 'Cold dark matter', colour: '#d45f3b', dash: [] },
+    { key: 'darkEnergy', label: 'Dark energy', colour: '#a77a52', dash: [2, 4] }
   ];
   for (const item of series) {
     context.strokeStyle = item.colour; context.lineWidth = 2.2; context.setLineDash(item.dash); context.beginPath();
@@ -1325,8 +1325,8 @@ function drawBao() {
   const bounds = { minX: 0, maxX: 3, minY: 0, maxY: 45 };
   const scales = drawPopulationAxes(context, width, height, bounds, { x: 'redshift z', y: 'distance / r_d' });
   const curves = [
-    { key: 'dmOverRd', label: 'D_M / r_d', colour: '#54b8ea', dash: [] },
-    { key: 'dhOverRd', label: 'D_H / r_d', colour: '#f4b860', dash: [8, 5] }
+    { key: 'dmOverRd', label: 'D_M / r_d', colour: '#d45f3b', dash: [] },
+    { key: 'dhOverRd', label: 'D_H / r_d', colour: '#e4a33a', dash: [8, 5] }
   ];
   for (const curve of curves) {
     context.strokeStyle = curve.colour;
@@ -1647,7 +1647,7 @@ function drawPopulationAxes(context, width, height, bounds, labels) {
 }
 
 function populationPointColour(galaxy) {
-  return galaxy.derived.gas_fraction_at_ml_0p5 > 0.5 ? '#f4b860' : '#54b8ea';
+  return galaxy.derived.gas_fraction_at_ml_0p5 > 0.5 ? '#e4a33a' : '#d45f3b';
 }
 
 function drawBtfr(galaxies) {
@@ -1695,7 +1695,7 @@ function drawRar(galaxies) {
   const bounds = { minX: -13.5, maxX: -8, minY: -13.5, maxY: -8 };
   const scales = drawPopulationAxes(context, width, height, bounds, { x: 'log₁₀ gbar [m/s²]', y: 'log₁₀ gobs [m/s²]' });
   const gDagger = 1.2e-10;
-  context.strokeStyle = '#b1a7ff'; context.lineWidth = 2; context.beginPath();
+  context.strokeStyle = '#a77a52'; context.lineWidth = 2; context.beginPath();
   for (let index = 0; index <= 120; index += 1) {
     const logBaryonic = bounds.minX + (bounds.maxX - bounds.minX) * index / 120;
     const gBar = 10 ** logBaryonic;
