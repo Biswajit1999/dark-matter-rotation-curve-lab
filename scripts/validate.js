@@ -6,6 +6,8 @@ const required = [
   'README.md',
   'RESEARCH_QUALITY.md',
   'CITATION.cff',
+  'CHANGELOG.md',
+  'OPEN_PROBLEMS.md',
   'index.html',
   'styles.css',
   'app.js',
@@ -20,7 +22,18 @@ const required = [
   'data/dark_matter_candidates.json',
   'data/research_frontier.json',
   'data/evidence_graph.json',
+  'data/open_problems.json',
   'scripts/import_sparc.mjs',
+  'scripts/generate_readme_figures.mjs',
+  'validation/rotation_scipy.py',
+  'validation/requirements.txt',
+  'docs/figures/ngc3198-rotation.svg',
+  'docs/figures/cosmic-budget.svg',
+  'docs/figures/evidence-flow.svg',
+  'docs/figures/futures-decision-tree.svg',
+  'docs/thesis/main.tex',
+  'docs/thesis/references.bib',
+  'docs/thesis/README.md',
   'tests/rotationPhysics.test.js',
   'tests/lensingPhysics.test.js',
   'tests/cosmologyPhysics.test.js',
@@ -40,8 +53,6 @@ for (const image of [
 ]) {
   if (!fs.existsSync(image) || fs.statSync(image).size < 10_000) failures.push(`${image} is missing or invalid`);
 }
-if (!fs.existsSync('assets/concepts/future-dark-matter-detection.png') || fs.statSync('assets/concepts/future-dark-matter-detection.png').size < 100_000) failures.push('future detection concept image is missing or invalid');
-
 if (failures.length === 0) {
   const reference = JSON.parse(fs.readFileSync('data/reference.json', 'utf8'));
   const catalog = JSON.parse(fs.readFileSync('data/galaxies.json', 'utf8'));
@@ -79,7 +90,7 @@ if (failures.length === 0) {
   }
 
   const html = fs.readFileSync('index.html', 'utf8');
-  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'id="populationSearch"', 'id="btfrCanvas"', 'id="rarCanvas"', 'id="challengeRelation"', 'id="challengeCurveCanvas"', 'id="challengeResidualCanvas"', 'id="challengeRows"', 'id="clusterSelect"', 'id="clusterCanvas"', 'id="clusterRows"', 'Schematic, not a dark-matter photograph', 'id="cosmologyCanvas"', 'id="candidateFamily"', 'id="candidateGrid"', 'id="experimentRows"', 'AI-generated scientific concept—not an observation', 'id="scaleRange"', 'id="futureMetrics"', 'id="frontierGrid"', 'id="futureTimelineRows"', 'id="modeEducator"', 'id="modeResearch"', 'id="evidenceGraph"', 'id="evidenceRelations"', 'id="exportWorkspace"', 'aria-label="Evidence laboratory sections"', 'id="priorForm"', 'id="posteriorRows"', 'id="predictiveRows"', 'id="exportPredictive"', 'prefers-reduced-motion', '@media print']) {
+  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'id="populationSearch"', 'id="btfrCanvas"', 'id="rarCanvas"', 'id="challengeRelation"', 'id="challengeCurveCanvas"', 'id="challengeResidualCanvas"', 'id="challengeRows"', 'id="clusterSelect"', 'id="clusterCanvas"', 'id="clusterRows"', 'Schematic, not a dark-matter photograph', 'id="cosmologyCanvas"', 'id="baoCanvas"', 'id="candidateFamily"', 'id="candidateGrid"', 'id="experimentRows"', 'id="futureMethodBand"', 'id="dimension-question"', 'id="engine-title"', 'id="scaleRange"', 'id="futureMetrics"', 'id="frontierGrid"', 'id="futureTimelineRows"', 'id="modeEducator"', 'id="modeResearch"', 'id="evidenceGraph"', 'id="evidenceRelations"', 'id="copyAnalysisLink"', 'id="exportWorkspace"', 'aria-label="Evidence laboratory sections"', 'id="priorForm"', 'id="posteriorRows"', 'id="predictiveRows"', 'id="exportPredictive"', 'prefers-reduced-motion', '@media print']) {
     const source = ['prefers-reduced-motion', '@media print'].includes(pattern) ? fs.readFileSync('styles.css', 'utf8') : html;
     if (!source.includes(pattern)) failures.push(`accessibility contract missing: ${pattern}`);
   }
