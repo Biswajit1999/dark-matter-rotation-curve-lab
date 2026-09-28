@@ -56,37 +56,49 @@
       "name": "Sub-GeV recoils",
       "known": "Electronic, phonon and molecular excitations can lower thresholds.",
       "unknown": "Background populations and signal yields at the few-quanta limit.",
-      "decisive": "Repeatable target-scaled spectrum with calibrated response."
+      "decisive": "Repeatable target-scaled spectrum with calibrated response.",
+      "instrument": "Cryogenic semiconductors, superconducting sensors, molecular and low-threshold ionisation targets.",
+      "risk": "Few-quanta backgrounds, quenching, detector response and surface events can imitate low-energy signals."
     },
     {
       "name": "Directional detection",
       "known": "A Galactic-wind direction differs from most terrestrial backgrounds.",
       "unknown": "Whether scalable targets retain recoil direction at low energy.",
-      "decisive": "Sidereal directional modulation reproduced in independent targets."
+      "decisive": "Sidereal directional modulation reproduced in independent targets.",
+      "instrument": "Low-pressure TPCs, anisotropic crystals and directional solid-state targets with sidereal timing.",
+      "risk": "Direction information can be erased by diffusion, thresholds and reconstruction bias before reaching the analysis."
     },
     {
       "name": "Axion and wave sensing",
       "known": "Coherent fields can convert or drive resonant responses.",
       "unknown": "The relevant mass/frequency and coupling, if any.",
-      "decisive": "Frequency-coherent signal that tracks magnetic field or apparatus configuration."
+      "decisive": "Frequency-coherent signal that tracks magnetic field or apparatus configuration.",
+      "instrument": "Microwave cavities, lumped-element resonators, dielectric haloscopes, magnets and quantum sensors.",
+      "risk": "Environmental lines and apparatus resonances can mimic narrow coherent signals unless field/configuration scaling is reproduced."
     },
     {
       "name": "Precision timing",
       "known": "Clocks, pulsars and interferometers test transient or oscillatory fields.",
       "unknown": "Noise correlations and realistic dark-structure encounter rates.",
-      "decisive": "Correlated propagation pattern across separated instruments."
+      "decisive": "Correlated propagation pattern across separated instruments.",
+      "instrument": "Optical clocks, pulsar timing arrays, atom interferometers and geographically separated precision networks.",
+      "risk": "Clock noise, ephemeris errors and correlated environmental disturbances can masquerade as a coherent field."
     },
     {
       "name": "Survey-scale lensing",
       "known": "Gravity coherently distorts many background sources.",
       "unknown": "Baryonic feedback, redshift and shear-calibration degeneracies.",
-      "decisive": "Consistent mass maps across surveys, wavelengths and pipelines."
+      "decisive": "Consistent mass maps across surveys, wavelengths and pipelines.",
+      "instrument": "Rubin, Euclid, Roman, CMB lensing and multi-band shear/redshift calibration.",
+      "risk": "Photometric-redshift bias, PSF/shear calibration and baryonic feedback can shift reconstructed mass maps."
     },
     {
       "name": "Small-scale structure",
       "known": "Free streaming, waves and self-interactions alter halo populations.",
       "unknown": "How baryonic physics mimics or erases those signatures.",
-      "decisive": "One microphysical model matching satellites, streams, lenses and clusters."
+      "decisive": "One microphysical model matching satellites, streams, lenses and clusters.",
+      "instrument": "Strong-lens substructure, stellar streams, satellite populations and high-resolution simulations.",
+      "risk": "Baryonic feedback and selection effects can mimic or erase the signatures attributed to dark microphysics."
     }
   ],
   "timeline": [
