@@ -1,0 +1,290 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-09-28",
+  "epistemic_contract": "These are open research questions, not repository claims. Status must be revised when new observations or theory change the evidence.",
+  "questions": [
+    {
+      "id": "identity",
+      "question": "What is the microscopic identity of dark matter?",
+      "importance": "Gravity constrains abundance and distribution but not uniquely the particle, field, compact-object or multi-component content.",
+      "equations": [
+        "Omega_m = Omega_b + Omega_c + ...",
+        "dR/dE_R = (rho_chi/m_chi) N_T integral f(v) v d sigma/dE_R d^3v"
+      ],
+      "current_evidence": "Multiple gravitational probes support an additional non-baryonic component in the standard cosmological framework; no universally accepted microscopic detection exists.",
+      "competing_hypotheses": [
+        "WIMP-like relics",
+        "QCD axions / ALPs",
+        "ultralight fields",
+        "hidden sectors",
+        "primordial black holes in allowed windows",
+        "multi-component dark sectors",
+        "modified-gravity alternatives for some phenomena"
+      ],
+      "datasets": [
+        "SPARC",
+        "CMB/Planck",
+        "DESI",
+        "lensing surveys",
+        "direct-detection collaborations"
+      ],
+      "decisive_measurement": "A reproducible non-gravitational signal with independently verified mass/coupling properties that also remains consistent with astrophysical abundance and structure.",
+      "falsification": "Candidate-specific parameter regions can be excluded; no single null result falsifies all dark matter.",
+      "degeneracies": [
+        "local halo phase space",
+        "detector response",
+        "background model",
+        "cosmological model dependence"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "small_scale",
+      "question": "What sets the inner structure of dark-matter haloes?",
+      "importance": "Cores, cusps and substructure connect microphysics to baryonic feedback and numerical modelling.",
+      "equations": [
+        "rho_NFW ~ 1/[x(1+x)^2]",
+        "rho_Burkert ~ 1/[(1+x)(1+x^2)]"
+      ],
+      "current_evidence": "Resolved galaxies show diverse inner rotation-curve shapes; baryonic feedback and halo response are important systematics.",
+      "competing_hypotheses": [
+        "collisionless CDM + baryonic feedback",
+        "self-interacting dark matter",
+        "warm/ultralight suppression",
+        "observational systematics"
+      ],
+      "datasets": [
+        "SPARC",
+        "THINGS",
+        "dwarf-galaxy kinematics",
+        "strong-lensing substructure",
+        "stellar streams"
+      ],
+      "decisive_measurement": "A cross-scale signature that follows one microphysical interaction law after baryonic and selection effects are controlled.",
+      "falsification": "A proposed microphysics model fails if it cannot reproduce jointly galaxies, substructure and cluster constraints.",
+      "degeneracies": [
+        "stellar mass-to-light ratio",
+        "inclination",
+        "non-circular motions",
+        "feedback history"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "local_phase_space",
+      "question": "What is the local Milky Way dark-matter phase-space distribution?",
+      "importance": "Direct-detection rates and directional signatures depend on density and velocity structure near the Solar neighbourhood.",
+      "equations": [
+        "Phi_chi = (rho_chi/m_chi) v",
+        "f(v) enters recoil-rate integrals"
+      ],
+      "current_evidence": "Stellar dynamics constrain local density and kinematics but depend on tracer, equilibrium and Galactic-potential assumptions.",
+      "competing_hypotheses": [
+        "smooth halo",
+        "streams/debris flow",
+        "dark disc contributions",
+        "non-equilibrium phase-space structure"
+      ],
+      "datasets": [
+        "Gaia",
+        "stellar spectroscopic surveys",
+        "streams",
+        "future directional detectors"
+      ],
+      "decisive_measurement": "Consistent dynamical reconstruction plus a directional non-gravitational signal mapping the same phase-space features.",
+      "falsification": "Specific smooth-halo models can be rejected by incompatible directional or dynamical structure.",
+      "degeneracies": [
+        "baryonic potential",
+        "selection function",
+        "non-equilibrium dynamics"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "self_interaction",
+      "question": "Does dark matter self-interact?",
+      "importance": "Self-interactions can alter halo cores, shapes and merging-cluster dynamics.",
+      "equations": [
+        "sigma_chi_chi / m_chi",
+        "optical depth ~ (sigma/m) Sigma"
+      ],
+      "current_evidence": "Cluster and galaxy constraints are velocity- and model-dependent; no unique nonzero self-interaction has been established.",
+      "competing_hypotheses": [
+        "collisionless CDM",
+        "velocity-dependent SIDM",
+        "baryonic core formation"
+      ],
+      "datasets": [
+        "Bullet Cluster",
+        "other merging clusters",
+        "halo shapes",
+        "dwarf galaxies",
+        "simulations"
+      ],
+      "decisive_measurement": "A repeatable velocity-dependent scattering signature across independently modelled systems.",
+      "falsification": "A proposed cross-section law is ruled out if it simultaneously conflicts with cluster and galaxy-scale structure.",
+      "degeneracies": [
+        "merger geometry",
+        "projection",
+        "mass reconstruction",
+        "baryonic gas physics"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "dark_sector",
+      "question": "Is dark matter one component or an extended dark sector?",
+      "importance": "Multiple states and mediators change production, structure, detection and possible technology.",
+      "equations": [
+        "Boltzmann abundance equations",
+        "portal coupling strengths",
+        "self-interaction rates"
+      ],
+      "current_evidence": "Current gravitational data do not require a single microscopic species.",
+      "competing_hypotheses": [
+        "single thermal relic",
+        "asymmetric dark matter",
+        "dark atoms",
+        "multiple cold/warm components",
+        "dark radiation"
+      ],
+      "datasets": [
+        "CMB",
+        "large-scale structure",
+        "colliders",
+        "beam dumps",
+        "rare-event searches"
+      ],
+      "decisive_measurement": "Two or more correlated dark-sector observables that cannot be fit by one effective component.",
+      "falsification": "Specific sector models fail joint cosmological, laboratory and structure constraints.",
+      "degeneracies": [
+        "thermal history",
+        "mediator lifetime",
+        "portal strength"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "extra_dimensions",
+      "question": "Are extra dimensions relevant to dark-sector physics?",
+      "importance": "Extra-dimensional models can generate Kaluza-Klein states or new mediators, but electromagnetic darkness alone does not require them.",
+      "equations": [
+        "3+1+n dimensional field modes",
+        "m_n^2 = m_0^2 + n^2/R^2 (simple compactification example)"
+      ],
+      "current_evidence": "No extra spatial dimension is established as the explanation for dark matter.",
+      "competing_hypotheses": [
+        "ordinary 3+1D weakly coupled dark sector",
+        "compact extra dimensions",
+        "braneworld/bulk states"
+      ],
+      "datasets": [
+        "collider missing-energy searches",
+        "short-range gravity tests",
+        "cosmology"
+      ],
+      "decisive_measurement": "A model-specific spectrum or force-law deviation independently reproduced and consistent with a dark-matter abundance mechanism.",
+      "falsification": "Non-observation excludes model-specific compactification/coupling regions, not the entire idea at once.",
+      "degeneracies": [
+        "mediator models",
+        "detector acceptance",
+        "effective-field-theory validity"
+      ],
+      "status": "hypothesis"
+    },
+    {
+      "id": "baryons_vs_dark",
+      "question": "How completely can baryonic physics mimic small-scale dark-matter signatures?",
+      "importance": "Feedback, gas flows and stellar populations can reshape the same observables used to infer halo microphysics.",
+      "equations": [
+        "v_total^2 = v_bar^2 + v_halo^2",
+        "hydrodynamic feedback energy/momentum budgets"
+      ],
+      "current_evidence": "Baryons matter strongly in galaxy centres, but the degree of degeneracy varies by system and scale.",
+      "competing_hypotheses": [
+        "feedback-dominated diversity",
+        "halo-microphysics diversity",
+        "combined effects"
+      ],
+      "datasets": [
+        "resolved gas/stellar kinematics",
+        "star-formation histories",
+        "hydrodynamic simulations"
+      ],
+      "decisive_measurement": "Joint baryonic-history and gravitational constraints across systems selected independently of the anomaly.",
+      "falsification": "A proposed feedback mechanism fails if its required energy/history is inconsistent with observed stellar populations.",
+      "degeneracies": [
+        "star-formation history",
+        "IMF",
+        "gas geometry",
+        "non-circular motion"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "alternative_gravity",
+      "question": "Which observations most cleanly distinguish dark matter from modified-gravity explanations?",
+      "importance": "Galaxy regularities alone can be degenerate with phenomenological acceleration laws.",
+      "equations": [
+        "g_obs(g_bar)",
+        "relativistic lensing field equations for the tested theory"
+      ],
+      "current_evidence": "The standard dark-matter framework fits multiple independent cosmological and lensing probes; alternative frameworks require complete relativistic predictions to be compared fairly.",
+      "competing_hypotheses": [
+        "particle dark matter within GR",
+        "MOND-like phenomenology",
+        "relativistic modified-gravity theories"
+      ],
+      "datasets": [
+        "galaxy rotation curves",
+        "clusters",
+        "CMB",
+        "lensing",
+        "large-scale structure"
+      ],
+      "decisive_measurement": "A pre-registered cross-scale prediction on which complete theories differ and systematics are controlled.",
+      "falsification": "Theory-specific predictions fail if they cannot jointly fit the discriminating data.",
+      "degeneracies": [
+        "environmental effects",
+        "external-field effects",
+        "baryonic modelling"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "technology_gate",
+      "question": "What properties would have to be discovered before dark matter could become an engineering medium?",
+      "importance": "Discovery does not imply capture, energy extraction, communication or propulsion.",
+      "equations": [
+        "mass flux = rho v",
+        "kinetic power/A = 0.5 rho v^3",
+        "momentum flux = rho v^2",
+        "rest-energy ceiling/A = eta rho v c^2",
+        "P_int = 1-exp(-sigma N)"
+      ],
+      "current_evidence": "Known searches target extraordinarily weak interactions; no demonstrated capture, confinement or controllable conversion mechanism exists.",
+      "competing_hypotheses": [
+        "gravity-only utility",
+        "directional sensing",
+        "controllable portal coupling",
+        "annihilating/decaying captured state",
+        "no engineering utility"
+      ],
+      "datasets": [
+        "direct detection",
+        "axion searches",
+        "colliders",
+        "astrophysical phase-space constraints"
+      ],
+      "decisive_measurement": "A reproducible controllable interaction followed by demonstrated capture/confinement and quantified energy or momentum transfer.",
+      "falsification": "If surviving dark matter couples only gravitationally at inaccessible strengths, most material-engineering scenarios fail.",
+      "degeneracies": [
+        "local density",
+        "velocity distribution",
+        "target column",
+        "unknown mediator physics"
+      ],
+      "status": "discovery-dependent"
+    }
+  ]
+}
