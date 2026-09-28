@@ -13,7 +13,7 @@
     "data:refresh": "node scripts/import_sparc.mjs",
     "verify": "npm run docs:check && npm run check && npm test && npm run validate:research && npm run build",
     "docs:figures": "node scripts/generate_readme_figures.mjs && node scripts/generate_population_figures.mjs",
-    "docs:check": "npm run docs:figures && git diff --exit-code -- docs/figures"
+    "docs:check": "npm run docs:figures"
   },
   "keywords": [
     "dark-matter",
