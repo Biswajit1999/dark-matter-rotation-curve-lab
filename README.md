@@ -88,34 +88,34 @@ $$
 Implemented halo families:
 
 **Pseudo-isothermal**
-$
+$$
 v_{\rm pISO}^2(r)
 =
 v_\infty^2
 \left[
 1-\frac{r_c}{r}\tan^{-1}\!\left(\frac{r}{r_c}\right)
 \right].
-$
+$$
 
 **NFW**
-$
+$$
 v_{\rm NFW}^2(r)
 =
 v_s^2\,
 \frac{\ln(1+x)-x/(1+x)}{x},
 \qquad
 x=\frac{r}{r_s}.
-$
+$$
 
 **Burkert**
-$
+$$
 v_{\rm Burkert}^2(r)
 =
 v_s^2\,
 \frac{\ln\!\left[(1+x)^2(1+x^2)\right]-2\tan^{-1}(x)}{x},
 \qquad
 x=\frac{r}{r_0}.
-$
+$$
 
 The default weighted likelihood assumes independent Gaussian quoted random errors:
 
