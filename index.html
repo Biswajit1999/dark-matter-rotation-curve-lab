@@ -11,7 +11,7 @@
   <meta property="og:type" content="website">
   <meta name="keywords" content="dark matter, astrophysics, cosmology, galaxy rotation curves, SPARC, gravitational lensing, Bullet Cluster, Bayesian inference, CMB, dark energy, open science">
   <title>Dark Matter Evidence Lab — From Light to Gravity</title>
-  <link rel="stylesheet" href="styles.css?v=3.0.0-beta.2">
+  <link rel="stylesheet" href="styles.css?v=3.0.0-beta.3">
 </head>
 <body class="mode-research">
   <a class="skip-link" href="#main-content">Skip to analysis</a>
@@ -573,7 +573,7 @@
       <div class="cluster-findings">
         <p id="clusterFinding"></p>
         <p id="clusterCaution"></p>
-        <div><a id="clusterPaper" href="#" target="_blank" rel="noopener noreferrer">Primary paper</a><a id="clusterObservatory" href="#" target="_blank" rel="noopener noreferrer">Observatory record</a></div>
+        <div><a id="clusterPaper" href="#" target="_blank" rel="noopener noreferrer">Primary paper</a><a id="clusterModernPaper" href="#" target="_blank" rel="noopener noreferrer" hidden>Modern reconstruction</a><a id="clusterObservatory" href="#" target="_blank" rel="noopener noreferrer">Observatory record</a></div>
       </div>
       <details>
         <summary>Show calculation contract and accessible system table</summary>
@@ -615,22 +615,49 @@
             <div class="range-label"><label for="cosmicDarkMatter">Ωcdm today</label><output id="cosmicDarkMatterOutput" for="cosmicDarkMatter">0.264</output></div>
             <input id="cosmicDarkMatter" type="range" min="0" max="0.5" step="0.002" value="0.264">
           </div>
-          <button id="resetCosmology" class="secondary-button" type="button">Restore Planck-like reference</button>
-          <p class="method-note">This background-density explorer preserves spatial flatness by assigning the remaining present-day density to ΩΛ. It does not calculate the CMB angular power spectrum or fit Planck likelihoods.</p>
-        </form>
-        <div class="cosmology-chart-card">
-          <div class="cluster-canvas-heading">
-            <div><span class="epistemic-label">Calculated background</span><h3>Component fractions through expansion</h3></div>
-            <span class="axis-note">radiation · baryons · cold dark matter · Λ</span>
+          <div class="range-field">
+            <div class="range-label"><label for="darkEnergyW0">Dark-energy w₀</label><output id="darkEnergyW0Output" for="darkEnergyW0">−1.00</output></div>
+            <input id="darkEnergyW0" type="range" min="-1.5" max="-0.5" step="0.01" value="-1">
           </div>
-          <canvas id="cosmologyCanvas" role="img" aria-describedby="cosmologySummary"></canvas>
-          <p id="cosmologySummary" class="sr-summary">Cosmological component evolution is loading.</p>
+          <div class="range-field">
+            <div class="range-label"><label for="darkEnergyWa">Dark-energy wₐ</label><output id="darkEnergyWaOutput" for="darkEnergyWa">0.00</output></div>
+            <input id="darkEnergyWa" type="range" min="-2" max="2" step="0.02" value="0">
+          </div>
+          <div class="range-field">
+            <div class="range-label"><label for="cosmicH0">H₀</label><output id="cosmicH0Output" for="cosmicH0">67.4 km/s/Mpc</output></div>
+            <input id="cosmicH0" type="range" min="60" max="75" step="0.1" value="67.4">
+          </div>
+          <div class="range-field">
+            <div class="range-label"><label for="baoRedshift">BAO comparison redshift</label><output id="baoRedshiftOutput" for="baoRedshift">0.80</output></div>
+            <input id="baoRedshift" type="range" min="0.1" max="3" step="0.02" value="0.8">
+          </div>
+          <button id="resetCosmology" class="secondary-button" type="button">Restore Planck-like reference</button>
+          <p class="method-note">This explorer preserves spatial flatness at the present epoch and uses the CPL form w(a)=w₀+wₐ(1−a). It calculates background expansion and distance response only; it does not compute CMB spectra, run a Boltzmann solver, or evaluate Planck/DESI likelihoods.</p>
+        </form>
+        <div class="cosmology-figures">
+          <div class="cosmology-chart-card">
+            <div class="cluster-canvas-heading">
+              <div><span class="epistemic-label">Calculated background</span><h3>Component fractions through expansion</h3></div>
+              <span class="axis-note">radiation · baryons · cold dark matter · dark energy</span>
+            </div>
+            <canvas id="cosmologyCanvas" role="img" aria-describedby="cosmologySummary"></canvas>
+            <p id="cosmologySummary" class="sr-summary">Cosmological component evolution is loading.</p>
+          </div>
+          <div class="cosmology-chart-card">
+            <div class="cluster-canvas-heading">
+              <div><span class="epistemic-label">Model response · not a DESI likelihood</span><h3>BAO distance coordinates</h3></div>
+              <span class="axis-note">D_M/r_d · D_H/r_d</span>
+            </div>
+            <canvas id="baoCanvas" role="img" aria-describedby="baoSummary"></canvas>
+            <p id="baoSummary" class="sr-summary">BAO distance response is loading.</p>
+          </div>
         </div>
       </div>
       <div id="cosmologyMetrics" class="lensing-metrics" aria-live="polite"></div>
       <div class="cosmology-logic">
         <article><span class="epistemic-label">Independent baryon anchor</span><h3>Why “all matter is baryonic” fails</h3><p>Primordial nucleosynthesis and CMB acoustic structure constrain the baryon density. Replacing Ωcdm with baryons changes photon–baryon oscillations instead of reproducing the same sky.</p></article>
         <article><span class="epistemic-label">Growth mechanism</span><h3>Why early clustering matters</h3><p>Before recombination, baryons are coupled to photons. A non-baryonic component can begin building gravitational wells without participating in that acoustic fluid.</p></article>
+        <article><span class="epistemic-label">DESI · updated July 2026</span><h3>Evolving dark energy remains an open test</h3><p>DESI DR2 full-shape Lyα measurements moved toward the Planck ΛCDM prediction. The site therefore treats w₀–wₐ exploration as a competing-model exercise, not a discovery of evolving dark energy.</p><a href="https://www.desi.lbl.gov/2026/07/30/new-desi-dr2-lyman-alpha-results-shed-light-on-dark-energy/" target="_blank" rel="noopener noreferrer">DESI Collaboration context</a></article>
         <article><span class="epistemic-label">Inference boundary</span><h3>What cosmology does not identify</h3><p>A fitted Ωcdm quantifies a gravitating component within a model. It does not specify mass, spin, couplings or a laboratory detection channel.</p></article>
       </div>
       <div class="candidate-heading">
@@ -643,8 +670,8 @@
         <div class="table-wrap">
           <table>
             <caption>Complementary dark-matter search channels; status as recorded 28 September 2026</caption>
-            <thead><tr><th scope="col">Programme</th><th scope="col">Channel</th><th scope="col">Observable</th><th scope="col">Interpretive status</th><th scope="col">Source</th></tr></thead>
-            <tbody id="experimentRows"><tr><td colspan="5">Experiment records are loading.</td></tr></tbody>
+            <thead><tr><th scope="col">Programme</th><th scope="col">Channel</th><th scope="col">Observable</th><th scope="col">Class</th><th scope="col">Current result/status</th><th scope="col">Updated</th><th scope="col">Source</th></tr></thead>
+            <tbody id="experimentRows"><tr><td colspan="7">Experiment records are loading.</td></tr></tbody>
           </table>
         </div>
         <div class="cosmology-sources">
@@ -876,11 +903,11 @@
       <a href="https://orcid.org/0009-0002-2411-1891" target="_blank" rel="noopener noreferrer">ORCID</a>
     </nav>
   </footer>
-  <script src="rotationPhysics.js?v=3.0.0-beta.2"></script>
-  <script src="lensingPhysics.js?v=3.0.0-beta.2"></script>
-  <script src="cosmologyPhysics.js?v=3.0.0-beta.2"></script>
-  <script src="futuresPhysics.js?v=3.0.0-beta.2"></script>
-  <script src="app.js?v=3.0.0-beta.2"></script>
+  <script src="rotationPhysics.js?v=3.0.0-beta.3"></script>
+  <script src="lensingPhysics.js?v=3.0.0-beta.3"></script>
+  <script src="cosmologyPhysics.js?v=3.0.0-beta.3"></script>
+  <script src="futuresPhysics.js?v=3.0.0-beta.3"></script>
+  <script src="app.js?v=3.0.0-beta.3"></script>
   <script type="module" src="motionSystem.mjs"></script>
 </body>
 </html>
