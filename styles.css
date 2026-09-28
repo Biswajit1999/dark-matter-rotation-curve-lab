@@ -1493,3 +1493,14 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   a { color: #111827; text-decoration: underline; }
   .research-only { display: block !important; }
 }
+
+
+/* Phase 2 completion: diagnostics, storytelling and reproducibility */
+.publication-button-group { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.share-status { min-height: 1.2em; color: var(--text-muted); font-size: 0.72rem; }
+.story-steps button[aria-pressed="true"] { background: var(--text); color: var(--background); border-color: var(--text); }
+.diagnostic-figures canvas { width: 100%; min-height: 240px; }
+@media (max-width: 800px) {
+  .publication-button-group { width: 100%; justify-content: stretch; }
+  .publication-button-group button { flex: 1 1 190px; }
+}
