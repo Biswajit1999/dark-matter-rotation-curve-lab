@@ -2644,31 +2644,25 @@ html[data-motion="off"] .hero-grid-overlay { opacity:.07; }
 .candidate-hidden-sector .candidate-visual { background:linear-gradient(90deg,#0b0a0d 0 47%,#2a1735 48% 52%,#0b0a0d 53%); }
 .candidate-hidden-sector .candidate-visual::after { content:"";position:absolute;width:70%;height:70%;left:15%;top:15%;border:1px dashed #a06be7;border-radius:50%; }
 
-/* Six application concepts: visual thought experiments, not fake observations. */
+/* Application concept art: generated illustrations, explicitly separated from observational evidence. */
 .application-visual-grid-six { grid-template-columns:repeat(3,minmax(0,1fr)) !important; }
-.application-card { min-width:0; }
-.application-concept { position:relative; aspect-ratio:16/9; overflow:hidden; background:#0b0a0d; }
-.application-concept span,.application-concept i,.application-concept b { position:absolute;display:block; }
-.application-sensing { background:linear-gradient(135deg,#0a0a0d,#18121f); }
-.application-sensing span { left:8%;right:42%;top:18%;bottom:18%;background:repeating-linear-gradient(0deg,transparent 0 13px,rgba(240,162,74,.65) 14px 15px); }
-.application-sensing i { width:90px;height:90px;right:16%;top:50%;transform:translateY(-50%);border:10px solid #a06be7;border-radius:50%;box-shadow:0 0 30px rgba(160,107,231,.35); }
-.application-mapping { background:radial-gradient(circle at 32% 48%,rgba(213,95,61,.55) 0 9%,transparent 10%),radial-gradient(circle at 67% 50%,rgba(160,107,231,.65) 0 12%,transparent 13%),#0b0a0d; }
-.application-mapping span { inset:18%;border:1px solid rgba(255,255,255,.35);border-radius:50%;transform:skewX(-18deg);box-shadow:0 0 0 28px rgba(255,255,255,.03),0 0 0 60px rgba(255,255,255,.018); }
-.application-communication { background:linear-gradient(90deg,#0b0a0d 0 41%,#1f1727 42% 58%,#0b0a0d 59%); }
-.application-communication span { left:8%;right:8%;top:49%;height:3px;background:#a06be7;box-shadow:0 0 14px #a06be7; }
-.application-communication i,.application-communication b { width:28px;height:48px;top:calc(50% - 24px);border:2px solid #f0a24a;border-radius:8px; }
-.application-communication i { left:7%; }.application-communication b { right:7%; }
-.application-navigation { background:radial-gradient(circle at 50% 50%,rgba(240,162,74,.18),transparent 30%),#09080b; }
-.application-navigation span { width:120px;height:120px;left:50%;top:50%;transform:translate(-50%,-50%);border:1px solid #f0a24a;border-radius:50%;box-shadow:0 0 0 34px rgba(160,107,231,.14),0 0 0 70px rgba(255,255,255,.035); }
-.application-navigation i { width:5px;height:5px;border-radius:50%;background:#fff;left:68%;top:28%;box-shadow:-120px 60px 0 #fff,-40px 100px 0 #fff,55px 84px 0 #fff; }
-.application-energy { background:linear-gradient(90deg,#0b0a0d,#161017); }
-.application-energy span { left:8%;top:15%;bottom:15%;width:38%;background:repeating-linear-gradient(0deg,transparent 0 17px,#f0a24a 18px 20px); }
-.application-energy i { width:18px;top:14%;bottom:14%;left:52%;background:#f4efe6;box-shadow:8px 0 0 #d75f3e; }
-.application-energy b { width:76px;height:76px;right:12%;top:50%;transform:translateY(-50%);border:8px solid #a06be7;border-radius:50%; }
-.application-propulsion { background:linear-gradient(135deg,#0a080c,#19111d); }
-.application-propulsion span { width:72px;height:120px;left:27%;top:50%;transform:translateY(-50%);border-radius:50%;border:10px solid #f4efe6; }
-.application-propulsion i { width:42%;height:44px;left:34%;top:50%;transform:translateY(-50%);background:#d75f3e;clip-path:polygon(0 0,80% 0,100% 50%,80% 100%,0 100%); }
-.application-propulsion b { width:20%;height:8px;right:7%;top:50%;background:#a06be7;box-shadow:0 0 16px #a06be7; }
+.application-card { min-width:0; overflow:hidden; }
+.application-image {
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  display:block;
+  background:#0b0a0d;
+  border-bottom:1px solid var(--border);
+  filter:saturate(.92) contrast(1.04) brightness(.96);
+  transform:scale(1.001);
+  transition:transform .5s cubic-bezier(.16,1,.3,1),filter .35s ease;
+}
+.application-card:hover .application-image,
+.application-card:focus-within .application-image {
+  transform:scale(1.025);
+  filter:saturate(1.02) contrast(1.06) brightness(1);
+}
 .application-card a { display:inline-block;margin-top:10px;font-size:.65rem;font-weight:700; }
 
 /* Frontier is now an animated accordion instead of a wall of blocks. */
