@@ -1,6 +1,6 @@
 'use strict';
 
-importScripts('rotationPhysics.js?v=3.0.0-beta.1');
+importScripts('rotationPhysics.js?v=3.0.0-beta.4');
 
 self.onmessage = event => {
   const { requestId, action = 'evaluate', params, reference, samplerOptions } = event.data;
