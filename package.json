@@ -12,7 +12,7 @@
     "validate:research": "node scripts/validate_repository.mjs",
     "data:refresh": "node scripts/import_sparc.mjs",
     "verify": "npm run docs:figures && npm run check && npm test && npm run validate:research && npm run build",
-    "docs:figures": "node scripts/generate_readme_figures.mjs"
+    "docs:figures": "node scripts/generate_readme_figures.mjs && node scripts/generate_population_figures.mjs"
   },
   "keywords": [
     "dark-matter",
