@@ -95,8 +95,8 @@ if (failures.length === 0) {
   }
 
   const readme = fs.readFileSync('README.md', 'utf8');
-  if (/^\$/m.test(readme)) failures.push('README contains a lone display-math dollar delimiter; use $ on its own line');
-  if (/\\\(|\\\)/.test(readme)) failures.push('README contains unsupported \\( ... \\) inline math delimiters; use $...
+  if (/^\$$/m.test(readme)) failures.push('README contains a lone display-math dollar delimiter; use double-dollar display delimiters');
+  if (/\\\(|\\\)/.test(readme)) failures.push('README contains unsupported LaTeX inline delimiters; use dollar-delimited inline math');
   for (const citation of reference.requiredCitations || []) {
     const family = citation.split(',')[0];
     if (!readme.includes(family)) failures.push(`README is missing citation family ${family}`);
