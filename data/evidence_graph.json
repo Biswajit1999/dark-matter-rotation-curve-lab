@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-09-28",
+  "nodes": [
+    {"id": "rotation", "group": "observation", "label": "Resolved rotation velocities", "claim": "Orbital speeds remain high where catalogued baryonic contributions decline.", "source": "SPARC mass-model table", "limit": "Distance, inclination, non-circular motion and stellar M/L affect the inference."},
+    {"id": "shear", "group": "observation", "label": "Coherent lensing shear", "claim": "Background-galaxy shapes carry a projected gravitational signal.", "source": "HST/Webb/ground-based shape catalogues", "limit": "PSF correction, source redshifts and inversion priors enter the mass map."},
+    {"id": "xray", "group": "observation", "label": "X-ray plasma morphology", "claim": "Hot baryonic gas is slowed and displaced during a cluster collision.", "source": "Chandra X-ray imaging and spectroscopy", "limit": "Temperature structure and projection complicate three-dimensional geometry."},
+    {"id": "cmb", "group": "observation", "label": "CMB acoustic structure", "claim": "Peak structure separately constrains baryon and cold-matter densities within ΛCDM.", "source": "Planck temperature, polarisation and lensing products", "limit": "Values depend on the cosmological model and foreground likelihood."},
+    {"id": "null-search", "group": "observation", "label": "Laboratory null searches", "claim": "No universally accepted non-gravitational dark-matter signal has been established.", "source": "Collaboration likelihoods and exclusion results", "limit": "Each limit applies to a stated interaction, halo and detector-response model."},
+    {"id": "newton", "group": "equation", "label": "Circular dynamics", "claim": "v²/r maps an orbital speed to radial acceleration under circular equilibrium.", "source": "Newtonian/weak-field dynamics", "limit": "Asymmetry, pressure support and non-equilibrium motion can violate the approximation."},
+    {"id": "lens", "group": "equation", "label": "Lens geometry", "claim": "Σcrit and shear connect projected gravity to source-image distortion.", "source": "Weak-lensing formalism", "limit": "Mass-sheet and line-of-sight degeneracies require additional information."},
+    {"id": "friedmann", "group": "equation", "label": "Background expansion", "claim": "Radiation, matter and Λ scale differently with cosmic expansion.", "source": "Friedmann equation in flat ΛCDM", "limit": "Background evolution alone does not calculate perturbations or the CMB spectrum."},
+    {"id": "halo", "group": "inference", "label": "Additional galactic gravity", "claim": "A halo term can account for the rotation-curve mass discrepancy.", "source": "Weighted fits to SPARC components", "limit": "Multiple halo profiles and alternative dynamics can reproduce portions of the data."},
+    {"id": "cluster-mass", "group": "inference", "label": "Collisionless cluster mass", "claim": "Most reconstructed mass can align with galaxies rather than ram-pressure-stripped gas.", "source": "Joint lensing, optical and X-ray analysis", "limit": "Merger geometry, centroid uncertainty and gravity assumptions remain relevant."},
+    {"id": "cosmic-dm", "group": "inference", "label": "Non-baryonic cosmic component", "claim": "The CMB and structure growth favour matter beyond the baryon density.", "source": "Joint cosmological parameter inference", "limit": "This does not identify a particle, field or compact object."},
+    {"id": "particle", "group": "hypothesis", "label": "Microscopic identity", "claim": "Candidates predict different recoil, conversion, decay, lensing or timing observables.", "source": "Candidate-specific theory and experiment", "limit": "Gravitational evidence alone does not choose among these microphysical models."}
+  ],
+  "edges": [
+    {"from": "rotation", "to": "newton", "relation": "interpreted through"},
+    {"from": "newton", "to": "halo", "relation": "supports under assumptions"},
+    {"from": "shear", "to": "lens", "relation": "calibrates"},
+    {"from": "lens", "to": "cluster-mass", "relation": "reconstructs"},
+    {"from": "xray", "to": "cluster-mass", "relation": "compares baryons with"},
+    {"from": "cmb", "to": "friedmann", "relation": "constrains with perturbations"},
+    {"from": "friedmann", "to": "cosmic-dm", "relation": "parameterises"},
+    {"from": "halo", "to": "particle", "relation": "motivates but does not identify"},
+    {"from": "cluster-mass", "to": "particle", "relation": "constrains interactions of"},
+    {"from": "cosmic-dm", "to": "particle", "relation": "sets abundance target for"},
+    {"from": "null-search", "to": "particle", "relation": "excludes model regions of"}
+  ]
+}

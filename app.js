@@ -1,6 +1,7 @@
 'use strict';
 
-const BUILD_VERSION = '2.0.0-beta.7';
+const BUILD_VERSION = '2.0.0-rc.1';
+const INITIAL_QUERY = new URLSearchParams(window.location.search);
 
 const CONTROL_DEFINITIONS = [
   { key: 'massToLightDisk', label: 'Disc mass-to-light ratio', unit: 'M☉/L☉ at 3.6 μm', value: 0.5, min: 0.1, max: 1, step: 0.01 },
@@ -25,10 +26,12 @@ const METRIC_LABELS = {
 };
 
 const state = {
+  mode: INITIAL_QUERY.get('mode') === 'educator' ? 'educator' : 'research',
+  requestedGalaxy: INITIAL_QUERY.get('galaxy') || 'NGC3198',
   catalog: null,
   reference: null,
   params: {
-    haloModel: 'piso',
+    haloModel: ['piso', 'nfw', 'burkert'].includes(INITIAL_QUERY.get('halo')) ? INITIAL_QUERY.get('halo') : 'piso',
     massToLightDisk: 0.5,
     massToLightBulge: 0.7,
     haloVelocity: 170,
@@ -47,7 +50,8 @@ const state = {
     logScaleFactor: 0,
     parameters: { omegaRadiation: 0.00009, omegaBaryon: 0.0493, omegaDarkMatter: 0.264, omegaDarkEnergy: 0.68661 }
   },
-  futures: { data: null, logScaleMetres: 19, logMassGev: 2, logCrossSectionCm2: -46, localDensity: 0.4, efficiency: 0.5, speedKms: 220 }
+  futures: { data: null, logScaleMetres: 19, logMassGev: 2, logCrossSectionCm2: -46, localDensity: 0.4, efficiency: 0.5, speedKms: 220 },
+  evidence: { graph: null, selectedId: null }
 };
 
 const $ = id => document.getElementById(id);
@@ -121,8 +125,9 @@ async function loadCatalog() {
   if (!response.ok) throw new Error(`Galaxy catalogue request failed with HTTP ${response.status}.`);
   state.catalog = await response.json();
   renderGalaxyOptions();
-  $('galaxySelect').value = 'NGC3198';
-  selectReference('NGC3198');
+  const requested = state.catalog.galaxies.some(galaxy => galaxy.galaxy_id === state.requestedGalaxy) ? state.requestedGalaxy : 'NGC3198';
+  $('galaxySelect').value = requested;
+  selectReference(requested);
   renderPopulation();
 }
 
@@ -154,6 +159,13 @@ async function loadResearchFrontier() {
   if (!response.ok) throw new Error(`Research-frontier request failed with HTTP ${response.status}.`);
   state.futures.data = await response.json();
   renderFutures();
+}
+
+async function loadEvidenceGraph() {
+  const response = await fetch(`data/evidence_graph.json?v=${BUILD_VERSION}`, { cache: 'no-cache' });
+  if (!response.ok) throw new Error(`Evidence-graph request failed with HTTP ${response.status}.`);
+  state.evidence.graph = await response.json();
+  renderEvidenceGraph();
 }
 
 function renderGalaxyOptions(query = '') {
@@ -1099,6 +1111,83 @@ function renderFutures() {
   $('futureTimelineRows').innerHTML = state.futures.data.timeline.map(item => `<tr><th scope="row">${item.horizon}</th><td>${item.capability}</td><td>${item.gate}</td><td><span class="certainty-tag certainty-${item.certainty}">${item.certainty}</span></td></tr>`).join('');
 }
 
+function syncUrlState() {
+  const url = new URL(window.location.href);
+  url.searchParams.set('mode', state.mode);
+  if (state.reference) url.searchParams.set('galaxy', state.reference.galaxy_id);
+  url.searchParams.set('halo', state.params.haloModel);
+  window.history.replaceState(null, '', url);
+}
+
+function applyMode(mode, updateUrl = true) {
+  state.mode = mode === 'educator' ? 'educator' : 'research';
+  document.body.classList.toggle('mode-educator', state.mode === 'educator');
+  document.body.classList.toggle('mode-research', state.mode === 'research');
+  $('modeEducator').setAttribute('aria-pressed', String(state.mode === 'educator'));
+  $('modeResearch').setAttribute('aria-pressed', String(state.mode === 'research'));
+  $('modeStatus').textContent = state.mode === 'educator'
+    ? 'Educator mode active. Core evidence remains visible; advanced audit tables are hidden.'
+    : 'Research mode active. Full audit tables and reproducibility controls are visible.';
+  if (state.mode === 'educator') document.querySelectorAll('details').forEach(detail => { detail.open = false; });
+  if (updateUrl) syncUrlState();
+}
+
+function selectEvidenceNode(nodeId) {
+  if (!state.evidence.graph) return;
+  const node = state.evidence.graph.nodes.find(candidate => candidate.id === nodeId);
+  if (!node) return;
+  state.evidence.selectedId = nodeId;
+  for (const button of document.querySelectorAll('.evidence-node')) button.setAttribute('aria-pressed', String(button.dataset.nodeId === nodeId));
+  const incoming = state.evidence.graph.edges.filter(edge => edge.to === nodeId);
+  const outgoing = state.evidence.graph.edges.filter(edge => edge.from === nodeId);
+  const label = id => state.evidence.graph.nodes.find(candidate => candidate.id === id)?.label || id;
+  $('evidenceDetail').innerHTML = `<span class="epistemic-label">${node.group}</span><h3>${node.label}</h3><dl><div><dt>Claim</dt><dd>${node.claim}</dd></div><div><dt>Source layer</dt><dd>${node.source}</dd></div><div><dt>Can break because</dt><dd>${node.limit}</dd></div></dl><div class="edge-summary"><strong>Connections</strong>${[...incoming.map(edge => `${label(edge.from)} → ${edge.relation} → this node`), ...outgoing.map(edge => `This node → ${edge.relation} → ${label(edge.to)}`)].map(text => `<span>${text}</span>`).join('') || '<span>No recorded connections.</span>'}</div>`;
+}
+
+function renderEvidenceGraph() {
+  if (!state.evidence.graph) return;
+  const groupLabels = { observation: '1 · Observations', equation: '2 · Physical mapping', inference: '3 · Inferences', hypothesis: '4 · Identity hypotheses' };
+  const root = $('evidenceGraph');
+  root.replaceChildren(...Object.entries(groupLabels).map(([group, heading]) => {
+    const column = document.createElement('section');
+    column.className = `evidence-column evidence-${group}`;
+    const title = document.createElement('h3'); title.textContent = heading;
+    column.append(title);
+    for (const node of state.evidence.graph.nodes.filter(candidate => candidate.group === group)) {
+      const button = document.createElement('button');
+      button.type = 'button'; button.className = 'evidence-node'; button.dataset.nodeId = node.id;
+      button.setAttribute('role', 'listitem'); button.setAttribute('aria-pressed', 'false');
+      button.innerHTML = `<span>${node.group}</span><strong>${node.label}</strong>`;
+      button.addEventListener('click', () => selectEvidenceNode(node.id));
+      column.append(button);
+    }
+    return column;
+  }));
+  const label = id => state.evidence.graph.nodes.find(node => node.id === id)?.label || id;
+  $('evidenceRelations').innerHTML = state.evidence.graph.edges.map(edge => `<tr><th scope="row">${label(edge.from)}</th><td>${edge.relation}</td><td>${label(edge.to)}</td></tr>`).join('');
+  selectEvidenceNode(state.evidence.selectedId || 'rotation');
+}
+
+function exportWorkspace() {
+  const payload = {
+    softwareVersion: BUILD_VERSION,
+    exportedAt: new Date().toISOString(),
+    mode: state.mode,
+    galaxy: state.reference?.galaxy_id,
+    haloParameters: state.params,
+    challenge: state.challenge,
+    lensing: { selectedId: state.lensing.selectedId, sourceRedshift: state.lensing.sourceRedshift, velocityDispersion: state.lensing.velocityDispersion },
+    cosmology: { logScaleFactor: state.cosmology.logScaleFactor, parameters: state.cosmology.parameters },
+    futures: { ...state.futures, data: undefined },
+    provenance: {
+      galaxyCatalogSha256: state.catalog?.provenance?.source_checksums,
+      graphSchemaVersion: state.evidence.graph?.schema_version,
+      limitations: 'Interactive state only; exported values are not publication-grade parameter inference.'
+    }
+  };
+  download(`dark-matter-evidence-lab-${state.reference?.galaxy_id || 'workspace'}.json`, 'application/json;charset=utf-8', `${JSON.stringify(payload, null, 2)}\n`);
+}
+
 function median(values) {
   if (!values.length) return NaN;
   const sorted = [...values].sort((a, b) => a - b);
@@ -1294,6 +1383,7 @@ function handlePopulationPointer(event) {
 
 $('galaxySelect').addEventListener('change', event => {
   selectReference(event.currentTarget.value);
+  syncUrlState();
   state.result = null;
   $('fitStatus').textContent = `${state.reference.galaxy} selected`;
   runModel();
@@ -1307,6 +1397,7 @@ $('galaxySearch').addEventListener('input', event => {
 
 $('haloModel').addEventListener('change', event => {
   state.params.haloModel = event.currentTarget.value;
+  syncUrlState();
   $('haloHelp').textContent = HALO_HELP[state.params.haloModel];
   runModel();
 });
@@ -1333,6 +1424,7 @@ $('exportPredictive').addEventListener('click', exportPredictive);
 $('reset').addEventListener('click', () => {
   state.params = { haloModel: 'piso', massToLightDisk: 0.5, massToLightBulge: 0.7, haloVelocity: 170, haloScale: 5 };
   syncControls();
+  syncUrlState();
   runModel();
 });
 
@@ -1391,6 +1483,9 @@ $('resetCosmology').addEventListener('click', () => {
   renderCosmology();
 });
 $('candidateFamily').addEventListener('change', renderCandidates);
+$('modeEducator').addEventListener('click', () => applyMode('educator'));
+$('modeResearch').addEventListener('click', () => applyMode('research'));
+$('exportWorkspace').addEventListener('click', exportWorkspace);
 $('scaleRange').addEventListener('input', event => {
   state.futures.logScaleMetres = Number(event.currentTarget.value);
   renderFutures();
@@ -1429,10 +1524,11 @@ for (const canvas of [$('btfrCanvas'), $('rarCanvas')]) {
   });
 }
 
+applyMode(state.mode, false);
 buildControls();
 drawPosterior();
-Promise.all([loadCatalog(), loadClusterCatalog(), loadCandidateAtlas(), loadResearchFrontier()])
-  .then(() => runModel())
+Promise.all([loadCatalog(), loadClusterCatalog(), loadCandidateAtlas(), loadResearchFrontier(), loadEvidenceGraph()])
+  .then(() => { syncUrlState(); runModel(); })
   .catch(error => {
     $('workerStatus').textContent = 'Reference data unavailable';
     $('notes').textContent = error.message;

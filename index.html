@@ -5,10 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Explore all 175 SPARC galaxies, population scaling relations, cluster lensing, cosmology and the technology roadmap for identifying dark matter.">
   <meta name="theme-color" content="#07111f">
+  <meta name="author" content="Biswajit Jana">
+  <meta property="og:title" content="Dark Matter Evidence Lab">
+  <meta property="og:description" content="A reproducible evidence workstation spanning galaxy dynamics, cluster lensing, cosmology and candidate searches.">
+  <meta property="og:type" content="website">
   <title>Dark Matter Evidence Lab — Galaxies to Detectors</title>
-  <link rel="stylesheet" href="styles.css?v=2.0.0-beta.7">
+  <link rel="stylesheet" href="styles.css?v=2.0.0-rc.1">
 </head>
-<body>
+<body class="mode-research">
   <a class="skip-link" href="#main-content">Skip to analysis</a>
   <header class="topbar">
     <div class="brand-block">
@@ -20,7 +24,16 @@
       <span id="workerStatus">Loading the galaxy catalogue</span>
       <strong id="fitStatus">No fit yet</strong>
     </div>
+    <div class="mode-switch" role="group" aria-label="Interface depth">
+      <button id="modeEducator" type="button" aria-pressed="false">Educator</button>
+      <button id="modeResearch" type="button" aria-pressed="true">Research</button>
+      <span id="modeStatus" class="sr-summary" aria-live="polite">Research mode active.</span>
+    </div>
   </header>
+
+  <nav class="section-nav" aria-label="Evidence laboratory sections">
+    <a href="#observation-title">Overview</a><a href="#workbench-title">Galaxies</a><a href="#challenge-title">Alternatives</a><a href="#lensing-title">Clusters</a><a href="#cosmology-title">Cosmology</a><a href="#futures-title">Future</a><a href="#evidence-graph-title">Evidence graph</a>
+  </nav>
 
   <main id="main-content" class="shell" tabindex="-1">
     <section class="evidence-strip" aria-label="Scientific scope">
@@ -636,6 +649,26 @@
       </details>
     </section>
 
+    <section class="evidence-graph-section" aria-labelledby="evidence-graph-title">
+      <div class="section-heading">
+        <div><p class="kicker">Phase I · evidence architecture</p><h2 id="evidence-graph-title">Trace every claim from observation to inference</h2></div>
+        <p>Select a node to inspect what it claims, where it comes from and what can break the inference. Arrows are relationships, not proof.</p>
+      </div>
+      <div class="mode-explainer educator-only"><span class="epistemic-label">Educator view</span><p>Start with the observation nodes, then follow their equations to an inference. The final “microscopic identity” node remains a hypothesis because gravity alone cannot tell us which candidate exists.</p></div>
+      <div class="evidence-graph-layout">
+        <div id="evidenceGraph" class="evidence-graph" role="list" aria-label="Interactive evidence nodes"></div>
+        <aside id="evidenceDetail" class="evidence-detail" aria-live="polite"><span class="epistemic-label">Select a node</span><h3>Evidence detail</h3><p>Choose any observation, equation, inference or hypothesis in the graph.</p></aside>
+      </div>
+      <details class="research-only">
+        <summary>Show the complete edge list and reproducibility state</summary>
+        <div class="table-wrap"><table><caption>Directed evidence relationships</caption><thead><tr><th scope="col">From</th><th scope="col">Relationship</th><th scope="col">To</th></tr></thead><tbody id="evidenceRelations"><tr><td colspan="3">Evidence graph is loading.</td></tr></tbody></table></div>
+      </details>
+      <div class="publication-actions">
+        <div><strong>Reproducible workspace state</strong><span>Export the current galaxy, halo, cluster, cosmology, future-sandbox and view-mode settings.</span></div>
+        <button id="exportWorkspace" class="primary-button" type="button">Export workspace JSON</button>
+      </div>
+    </section>
+
     <section class="roadmap-section" aria-labelledby="roadmap-title">
       <div class="section-heading">
         <div>
@@ -685,10 +718,10 @@
       <a href="https://orcid.org/0009-0002-2411-1891" target="_blank" rel="noopener noreferrer">ORCID</a>
     </nav>
   </footer>
-  <script src="rotationPhysics.js?v=2.0.0-beta.7"></script>
-  <script src="lensingPhysics.js?v=2.0.0-beta.7"></script>
-  <script src="cosmologyPhysics.js?v=2.0.0-beta.7"></script>
-  <script src="futuresPhysics.js?v=2.0.0-beta.7"></script>
-  <script src="app.js?v=2.0.0-beta.7"></script>
+  <script src="rotationPhysics.js?v=2.0.0-rc.1"></script>
+  <script src="lensingPhysics.js?v=2.0.0-rc.1"></script>
+  <script src="cosmologyPhysics.js?v=2.0.0-rc.1"></script>
+  <script src="futuresPhysics.js?v=2.0.0-rc.1"></script>
+  <script src="app.js?v=2.0.0-rc.1"></script>
 </body>
 </html>

@@ -1,11 +1,11 @@
 {
   "name": "dark-matter-evidence-lab",
-  "version": "2.0.0-beta.7",
+  "version": "2.0.0-rc.1",
   "private": true,
   "description": "Evidence-first, reproducible dark-matter exploration across galaxy rotation curves, cluster lensing, cosmology and detector technology.",
   "scripts": {
     "check": "node --check app.js && node --check physicsWorker.js && node --check rotationPhysics.js && node --check lensingPhysics.js && node --check cosmologyPhysics.js && node --check futuresPhysics.js && node --check scripts/import_sparc.mjs && node scripts/validate.js",
-    "test": "node --test tests/rotationPhysics.test.js tests/lensingPhysics.test.js tests/cosmologyPhysics.test.js tests/futuresPhysics.test.js",
+    "test": "node --test tests/rotationPhysics.test.js tests/lensingPhysics.test.js tests/cosmologyPhysics.test.js tests/futuresPhysics.test.js tests/evidenceGraph.test.js",
     "validate:research": "node scripts/validate_repository.mjs",
     "data:refresh": "node scripts/import_sparc.mjs",
     "verify": "npm run check && npm test && npm run validate:research"

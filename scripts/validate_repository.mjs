@@ -12,6 +12,7 @@ const cosmology = fs.readFileSync('cosmologyPhysics.js', 'utf8');
 const candidates = JSON.parse(fs.readFileSync('data/dark_matter_candidates.json', 'utf8'));
 const futures = fs.readFileSync('futuresPhysics.js', 'utf8');
 const frontier = JSON.parse(fs.readFileSync('data/research_frontier.json', 'utf8'));
+const evidence = JSON.parse(fs.readFileSync('data/evidence_graph.json', 'utf8'));
 
 for (const functionName of ['pseudoIsothermalVelocity', 'nfwVelocity', 'burkertVelocity', 'weightedStatistics', 'gridFit', 'posteriorPredictive', 'samplePosterior', 'rarAcceleration', 'simpleMondAcceleration', 'phenomenologicalVelocity']) {
   if (!physics.includes(`function ${functionName}`)) failures.push(`physics contract missing ${functionName}`);
@@ -40,6 +41,8 @@ for (const functionName of ['fluxCm2Second', 'illustrativeEventsPerKgDay', 'deBr
 }
 if (frontier.frontiers?.length < 6 || frontier.timeline?.length < 6) failures.push('research-frontier or future timeline is incomplete');
 if (!application.includes('renderFutures') || !application.includes('nearestScaleMilestone')) failures.push('scale or future workspace is missing');
+if (evidence.nodes?.length < 12 || evidence.edges?.length < 11) failures.push('evidence graph is incomplete');
+if (!application.includes('renderEvidenceGraph') || !application.includes('applyMode') || !application.includes('exportWorkspace')) failures.push('evidence modes or workspace export are missing');
 for (const galaxy of catalog.galaxies || []) {
   if (galaxy.points.some(point => !Object.hasOwn(point, 'v_gas') || !Object.hasOwn(point, 'v_disk'))) failures.push(`${galaxy.galaxy_id} baryonic components are missing`);
 }

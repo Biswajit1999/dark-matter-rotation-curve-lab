@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software, cite this repository and the SPARC source paper."
 title: "Dark Matter Evidence Lab"
 type: software
-version: "2.0.0-beta.7"
+version: "2.0.0-rc.1"
 date-released: 2026-09-28
 authors:
   - family-names: Jana

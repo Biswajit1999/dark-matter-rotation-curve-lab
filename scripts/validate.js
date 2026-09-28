@@ -19,11 +19,13 @@ const required = [
   'data/cluster_systems.json',
   'data/dark_matter_candidates.json',
   'data/research_frontier.json',
+  'data/evidence_graph.json',
   'scripts/import_sparc.mjs',
   'tests/rotationPhysics.test.js',
   'tests/lensingPhysics.test.js',
   'tests/cosmologyPhysics.test.js',
-  'tests/futuresPhysics.test.js'
+  'tests/futuresPhysics.test.js',
+  'tests/evidenceGraph.test.js'
 ];
 const failures = [];
 
@@ -77,8 +79,8 @@ if (failures.length === 0) {
   }
 
   const html = fs.readFileSync('index.html', 'utf8');
-  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'id="populationSearch"', 'id="btfrCanvas"', 'id="rarCanvas"', 'id="challengeRelation"', 'id="challengeCurveCanvas"', 'id="challengeResidualCanvas"', 'id="challengeRows"', 'id="clusterSelect"', 'id="clusterCanvas"', 'id="clusterRows"', 'Schematic, not a dark-matter photograph', 'id="cosmologyCanvas"', 'id="candidateFamily"', 'id="candidateGrid"', 'id="experimentRows"', 'AI-generated scientific concept—not an observation', 'id="scaleRange"', 'id="futureMetrics"', 'id="frontierGrid"', 'id="futureTimelineRows"', 'id="priorForm"', 'id="posteriorRows"', 'id="predictiveRows"', 'id="exportPredictive"', 'prefers-reduced-motion']) {
-    const source = pattern === 'prefers-reduced-motion' ? fs.readFileSync('styles.css', 'utf8') : html;
+  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'id="populationSearch"', 'id="btfrCanvas"', 'id="rarCanvas"', 'id="challengeRelation"', 'id="challengeCurveCanvas"', 'id="challengeResidualCanvas"', 'id="challengeRows"', 'id="clusterSelect"', 'id="clusterCanvas"', 'id="clusterRows"', 'Schematic, not a dark-matter photograph', 'id="cosmologyCanvas"', 'id="candidateFamily"', 'id="candidateGrid"', 'id="experimentRows"', 'AI-generated scientific concept—not an observation', 'id="scaleRange"', 'id="futureMetrics"', 'id="frontierGrid"', 'id="futureTimelineRows"', 'id="modeEducator"', 'id="modeResearch"', 'id="evidenceGraph"', 'id="evidenceRelations"', 'id="exportWorkspace"', 'aria-label="Evidence laboratory sections"', 'id="priorForm"', 'id="posteriorRows"', 'id="predictiveRows"', 'id="exportPredictive"', 'prefers-reduced-motion', '@media print']) {
+    const source = ['prefers-reduced-motion', '@media print'].includes(pattern) ? fs.readFileSync('styles.css', 'utf8') : html;
     if (!source.includes(pattern)) failures.push(`accessibility contract missing: ${pattern}`);
   }
   const application = fs.readFileSync('app.js', 'utf8');

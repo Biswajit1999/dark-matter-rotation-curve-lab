@@ -59,6 +59,8 @@ active application now:
   tracer layers and explicit reconstruction/systematic warnings;
 - includes Bullet Cluster, MACS J0025.4-1222 and disputed Abell 520 cases in a
   machine-readable catalogue linked to primary papers and observatory records.
+- adds a typed evidence graph, educator/research views, URL-restorable core
+  state, full workspace JSON export, landmark navigation and print styling.
 
 ## Development phases
 
@@ -72,7 +74,7 @@ active application now:
 | F | Quantitative lensing and colliding-cluster laboratory | Complete |
 | G | Cosmology, particle-candidate and experiment landscape | Complete |
 | H | Scale explorer, research frontier and constrained-futures laboratory | Complete |
-| I | Evidence graph, educator/research modes and publication polish | Next |
+| I | Evidence graph, educator/research modes and publication polish | Complete |
 
 Overview imagery does not count as completion of a scientific module. A phase
 is marked complete only when its data, computation, provenance, interface and
@@ -204,6 +206,21 @@ Frontier and horizon table separate known constraints, open questions,
 decisive tests and confidence labels through 1,000 years; only near-term active
 or planned capabilities are presented as engineering programmes.
 
+## Evidence modes and publication state
+
+Phase I connects observations, physical mappings, inferences and identity
+hypotheses in a typed directed graph. Selecting a node reveals its claim,
+source layer, limitations and incoming/outgoing relationships. The complete
+edge list is available as an accessible table in Research mode.
+
+Educator mode keeps the core calculations and evidence visible while removing
+advanced audit tables and adding a guided graph explanation. Research mode
+exposes the full reproducibility layer. Mode, selected galaxy and halo family
+are encoded in the URL; the workspace export additionally records cluster,
+cosmology and future-sandbox controls with dataset checksums and software
+version. Print styling removes interactive controls and preserves the technical
+content for static review.
+
 ## Model equations
 
 At every radius the application uses SPARC's sign-preserving convention for
@@ -289,6 +306,7 @@ observations across all 175 systems.
 | `data/cluster_systems.json` | Multi-cluster evidence records and schematic coordinates |
 | `data/dark_matter_candidates.json` | Candidate and experiment landscape with source links |
 | `data/research_frontier.json` | Scale milestones, decisive tests and labelled horizons |
+| `data/evidence_graph.json` | Typed claim, source, limitation and relationship graph |
 | `assets/observations/` | Real Hubble, Chandra/Webb, Planck and Rubin imagery |
 | `assets/concepts/` | Clearly labelled generated scientific concept art |
 | `scripts/import_sparc.mjs` | Checksum-pinned SPARC ingestion |
@@ -296,6 +314,7 @@ observations across all 175 systems.
 | `tests/lensingPhysics.test.js` | Distance-geometry and cluster-contract tests |
 | `tests/cosmologyPhysics.test.js` | Component-closure and candidate-schema tests |
 | `tests/futuresPhysics.test.js` | Dimensional monotonicity and frontier-schema tests |
+| `tests/evidenceGraph.test.js` | Graph integrity and publication-interface contracts |
 
 ## Research boundaries
 

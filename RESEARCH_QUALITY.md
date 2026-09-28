@@ -42,7 +42,11 @@ not establish.
 17. local flux and illustrative contact rates scale monotonically with mass,
     cross section and efficiency, while spacing and wavelength remain finite;
 18. every future horizon carries an active, planned, conditional, speculative
-    or unknown confidence label and every frontier names a decisive test.
+    or unknown confidence label and every frontier names a decisive test;
+19. evidence-graph identifiers are unique, every edge resolves, and every node
+    records a source layer, scientific claim and failure mode;
+20. educator/research modes, landmark navigation, workspace export, print
+    styling and an accessible edge-list alternative remain present.
 
 ## Guarantees requiring future work
 
