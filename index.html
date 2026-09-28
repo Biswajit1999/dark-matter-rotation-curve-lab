@@ -3,22 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Explore all 175 SPARC galaxies, population scaling relations, cluster lensing, cosmology and the technology roadmap for identifying dark matter.">
-  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Follow the evidence for unseen gravitation through 175 SPARC galaxies, lensing, cosmology, particle searches and physics-constrained futures.">
+  <meta name="theme-color" content="#07100f">
   <meta name="author" content="Biswajit Jana">
   <meta property="og:title" content="Dark Matter Evidence Lab">
-  <meta property="og:description" content="A reproducible evidence workstation spanning galaxy dynamics, cluster lensing, cosmology and candidate searches.">
+  <meta property="og:description" content="An open computational investigation of the observations, equations and experiments behind the dark-matter problem.">
   <meta property="og:type" content="website">
-  <title>Dark Matter Evidence Lab — Galaxies to Detectors</title>
-  <link rel="stylesheet" href="styles.css?v=2.0.0-rc.1">
+  <meta name="keywords" content="dark matter, astrophysics, cosmology, galaxy rotation curves, SPARC, gravitational lensing, Bullet Cluster, Bayesian inference, CMB, dark energy, open science">
+  <title>Dark Matter Evidence Lab — From Light to Gravity</title>
+  <link rel="stylesheet" href="styles.css?v=3.0.0-beta.1">
 </head>
 <body class="mode-research">
   <a class="skip-link" href="#main-content">Skip to analysis</a>
+  <div class="reading-progress" aria-hidden="true"></div>
   <header class="topbar">
     <div class="brand-block">
-      <p class="eyebrow">Evidence workstation · Galaxies to particle searches</p>
+      <p class="eyebrow">Open computational monograph · release 3</p>
       <h1>Dark Matter Evidence Lab</h1>
-      <p class="subtitle">SPARC galaxies · merging clusters · cosmic structure · detection technology</p>
+      <p class="subtitle">Galaxies · Lensing · Cosmology · Particle Searches · Open Questions · Futures</p>
     </div>
     <div class="status-card" role="status" aria-live="polite">
       <span id="workerStatus">Loading the galaxy catalogue</span>
@@ -29,13 +31,90 @@
       <button id="modeResearch" type="button" aria-pressed="true">Research</button>
       <span id="modeStatus" class="sr-summary" aria-live="polite">Research mode active.</span>
     </div>
+    <button id="motionToggle" class="motion-toggle" type="button" aria-pressed="false">Motion: full</button>
   </header>
 
   <nav class="section-nav" aria-label="Evidence laboratory sections">
-    <a href="#observation-title">Overview</a><a href="#workbench-title">Galaxies</a><a href="#challenge-title">Alternatives</a><a href="#lensing-title">Clusters</a><a href="#cosmology-title">Cosmology</a><a href="#futures-title">Future</a><a href="#evidence-graph-title">Evidence graph</a>
+    <a href="#dark-universe-title">Start</a><a href="#workbench-title">Galaxies</a><a href="#inference-title">Inference</a><a href="#population-title">Populations</a><a href="#challenge-title">Alternatives</a><a href="#lensing-title">Lensing</a><a href="#cosmology-title">Cosmology</a><a href="#futures-title">Futures</a><a href="#evidence-graph-title">Methods</a>
   </nav>
 
   <main id="main-content" class="shell" tabindex="-1">
+    <section class="opening-sequence" aria-labelledby="opening-title">
+      <div class="hero-copy">
+        <p class="hero-index">01 / THE QUESTION</p>
+        <h2 id="opening-title" class="hero-statement"><span>We see the light.</span><span>Gravity reveals more.</span></h2>
+        <p class="hero-deck">Dark Matter Evidence Lab is an open computational investigation of the observations, equations and experiments behind one of physics' major unsolved problems.</p>
+        <div class="hero-actions">
+          <a class="primary-button" href="#dark-universe-title">Follow the evidence</a>
+          <a class="text-action" href="#workbench-title">Open the galaxy lab <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <aside class="hero-thesis" aria-label="Scientific thesis">
+        <p><span class="status-mark status-observed">Observed</span> We measure light, motion, distortion and cosmic structure.</p>
+        <p><span class="status-mark status-inferred">Inferred</span> The standard framework requires additional gravitating matter.</p>
+        <p><span class="status-mark status-open">Open question</span> Its microscopic identity remains unknown.</p>
+      </aside>
+    </section>
+
+    <section class="dark-universe" aria-labelledby="dark-universe-title">
+      <header class="editorial-heading">
+        <p class="chapter-number">02</p>
+        <div><p class="kicker">What is the dark universe?</p><h2 id="dark-universe-title">Three different entries in a modelled cosmic ledger</h2></div>
+        <p>The shared word <em>dark</em> does not make dark matter and dark energy the same substance. These present-day fractions are inferred within a base flat ΛCDM cosmology.</p>
+      </header>
+
+      <div class="cosmic-ledger" data-epoch="today">
+        <div class="epoch-switch" role="group" aria-label="Cosmic epoch">
+          <button id="epochToday" type="button" aria-pressed="true">Today</button>
+          <button id="epochEarly" type="button" aria-pressed="false">Early universe</button>
+        </div>
+        <div class="ledger-scale" aria-label="Reference present-day cosmic composition: 4.9 percent baryonic matter, 26.4 percent cold dark matter and 68.7 percent dark energy">
+          <div class="ledger-segment ledger-radiation" id="ledgerRadiation" style="--share: 0%"><span id="ledgerRadiationValue">0.01%</span><strong>Radiation</strong><small>Ωr · photons + relativistic species</small></div>
+          <div class="ledger-segment ledger-baryon" id="ledgerBaryons" style="--share: 4.9%"><span id="ledgerBaryonValue">4.9%</span><strong>Ordinary matter</strong><small>Ωb · atoms, gas, stars</small></div>
+          <div class="ledger-segment ledger-dark-matter" id="ledgerDarkMatter" style="--share: 26.4%"><span id="ledgerDarkMatterValue">26.4%</span><strong>Cold dark matter</strong><small>Ωcdm · gravitating component</small></div>
+          <div class="ledger-segment ledger-dark-energy" id="ledgerDarkEnergy" style="--share: 68.7%"><span id="ledgerDarkEnergyValue">68.7%</span><strong>Dark energy</strong><small>ΩΛ · late-time expansion term</small></div>
+        </div>
+        <div class="ledger-note"><span id="ledgerEpochNote">Today · a = 1</span><span>Reference: base flat ΛCDM cosmology · Planck 2018 parameter baseline</span></div>
+      </div>
+
+      <div class="equation-band">
+        <p class="equation" aria-label="H squared of a equals H nought squared times radiation density a to the minus four plus matter density a to the minus three plus curvature density a to the minus two plus dark energy density">H²(a) = H₀² [ Ω<sub>r</sub>a<sup>−4</sup> + Ω<sub>m</sub>a<sup>−3</sup> + Ω<sub>k</sub>a<sup>−2</sup> + Ω<sub>Λ</sub> ]</p>
+        <p>Radiation dilutes fastest; matter follows volume; a cosmological constant remains constant. The interactive cosmology laboratory below lets you move through this history.</p>
+      </div>
+
+      <div class="dark-comparison" aria-label="Dark matter and dark energy comparison">
+        <article>
+          <span class="comparison-label">Clusters and adds gravitating mass</span>
+          <h3>Dark matter</h3>
+          <p>Inferred from dynamics, gravitational lensing, the CMB, structure formation and complementary astrophysical probes.</p>
+          <dl><div><dt>Microscopic identity</dt><dd>Unknown</dd></div><div><dt>Baseline behaviour</dt><dd>Attractive gravity; approximately collisionless and cold on large scales</dd></div></dl>
+        </article>
+        <article>
+          <span class="comparison-label">Changes late-time expansion</span>
+          <h3>Dark energy</h3>
+          <p>Constrained through distance-redshift relations, BAO, supernovae, the CMB and large-scale structure.</p>
+          <dl><div><dt>Physical identity</dt><dd>Unknown</dd></div><div><dt>Reference model</dt><dd>ΛCDM with w = −1; evolving models remain an active research question</dd></div></dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="measurement-bridge" aria-labelledby="measurement-bridge-title">
+      <header class="editorial-heading">
+        <p class="chapter-number">03</p>
+        <div><p class="kicker">How can we see something dark?</p><h2 id="measurement-bridge-title">Follow the transformation, not the metaphor</h2></div>
+        <p>Each arrow changes the epistemic status of the information. Assumptions are part of the result, not footnotes to hide.</p>
+      </header>
+      <ol class="inference-chain">
+        <li><span>Observed</span><strong>Photons</strong><small>instrument response · calibration</small></li>
+        <li><span>Measured</span><strong>Position / spectrum</strong><small>astrometry · spectroscopy</small></li>
+        <li><span>Derived</span><strong>Kinematics / distortion</strong><small>geometry · redshift · PSF model</small></li>
+        <li><span>Inferred</span><strong>Gravitational field</strong><small>dynamical equilibrium · gravity law</small></li>
+        <li><span>Modelled</span><strong>Mass distribution</strong><small>symmetry · priors · nuisance parameters</small></li>
+        <li><span>Hypothesis</span><strong>Microscopic identity</strong><small>interaction model · independent experiment</small></li>
+      </ol>
+      <p class="bridge-manifesto">Photons locate light. Motion probes gravity. Lensing maps projected mass. Cosmology tests content and history. Detectors search for microscopic interactions.</p>
+    </section>
+
     <section class="evidence-strip" aria-label="Scientific scope">
       <div><span class="signal-dot" aria-hidden="true"></span><strong>Galaxies</strong><span>175 SPARC systems · 3,391 velocities</span></div>
       <div><strong>Clusters</strong><span>Lensing mass versus hot gas</span></div>
@@ -46,7 +125,7 @@
     <section class="observation-panel" aria-labelledby="observation-title">
       <div class="section-heading">
         <div>
-          <p class="kicker">Real observations · no generated artwork</p>
+          <p class="kicker">Observatory context · directly credited</p>
           <h2 id="observation-title">One hypothesis, independent scales</h2>
         </div>
         <p>Dark matter is inferred through different measurements. These credited images are context—not substitutes for the quantitative data below.</p>
@@ -718,10 +797,11 @@
       <a href="https://orcid.org/0009-0002-2411-1891" target="_blank" rel="noopener noreferrer">ORCID</a>
     </nav>
   </footer>
-  <script src="rotationPhysics.js?v=2.0.0-rc.1"></script>
-  <script src="lensingPhysics.js?v=2.0.0-rc.1"></script>
-  <script src="cosmologyPhysics.js?v=2.0.0-rc.1"></script>
-  <script src="futuresPhysics.js?v=2.0.0-rc.1"></script>
-  <script src="app.js?v=2.0.0-rc.1"></script>
+  <script src="rotationPhysics.js?v=3.0.0-beta.1"></script>
+  <script src="lensingPhysics.js?v=3.0.0-beta.1"></script>
+  <script src="cosmologyPhysics.js?v=3.0.0-beta.1"></script>
+  <script src="futuresPhysics.js?v=3.0.0-beta.1"></script>
+  <script src="app.js?v=3.0.0-beta.1"></script>
+  <script type="module" src="motionSystem.mjs"></script>
 </body>
 </html>

@@ -1,14 +1,17 @@
 {
   "name": "dark-matter-evidence-lab",
-  "version": "2.0.0-rc.1",
+  "version": "3.0.0-beta.1",
   "private": true,
   "description": "Evidence-first, reproducible dark-matter exploration across galaxy rotation curves, cluster lensing, cosmology and detector technology.",
   "scripts": {
-    "check": "node --check app.js && node --check physicsWorker.js && node --check rotationPhysics.js && node --check lensingPhysics.js && node --check cosmologyPhysics.js && node --check futuresPhysics.js && node --check scripts/import_sparc.mjs && node scripts/validate.js",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "node --check app.js && node --check motionSystem.mjs && node --check physicsWorker.js && node --check rotationPhysics.js && node --check lensingPhysics.js && node --check cosmologyPhysics.js && node --check futuresPhysics.js && node --check scripts/import_sparc.mjs && node scripts/validate.js",
     "test": "node --test tests/rotationPhysics.test.js tests/lensingPhysics.test.js tests/cosmologyPhysics.test.js tests/futuresPhysics.test.js tests/evidenceGraph.test.js",
     "validate:research": "node scripts/validate_repository.mjs",
     "data:refresh": "node scripts/import_sparc.mjs",
-    "verify": "npm run check && npm test && npm run validate:research"
+    "verify": "npm run check && npm test && npm run validate:research && npm run build"
   },
   "keywords": [
     "astrophysics",
@@ -20,5 +23,13 @@
     "cosmology"
   ],
   "author": "Biswajit Jana",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "motion": "^12.23.24"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.14",
+    "tailwindcss": "^4.1.14",
+    "vite": "^6.1.0"
+  }
 }

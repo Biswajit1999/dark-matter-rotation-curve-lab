@@ -1,6 +1,6 @@
 'use strict';
 
-const BUILD_VERSION = '2.0.0-rc.1';
+const BUILD_VERSION = '3.0.0-beta.1';
 const INITIAL_QUERY = new URLSearchParams(window.location.search);
 
 const CONTROL_DEFINITIONS = [
@@ -1064,6 +1064,31 @@ function renderCosmology() {
   drawCosmology();
 }
 
+function renderOpeningLedger(epoch = 'today') {
+  const scaleFactor = epoch === 'early' ? 1 / 1100 : 1;
+  const fractions = CosmologyPhysics.componentFractions(scaleFactor, {
+    omegaRadiation: 0.00009,
+    omegaBaryon: 0.0493,
+    omegaDarkMatter: 0.264,
+    omegaDarkEnergy: 0.68661
+  });
+  const entries = [
+    ['Radiation', 'ledgerRadiation', fractions.radiation],
+    ['Baryon', 'ledgerBaryons', fractions.baryons],
+    ['DarkMatter', 'ledgerDarkMatter', fractions.darkMatter],
+    ['DarkEnergy', 'ledgerDarkEnergy', fractions.darkEnergy]
+  ];
+  for (const [valueKey, elementId, fraction] of entries) {
+    const percentage = fraction * 100;
+    $(elementId).style.setProperty('--share', `${Math.max(percentage, 0.08)}%`);
+    $(`ledger${valueKey}Value`).textContent = percentage < 0.01 ? '<0.01%' : `${formatNumber(percentage, percentage < 1 ? 2 : 1)}%`;
+  }
+  document.querySelector('.cosmic-ledger').dataset.epoch = epoch;
+  $('epochToday').setAttribute('aria-pressed', String(epoch === 'today'));
+  $('epochEarly').setAttribute('aria-pressed', String(epoch === 'early'));
+  $('ledgerEpochNote').textContent = epoch === 'early' ? 'Recombination reference · a ≈ 1/1100' : 'Today · a = 1';
+}
+
 function renderCandidates() {
   if (!state.cosmology.atlas) return;
   const family = $('candidateFamily').value;
@@ -1482,6 +1507,8 @@ $('resetCosmology').addEventListener('click', () => {
   $('cosmicDarkMatter').value = 0.264; $('cosmicDarkMatterOutput').textContent = '0.264';
   renderCosmology();
 });
+$('epochToday').addEventListener('click', () => renderOpeningLedger('today'));
+$('epochEarly').addEventListener('click', () => renderOpeningLedger('early'));
 $('candidateFamily').addEventListener('change', renderCandidates);
 $('modeEducator').addEventListener('click', () => applyMode('educator'));
 $('modeResearch').addEventListener('click', () => applyMode('research'));
@@ -1525,6 +1552,8 @@ for (const canvas of [$('btfrCanvas'), $('rarCanvas')]) {
 }
 
 applyMode(state.mode, false);
+document.querySelector('.population-section')?.before(document.querySelector('.inference-section'));
+renderOpeningLedger('today');
 buildControls();
 drawPosterior();
 Promise.all([loadCatalog(), loadClusterCatalog(), loadCandidateAtlas(), loadResearchFrontier(), loadEvidenceGraph()])
