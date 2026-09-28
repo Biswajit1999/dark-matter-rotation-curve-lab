@@ -5,15 +5,6 @@ const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const storedPreference = window.localStorage.getItem('dm-motion');
 let reduced = storedPreference ? storedPreference === 'reduced' : mediaQuery.matches;
 
-function setTheme(theme, persist = true) {
-  root.dataset.theme = theme;
-  const button = document.getElementById('themeToggle');
-  const dark = theme === 'dark';
-  button?.setAttribute('aria-pressed', String(dark));
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#09080b' : '#f7f2e9');
-  if (persist) window.localStorage.setItem('dm-theme', theme);
-}
-
 function applyMotionPreference() {
   root.dataset.motion = reduced ? 'reduced' : 'full';
   const button = document.getElementById('motionToggle');
@@ -21,14 +12,6 @@ function applyMotionPreference() {
     button.textContent = `Motion: ${reduced ? 'reduced' : 'full'}`;
     button.setAttribute('aria-pressed', String(reduced));
   }
-}
-
-function bindTheme() {
-  const saved = window.localStorage.getItem('dm-theme') || root.dataset.theme || 'dark';
-  setTheme(saved, false);
-  document.getElementById('themeToggle')?.addEventListener('click', () => {
-    setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
-  });
 }
 
 function bindMotionToggle() {
@@ -60,7 +43,6 @@ function bindTilt(card) {
 }
 
 function initialiseMotion() {
-  bindTheme();
   bindMotionToggle();
 
   const progress = document.querySelector('.reading-progress');
