@@ -39,6 +39,8 @@ const state = {
   },
   result: null,
   posterior: null,
+  priorPredictive: null,
+  storyStage: 'lab',
   worker: null,
   requestId: 0,
   pendingFrame: null,
@@ -109,6 +111,10 @@ function selectReference(galaxyId) {
   if (!selected) throw new Error(`Unknown galaxy selection: ${galaxyId}`);
   const { galaxies, selection_count, total_points, ...shared } = state.catalog;
   state.reference = { ...shared, ...selected };
+  state.params.distanceMpc = selected.distance_mpc;
+  state.params.inclinationDeg = selected.inclination_deg;
+  if ($('distanceScale')) { $('distanceScale').value = 1; $('distanceScaleOutput').textContent = '1.00 × published'; }
+  if ($('inclinationOffset')) { $('inclinationOffset').value = 0; $('inclinationOffsetOutput').textContent = '0.0°'; }
   $('referenceLabel').textContent = `${state.reference.n_points} SPARC points`;
   $('datasetName').textContent = state.reference.dataset;
   $('distanceValue').textContent = `${state.reference.distance_mpc} Mpc`;
@@ -117,7 +123,7 @@ function selectReference(galaxyId) {
   $('curve-title').textContent = `${state.reference.galaxy} rotation-curve decomposition`;
   $('tableSummary').textContent = `Show ${state.reference.n_points}-point accessible data table`;
   $('dataCaption').textContent = `${state.reference.galaxy} observed rotation curve and current model evaluation`;
-  $('notes').textContent = `${state.reference.citation} Random velocity uncertainties are included; inclination and distance systematics are not.`;
+  $('notes').textContent = `${state.reference.citation} Random velocity uncertainties are included; distance and inclination can be varied as explicit sensitivity parameters.`;
 }
 
 async function loadCatalog() {
@@ -194,6 +200,13 @@ function getWorker() {
       $('posteriorStatus').textContent = `Posterior error: ${event.data.message}`;
       return;
     }
+    if (event.data.action === 'prior-predictive') {
+      state.priorPredictive = event.data.priorPredictive;
+      drawSeries();
+      $('posteriorStatus').textContent = `${event.data.priorPredictive.draws} prior draws previewed before conditioning on the observed velocities.`;
+      setBusy(false);
+      return;
+    }
     state.params = { ...state.params, ...event.data.params };
     state.result = event.data.result;
     if (event.data.action === 'sample') state.posterior = event.data.posterior;
@@ -218,6 +231,7 @@ function getWorker() {
 function setBusy(isBusy, action = '') {
   $('fitModel').disabled = isBusy;
   $('runPosterior').disabled = isBusy;
+  $('runPriorPredictive').disabled = isBusy;
   $('fitModel').textContent = isBusy && action === 'fit' ? 'Searching parameter grid…' : 'Find grid best fit';
   $('runPosterior').textContent = isBusy && action === 'sample' ? 'Sampling four chains…' : 'Run posterior chains';
   document.body.classList.toggle('is-busy', isBusy);
@@ -225,6 +239,7 @@ function setBusy(isBusy, action = '') {
 
 function clearPosterior(message = 'Posterior not run for this galaxy and halo model.') {
   state.posterior = null;
+  state.priorPredictive = null;
   $('posteriorStatus').textContent = message;
   $('posteriorMetrics').replaceChildren();
   $('posteriorRows').innerHTML = '<tr><td colspan="6">No posterior samples yet.</td></tr>';
@@ -232,11 +247,24 @@ function clearPosterior(message = 'Posterior not run for this galaxy and halo mo
   $('exportPosterior').disabled = true;
   $('exportPredictive').disabled = true;
   drawPosterior();
+  drawDiagnostics();
+}
+
+function drawDiagnostics() {
+  for (const id of ['traceCanvas', 'autocorrelationCanvas']) {
+    const canvas = $(id);
+    if (!canvas) continue;
+    const { context, width, height } = prepareCanvas(canvas);
+    context.fillStyle = '#91a49d';
+    context.font = '12px ui-monospace, Consolas, monospace';
+    context.textAlign = 'center';
+    context.fillText(state.posterior ? 'Diagnostic rendering pending' : 'Run posterior chains', width / 2, height / 2);
+  }
 }
 
 function runModel(action = 'evaluate', samplerOptions = null) {
   if (!state.reference) return;
-  if (action !== 'sample') clearPosterior('Model or target changed; run new posterior chains for this configuration.');
+  if (!['sample', 'prior-predictive'].includes(action)) clearPosterior('Model or target changed; run new posterior chains for this configuration.');
   state.requestId += 1;
   $('runId').textContent = `run ${String(state.requestId).padStart(3, '0')}`;
   getWorker().postMessage({ requestId: state.requestId, action, params: state.params, reference: state.reference, samplerOptions });

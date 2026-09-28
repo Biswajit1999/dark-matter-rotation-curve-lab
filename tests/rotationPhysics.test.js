@@ -51,7 +51,7 @@ test('weighted likelihood returns one residual per observation', () => {
 test('all three halo models produce complete, finite evaluations', () => {
   for (const haloModel of ['piso', 'nfw', 'burkert']) {
     const result = physics.evaluate({ ...defaultParams, haloModel }, reference, false);
-    assert.equal(result.series.length, 4);
+    assert.equal(result.series.length, 6);
     assert.equal(result.observed.length, 43);
     assert.ok(result.series.every(series => series.y.every(Number.isFinite)));
     assert.ok(Number.isFinite(result.metrics.reduced_chi_squared));

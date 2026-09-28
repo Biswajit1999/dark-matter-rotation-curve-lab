@@ -60,6 +60,41 @@
     return accelerationToVelocity(predictedAcceleration, point.x);
   }
 
+  function adjustReferenceForNuisance(reference, options = {}) {
+    const publishedDistance = Number(reference.distance_mpc);
+    const publishedInclination = Number(reference.inclination_deg);
+    const distanceMpc = Number(options.distanceMpc ?? publishedDistance);
+    const inclinationDeg = Number(options.inclinationDeg ?? publishedInclination);
+    if (!(publishedDistance > 0 && distanceMpc > 0)) throw new RangeError('Distance must be finite and positive.');
+    if (!(publishedInclination > 0 && publishedInclination <= 90 && inclinationDeg > 0 && inclinationDeg <= 90)) {
+      throw new RangeError('Inclination must lie above zero and at or below ninety degrees.');
+    }
+    const distanceScale = distanceMpc / publishedDistance;
+    const velocityScale = Math.sin(publishedInclination * Math.PI / 180) / Math.sin(inclinationDeg * Math.PI / 180);
+    const baryonicScale = Math.sqrt(distanceScale);
+    return {
+      ...reference,
+      distance_mpc: distanceMpc,
+      inclination_deg: inclinationDeg,
+      nuisance_transform: {
+        published_distance_mpc: publishedDistance,
+        published_inclination_deg: publishedInclination,
+        distance_scale: distanceScale,
+        deprojection_velocity_scale: velocityScale,
+        baryonic_velocity_scale: baryonicScale
+      },
+      points: reference.points.map(point => ({
+        ...point,
+        x: point.x * distanceScale,
+        y: point.y * velocityScale,
+        y_err: point.y_err * velocityScale,
+        v_gas: point.v_gas * baryonicScale,
+        v_disk: point.v_disk * baryonicScale,
+        v_bulge: point.v_bulge * baryonicScale
+      }))
+    };
+  }
+
   function pseudoIsothermalVelocity(radiusKpc, velocityInfinityKmS, coreRadiusKpc) {
     const radius = Math.max(Number(radiusKpc), EPSILON_RADIUS_KPC);
     const core = Math.max(Number(coreRadiusKpc), EPSILON_RADIUS_KPC);
@@ -177,7 +212,11 @@
   }
 
   function evaluate(params, reference, includeGrid = true) {
-    const points = reference.points || [];
+    const workingReference = adjustReferenceForNuisance(reference, {
+      distanceMpc: params.distanceMpc ?? reference.distance_mpc,
+      inclinationDeg: params.inclinationDeg ?? reference.inclination_deg
+    });
+    const points = workingReference.points || [];
     if (!points.length) throw new Error('Reference data contain no points.');
     const radii = linspace(points[0].x, points.at(-1).x, 420);
     const components = radii.map(radius => componentsAt(params, points, radius));
@@ -194,6 +233,8 @@
         { id: 'total', name: 'Total model', x: radii, y: components.map(value => value.total), color: '#f4f7fb', dash: [] },
         { id: 'gas', name: 'SPARC gas', x: radii, y: components.map(value => value.gas), color: '#54b8ea', dash: [8, 5] },
         { id: 'disk', name: 'SPARC stellar disc', x: radii, y: components.map(value => value.disk), color: '#ffd166', dash: [3, 4] },
+        { id: 'bulge', name: 'SPARC stellar bulge', x: radii, y: components.map(value => value.bulge), color: '#e8a85b', dash: [2, 5] },
+        { id: 'baryonic', name: 'Total baryonic prediction', x: radii, y: components.map(value => value.baryonic), color: '#f0c986', dash: [9, 4] },
         { id: 'halo', name: `${params.haloModel.toUpperCase()} halo`, x: radii, y: components.map(value => value.halo), color: '#b1a7ff', dash: [12, 5] }
       ],
       observed,
@@ -207,12 +248,17 @@
         bic: statistics.bic,
         outer_dark_fraction: clamp(outerDarkFraction, 0, 1)
       },
-      heatmap: includeGrid ? responseGrid(params, points) : null
+      heatmap: includeGrid ? responseGrid(params, points) : null,
+      nuisance: workingReference.nuisance_transform
     };
   }
 
   function gridFit(params, reference) {
-    const points = reference.points || [];
+    const workingReference = adjustReferenceForNuisance(reference, {
+      distanceMpc: params.distanceMpc ?? reference.distance_mpc,
+      inclinationDeg: params.inclinationDeg ?? reference.inclination_deg
+    });
+    const points = workingReference.points || [];
     let best = { chiSquared: Infinity, params: { ...params } };
     // Grid nodes align with the UI control steps so an applied fit is displayed exactly.
     const massToLightValues = linspace(0.2, 0.8, 13);
@@ -382,6 +428,50 @@
     };
   }
 
+  function priorPredictive(params, reference, options = {}) {
+    const keys = ['massToLightDisk', 'haloVelocity', 'haloScale'];
+    const defaultPriors = { massToLightDisk: [0.1, 1], haloVelocity: [40, 320], haloScale: [0.5, 25] };
+    const priors = Object.fromEntries(keys.map(key => [key, options.priors?.[key] || defaultPriors[key]]));
+    const draws = clamp(Math.round(Number(options.draws) || 320), 40, 2000);
+    const seed = Number(options.seed) || 20260928;
+    const random = seededRandom(seed);
+    const workingReference = adjustReferenceForNuisance(reference, {
+      distanceMpc: params.distanceMpc ?? reference.distance_mpc,
+      inclinationDeg: params.inclinationDeg ?? reference.inclination_deg
+    });
+    const predictions = workingReference.points.map(() => []);
+    for (let draw = 0; draw < draws; draw += 1) {
+      const candidate = { ...params };
+      for (const key of keys) candidate[key] = priors[key][0] + random() * (priors[key][1] - priors[key][0]);
+      workingReference.points.forEach((point, index) => predictions[index].push(componentsAt(candidate, workingReference.points, point.x).total));
+    }
+    return {
+      draws,
+      seed,
+      priors,
+      intervals: workingReference.points.map((point, index) => ({
+        radius: point.x,
+        observed: point.y,
+        q05: quantile(predictions[index], 0.05),
+        median: quantile(predictions[index], 0.5),
+        q95: quantile(predictions[index], 0.95)
+      }))
+    };
+  }
+
+  function autocorrelation(values, maximumLag = 60) {
+    if (!Array.isArray(values) || values.length < 3) return [];
+    const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+    const variance = values.reduce((sum, value) => sum + (value - mean) ** 2, 0);
+    if (!(variance > 0)) return [1];
+    const lastLag = Math.min(Math.max(0, Math.floor(maximumLag)), values.length - 2);
+    return Array.from({ length: lastLag + 1 }, (_, lag) => {
+      let covariance = 0;
+      for (let index = 0; index < values.length - lag; index += 1) covariance += (values[index] - mean) * (values[index + lag] - mean);
+      return covariance / variance;
+    });
+  }
+
   function samplePosterior(params, reference, options = {}) {
     const keys = ['massToLightDisk', 'haloVelocity', 'haloScale'];
     const defaultPriors = {
@@ -404,7 +494,11 @@
     const thin = clamp(Math.round(Number(options.thin) || 3), 1, 20);
     const seed = Number(options.seed) || 20260927;
     const random = seededRandom(seed);
-    const fitted = gridFit(params, reference).params;
+    const workingReference = adjustReferenceForNuisance(reference, {
+      distanceMpc: params.distanceMpc ?? reference.distance_mpc,
+      inclinationDeg: params.inclinationDeg ?? reference.inclination_deg
+    });
+    const fitted = gridFit({ ...params, distanceMpc: workingReference.distance_mpc, inclinationDeg: workingReference.inclination_deg }, workingReference).params;
     const ranges = Object.fromEntries(keys.map(key => [key, priors[key][1] - priors[key][0]]));
     const chains = [];
     const acceptanceRates = [];
@@ -413,7 +507,7 @@
       for (const key of keys) {
         if (candidate[key] < priors[key][0] || candidate[key] > priors[key][1]) return -Infinity;
       }
-      return -0.5 * weightedStatistics(candidate, reference.points).chiSquared;
+      return -0.5 * weightedStatistics(candidate, workingReference.points).chiSquared;
     };
 
     for (let chainIndex = 0; chainIndex < chainCount; chainIndex += 1) {
@@ -485,7 +579,7 @@
       ...params,
       ...Object.fromEntries(keys.map(key => [key, summaries[key].median]))
     };
-    const predictive = posteriorPredictive(samples, params, reference.points, seed);
+    const predictive = posteriorPredictive(samples, params, workingReference.points, seed);
     return {
       params: posteriorParams,
       result: evaluate(posteriorParams, reference, true),
@@ -509,6 +603,8 @@
 
   return {
     accelerationToVelocity,
+    adjustReferenceForNuisance,
+    autocorrelation,
     baryonicAcceleration,
     burkertVelocity,
     componentsAt,
@@ -521,6 +617,7 @@
     pseudoIsothermalVelocity,
     rarAcceleration,
     posteriorPredictive,
+    priorPredictive,
     samplePosterior,
     simpleMondAcceleration,
     signedSquare,

@@ -9,7 +9,9 @@ self.onmessage = event => {
       ? RotationPhysics.gridFit(params, reference)
       : action === 'sample'
         ? RotationPhysics.samplePosterior(params, reference, samplerOptions)
-        : { params, result: RotationPhysics.evaluate(params, reference, true) };
+        : action === 'prior-predictive'
+          ? { params, priorPredictive: RotationPhysics.priorPredictive(params, reference, samplerOptions) }
+          : { params, result: RotationPhysics.evaluate(params, reference, true) };
     self.postMessage({ requestId, action, ...payload });
   } catch (error) {
     self.postMessage({ requestId, action: 'error', message: error instanceof Error ? error.message : String(error) });
