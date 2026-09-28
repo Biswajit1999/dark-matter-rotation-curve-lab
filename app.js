@@ -55,7 +55,10 @@ const state = {
   cosmology: {
     atlas: null,
     logScaleFactor: 0,
-    parameters: { omegaRadiation: 0.00009, omegaBaryon: 0.0493, omegaDarkMatter: 0.264, omegaDarkEnergy: 0.68661 }
+    h0: 67.4,
+    baoRedshift: 0.8,
+    soundHorizonMpc: 147.09,
+    parameters: { omegaRadiation: 0.00009, omegaBaryon: 0.0493, omegaDarkMatter: 0.264, omegaDarkEnergy: 0.68661, w0: -1, wa: 0 }
   },
   futures: { data: null, logScaleMetres: 19, logMassGev: 2, logCrossSectionCm2: -46, localDensity: 0.4, efficiency: 0.5, speedKms: 220 },
   evidence: { graph: null, selectedId: null }
@@ -1193,6 +1196,14 @@ function renderLensing() {
   $('clusterCaution').innerHTML = `<strong>Interpretive limit:</strong> ${cluster.caution}`;
   $('clusterPaper').href = cluster.reference_url;
   $('clusterPaper').textContent = cluster.primary_reference;
+  const modern = $('clusterModernPaper');
+  if (modern) {
+    modern.hidden = !cluster.modern_reference_url;
+    if (cluster.modern_reference_url) {
+      modern.href = cluster.modern_reference_url;
+      modern.textContent = cluster.modern_reference || 'Modern reconstruction';
+    }
+  }
   $('clusterObservatory').href = cluster.observatory_url;
   $('clusterCanvasSummary').textContent = `${cluster.name} schematic with ${layers.has('galaxies') ? 'optical galaxy positions, ' : ''}${layers.has('gas') ? 'X-ray gas proxies, ' : ''}${layers.has('mass') ? 'lensing-derived total-mass contours, ' : ''}${layers.has('shear') ? 'and background-galaxy shear ticks' : ''}. The normalized centroids explain the published separation qualitatively and are not fitted image coordinates.`;
   drawClusterMap();
@@ -1239,14 +1250,24 @@ function renderCosmology() {
   const fractions = CosmologyPhysics.componentFractions(scaleFactor, state.cosmology.parameters);
   const equality = CosmologyPhysics.equalityRedshift(state.cosmology.parameters);
   const baryonShare = CosmologyPhysics.baryonFractionOfMatter(state.cosmology.parameters);
+  const bao = CosmologyPhysics.baoDistances(
+    state.cosmology.baoRedshift,
+    state.cosmology.h0,
+    state.cosmology.parameters,
+    state.cosmology.soundHorizonMpc
+  );
   $('cosmologyMetrics').innerHTML = [
-    ['Selected redshift', redshift > 10000 ? redshift.toExponential(2) : formatNumber(redshift, 1), `a=${scaleFactor.toExponential(2)}`],
-    ['Radiation fraction', `${formatNumber(fractions.radiation * 100, 2)}%`, 'of H² at selected epoch'],
+    ['Selected epoch', redshift > 10000 ? `z=${redshift.toExponential(2)}` : `z=${formatNumber(redshift, 1)}`, `a=${scaleFactor.toExponential(2)}`],
     ['Matter split', `${formatNumber(baryonShare * 100, 1)}% baryonic`, `${formatNumber((1 - baryonShare) * 100, 1)}% cold dark component`],
-    ['Matter–radiation equality', `z≈${formatNumber(equality, 0)}`, `ΩΛ=${formatNumber(state.cosmology.parameters.omegaDarkEnergy, 3)}`]
+    ['Matter–radiation equality', `z≈${formatNumber(equality, 0)}`, `ΩDE,0=${formatNumber(state.cosmology.parameters.omegaDarkEnergy, 3)}`],
+    ['BAO model point', `D_M/r_d=${formatNumber(bao.dmOverRd, 2)}`, `z=${formatNumber(bao.redshift, 2)} · D_H/r_d=${formatNumber(bao.dhOverRd, 2)}`],
+    ['Expansion rate', `${formatNumber(bao.hubbleKmSPerMpc, 1)} km/s/Mpc`, `H₀=${formatNumber(state.cosmology.h0, 1)}`],
+    ['Dark-energy form', `w₀=${formatNumber(state.cosmology.parameters.w0, 2)}`, `wₐ=${formatNumber(state.cosmology.parameters.wa, 2)}`]
   ].map(([label, value, note]) => `<div><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
-  $('cosmologySummary').textContent = `For the displayed flat background model at scale factor ${scaleFactor.toExponential(2)}, radiation contributes ${formatNumber(fractions.radiation * 100, 2)} percent, baryons ${formatNumber(fractions.baryons * 100, 2)} percent, cold dark matter ${formatNumber(fractions.darkMatter * 100, 2)} percent and dark energy ${formatNumber(fractions.darkEnergy * 100, 2)} percent of H squared. Matter–radiation equality occurs near redshift ${formatNumber(equality, 0)}.`;
+  $('cosmologySummary').textContent = `For the displayed flat background model at scale factor ${scaleFactor.toExponential(2)}, radiation contributes ${formatNumber(fractions.radiation * 100, 2)} percent, baryons ${formatNumber(fractions.baryons * 100, 2)} percent, cold dark matter ${formatNumber(fractions.darkMatter * 100, 2)} percent and the selected dark-energy model ${formatNumber(fractions.darkEnergy * 100, 2)} percent of H squared. The CPL parameters are w0 ${formatNumber(state.cosmology.parameters.w0, 2)} and wa ${formatNumber(state.cosmology.parameters.wa, 2)}. This is a background-model response, not a Planck or DESI likelihood evaluation.`;
+  $('baoSummary').textContent = `At redshift ${formatNumber(bao.redshift, 2)}, this background model gives transverse comoving distance divided by the adopted sound horizon D M over r d equal to ${formatNumber(bao.dmOverRd, 2)} and Hubble distance divided by sound horizon D H over r d equal to ${formatNumber(bao.dhOverRd, 2)}. These are calculated model coordinates, not DESI data points.`;
   drawCosmology();
+  drawBao();
 }
 
 function renderOpeningLedger(epoch = 'today') {
@@ -1274,12 +1295,48 @@ function renderOpeningLedger(epoch = 'today') {
   $('ledgerEpochNote').textContent = epoch === 'early' ? 'Recombination reference · a ≈ 1/1100' : 'Today · a = 1';
 }
 
+function drawBao() {
+  const canvas = $('baoCanvas');
+  if (!canvas) return;
+  const { context, width, height } = prepareCanvas(canvas);
+  const bounds = { minX: 0, maxX: 3, minY: 0, maxY: 45 };
+  const scales = drawPopulationAxes(context, width, height, bounds, { x: 'redshift z', y: 'distance / r_d' });
+  const curves = [
+    { key: 'dmOverRd', label: 'D_M / r_d', colour: '#54b8ea', dash: [] },
+    { key: 'dhOverRd', label: 'D_H / r_d', colour: '#f4b860', dash: [8, 5] }
+  ];
+  for (const curve of curves) {
+    context.strokeStyle = curve.colour;
+    context.lineWidth = 2.2;
+    context.setLineDash(curve.dash);
+    context.beginPath();
+    for (let index = 0; index <= 120; index += 1) {
+      const z = 0.025 + index / 120 * 2.975;
+      const model = CosmologyPhysics.baoDistances(z, state.cosmology.h0, state.cosmology.parameters, state.cosmology.soundHorizonMpc);
+      const x = scales.x(z), y = scales.y(model[curve.key]);
+      if (index === 0) context.moveTo(x, y); else context.lineTo(x, y);
+    }
+    context.stroke();
+  }
+  context.setLineDash([]);
+  const selected = scales.x(state.cosmology.baoRedshift);
+  context.strokeStyle = '#ffd166';
+  context.lineWidth = 1.5;
+  context.beginPath(); context.moveTo(selected, scales.plot.top); context.lineTo(selected, scales.plot.bottom); context.stroke();
+  context.font = '11px ui-monospace, monospace';
+  context.textAlign = 'left';
+  curves.forEach((curve,index) => {
+    context.fillStyle=curve.colour;
+    context.fillText(`${index ? '┄' : '━'} ${curve.label}`, scales.plot.left+8, scales.plot.top+14+index*16);
+  });
+}
+
 function renderCandidates() {
   if (!state.cosmology.atlas) return;
   const family = $('candidateFamily').value;
   const candidates = state.cosmology.atlas.candidates.filter(candidate => family === 'all' || candidate.family === family);
   $('candidateGrid').innerHTML = candidates.map(candidate => `<article><div><span class="candidate-family">${candidate.family}</span><h3>${candidate.name}</h3></div><dl><div><dt>Mass scale</dt><dd>${candidate.mass_scale}</dd></div><div><dt>Production</dt><dd>${candidate.production}</dd></div><div><dt>Observable</dt><dd>${candidate.signatures}</dd></div></dl><p><strong>Status:</strong> ${candidate.status}</p><p class="candidate-methods">${candidate.methods.map(method => `<span>${method}</span>`).join('')}</p><a href="${candidate.source}" target="_blank" rel="noopener noreferrer">Primary/review source</a></article>`).join('');
-  $('experimentRows').innerHTML = state.cosmology.atlas.experiments.map(experiment => `<tr><th scope="row">${experiment.name}</th><td>${experiment.channel}</td><td>${experiment.target}</td><td>${experiment.status}</td><td><a href="${experiment.source}" target="_blank" rel="noopener noreferrer">Programme source</a></td></tr>`).join('');
+  $('experimentRows').innerHTML = state.cosmology.atlas.experiments.map(experiment => `<tr><th scope="row">${experiment.name}</th><td>${experiment.channel}</td><td>${experiment.target}</td><td><span class="certainty-tag certainty-${experiment.classification || 'active'}">${experiment.classification || 'active'}</span></td><td>${experiment.result || experiment.status}</td><td>${experiment.updated || state.cosmology.atlas.status_as_of}</td><td><a href="${experiment.source}" target="_blank" rel="noopener noreferrer">Source</a></td></tr>`).join('');
 }
 
 function superscriptInteger(value) {
@@ -1796,12 +1853,38 @@ $('cosmicDarkMatter').addEventListener('input', event => {
   $('cosmicDarkMatterOutput').textContent = formatNumber(state.cosmology.parameters.omegaDarkMatter, 3);
   renderCosmology();
 });
+$('darkEnergyW0').addEventListener('input', event => {
+  state.cosmology.parameters.w0 = Number(event.currentTarget.value);
+  $('darkEnergyW0Output').textContent = formatNumber(state.cosmology.parameters.w0, 2);
+  renderCosmology();
+});
+$('darkEnergyWa').addEventListener('input', event => {
+  state.cosmology.parameters.wa = Number(event.currentTarget.value);
+  $('darkEnergyWaOutput').textContent = formatNumber(state.cosmology.parameters.wa, 2);
+  renderCosmology();
+});
+$('cosmicH0').addEventListener('input', event => {
+  state.cosmology.h0 = Number(event.currentTarget.value);
+  $('cosmicH0Output').textContent = `${formatNumber(state.cosmology.h0, 1)} km/s/Mpc`;
+  renderCosmology();
+});
+$('baoRedshift').addEventListener('input', event => {
+  state.cosmology.baoRedshift = Number(event.currentTarget.value);
+  $('baoRedshiftOutput').textContent = formatNumber(state.cosmology.baoRedshift, 2);
+  renderCosmology();
+});
 $('resetCosmology').addEventListener('click', () => {
   state.cosmology.logScaleFactor = 0;
-  state.cosmology.parameters = { omegaRadiation: 0.00009, omegaBaryon: 0.0493, omegaDarkMatter: 0.264, omegaDarkEnergy: 0.68661 };
+  state.cosmology.h0 = 67.4;
+  state.cosmology.baoRedshift = 0.8;
+  state.cosmology.parameters = { omegaRadiation: 0.00009, omegaBaryon: 0.0493, omegaDarkMatter: 0.264, omegaDarkEnergy: 0.68661, w0: -1, wa: 0 };
   $('cosmicEpoch').value = 0; $('cosmicEpochOutput').textContent = '0.00';
   $('cosmicBaryons').value = 0.0493; $('cosmicBaryonsOutput').textContent = '0.049';
   $('cosmicDarkMatter').value = 0.264; $('cosmicDarkMatterOutput').textContent = '0.264';
+  $('darkEnergyW0').value = -1; $('darkEnergyW0Output').textContent = '-1.00';
+  $('darkEnergyWa').value = 0; $('darkEnergyWaOutput').textContent = '0.00';
+  $('cosmicH0').value = 67.4; $('cosmicH0Output').textContent = '67.4 km/s/Mpc';
+  $('baoRedshift').value = 0.8; $('baoRedshiftOutput').textContent = '0.80';
   renderCosmology();
 });
 $('epochToday').addEventListener('click', () => renderOpeningLedger('today'));
@@ -1893,6 +1976,6 @@ const resizeObserver = new ResizeObserver(() => {
   drawDiagnostics();
   if (state.catalog) renderPopulation();
   if (state.lensing.catalog) drawClusterMap();
-  if (state.cosmology.atlas) drawCosmology();
+  if (state.cosmology.atlas) { drawCosmology(); drawBao(); }
 });
 for (const canvas of document.querySelectorAll('canvas')) resizeObserver.observe(canvas);
