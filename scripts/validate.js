@@ -11,6 +11,10 @@ const required = [
   'index.html',
   'styles.css',
   'app.js',
+  'themeController.js',
+  'cosmicBudget.js',
+  'cosmic-budget.html',
+  'vite.config.js',
   'physicsWorker.js',
   'rotationPhysics.js',
   'lensingPhysics.js',
@@ -93,11 +97,15 @@ if (failures.length === 0) {
   }
 
   const html = fs.readFileSync('index.html', 'utf8');
-  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'id="populationSearch"', 'id="btfrCanvas"', 'id="rarCanvas"', 'id="challengeRelation"', 'id="challengeCurveCanvas"', 'id="challengeResidualCanvas"', 'id="challengeRows"', 'id="clusterSelect"', 'id="clusterCanvas"', 'id="clusterRows"', 'Schematic, not a dark-matter photograph', 'id="cosmologyCanvas"', 'id="baoCanvas"', 'id="candidateFamily"', 'id="candidateGrid"', 'id="experimentRows"', 'id="futureMethodBand"', 'id="dimension-question"', 'id="engine-title"', 'id="scaleRange"', 'id="futureMetrics"', 'id="frontierGrid"', 'id="futureTimelineRows"', 'id="modeEducator"', 'id="modeResearch"', 'id="evidenceGraph"', 'id="evidenceRelations"', 'id="copyAnalysisLink"', 'id="exportWorkspace"', 'aria-label="Evidence laboratory sections"', 'id="priorForm"', 'id="posteriorRows"', 'id="predictiveRows"', 'id="exportPredictive"', 'prefers-reduced-motion', '@media print']) {
+  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'id="populationSearch"', 'id="btfrCanvas"', 'id="rarCanvas"', 'id="challengeRelation"', 'id="challengeCurveCanvas"', 'id="challengeResidualCanvas"', 'id="challengeRows"', 'id="clusterSelect"', 'id="clusterCanvas"', 'id="clusterRows"', 'Schematic, not a dark-matter photograph', 'id="cosmologyCanvas"', 'id="baoCanvas"', 'id="candidateFamily"', 'id="candidateGrid"', 'id="experimentRows"', 'id="futureMethodBand"', 'id="dimension-question"', 'id="engine-title"', 'id="scaleRange"', 'id="futureMetrics"', 'id="frontierGrid"', 'id="futureTimelineRows"', 'id="modeEducator"', 'id="modeResearch"', 'id="evidenceGraph"', 'id="evidenceRelations"', 'id="copyAnalysisLink"', 'id="exportWorkspace"', 'aria-label="Evidence laboratory sections"', 'id="priorForm"', 'id="posteriorRows"', 'id="predictiveRows"', 'id="exportPredictive"', 'id="themeToggle"', 'cosmic-budget.html', 'prefers-reduced-motion', '@media print']) {
     const source = ['prefers-reduced-motion', '@media print'].includes(pattern) ? fs.readFileSync('styles.css', 'utf8') : html;
     if (!source.includes(pattern)) failures.push(`accessibility contract missing: ${pattern}`);
   }
   const application = fs.readFileSync('app.js', 'utf8');
+  const budgetPage = fs.readFileSync('cosmic-budget.html', 'utf8');
+  if (!budgetPage.includes('id="sources"')) failures.push('cosmic-budget source anchor is missing');
+  if (!budgetPage.includes('Planck Collaboration VI')) failures.push('cosmic-budget primary Planck citation is missing');
+  if (!fs.readFileSync('themeController.js', 'utf8').includes('themeToggle')) failures.push('standalone theme controller is missing toggle binding');
   const worker = fs.readFileSync('physicsWorker.js', 'utf8');
   const version = packageMetadata.version;
   for (const asset of [`styles.css?v=${version}`, `app.js?v=${version}`]) {
