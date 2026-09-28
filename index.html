@@ -46,7 +46,7 @@
   <main id="main-content" class="shell" tabindex="-1">
     <section class="home-hero depth-scene" aria-labelledby="opening-title">
       <div class="hero-media" aria-hidden="true">
-        <img src="assets/observations/bullet-cluster-lensing.jpg" alt="">
+        <div class="hero-field-visual"></div>
         <div class="hero-lensing-glow"></div>
         <div class="hero-grid-overlay"></div>
       </div>
@@ -144,25 +144,25 @@
       </div>
       <div class="home-area-grid">
         <a class="home-area-card depth-card reveal" href="#lensing-title">
-          <div class="home-area-visual home-area-lensing" aria-hidden="true"></div>
+          <img src="assets/observations/bullet-cluster-lensing.jpg" alt="Bullet Cluster composite showing lensing-derived mass separated from X-ray gas." loading="lazy">
           <span>Cluster-scale inference</span>
           <strong>Map total mass with gravitational lensing.</strong>
           <small>Observation → reconstruction → mass distribution</small>
         </a>
         <a class="home-area-card depth-card reveal" href="#workbench-title">
-          <div class="home-area-visual home-area-galaxy" aria-hidden="true"></div>
+          <img src="assets/observations/hubble-m51.webp" alt="Hubble view of the Whirlpool Galaxy M51." loading="lazy">
           <span>Galaxy dynamics</span>
           <strong>Compare visible matter with measured rotation.</strong>
           <small>175 galaxies · published SPARC data</small>
         </a>
         <a class="home-area-card depth-card reveal" href="#cosmology-title">
-          <div class="home-area-visual home-area-cmb" aria-hidden="true"></div>
+          <img src="assets/observations/planck-cmb.jpg" alt="Planck all-sky cosmic microwave background map." loading="lazy">
           <span>Early-universe constraints</span>
           <strong>Ask why all gravitating matter cannot simply be baryonic.</strong>
           <small>CMB · BAO · expansion history</small>
         </a>
         <a class="home-area-card depth-card reveal" href="#futures-title">
-          <div class="home-area-visual home-area-detector" aria-hidden="true"></div>
+          <img src="assets/observations/rubin-lsst-camera.jpg" alt="Rubin Observatory LSST camera in a cleanroom." loading="lazy">
           <span>Scientific leap</span>
           <strong>Turn a future microscopic discovery into measurable engineering questions.</strong>
           <small>sensing · astronomy · energy · propulsion gates</small>
@@ -748,12 +748,19 @@
         </div>
       </div>
       <div id="cosmologyMetrics" class="lensing-metrics" aria-live="polite"></div>
+      <div class="cosmology-dashboard-notes">
+        <article><span>Model</span><strong>H²(a) / H₀²</strong><p>Radiation ∝ a⁻⁴, matter ∝ a⁻³, curvature ∝ a⁻², and the selected dark-energy response supplies the remaining background term.</p></article>
+        <article><span>What the sliders change</span><strong>Geometry, growth background and distance response</strong><p>Ω values alter the component budget; w₀–wₐ changes the dark-energy density history; H₀ rescales the distance ladder; BAO redshift selects the comparison point.</p></article>
+        <article><span>Provenance</span><strong>Planck-like reference, not a likelihood rerun</strong><p>The browser evaluates background equations only. It does not recompute CMB spectra, DESI likelihoods or Boltzmann transfer functions.</p><a href="cosmic-budget.html">Open the percentage mathematics →</a></article>
+      </div>
+      <details class="cosmology-deep-context"><summary>Open deeper cosmology interpretation</summary>
       <div class="cosmology-logic">
         <article><span class="epistemic-label">Independent baryon anchor</span><h3>Why “all matter is baryonic” fails</h3><p>Primordial nucleosynthesis and CMB acoustic structure constrain the baryon density. Replacing Ωcdm with baryons changes photon–baryon oscillations instead of reproducing the same sky.</p></article>
         <article><span class="epistemic-label">Growth mechanism</span><h3>Why early clustering matters</h3><p>Before recombination, baryons are coupled to photons. A non-baryonic component can begin building gravitational wells without participating in that acoustic fluid.</p></article>
         <article><span class="epistemic-label">DESI · updated July 2026</span><h3>Evolving dark energy remains an open test</h3><p>DESI DR2 full-shape Lyα measurements moved toward the Planck ΛCDM prediction. The site therefore treats w₀–wₐ exploration as a competing-model exercise, not a discovery of evolving dark energy.</p><a href="https://www.desi.lbl.gov/2026/07/30/new-desi-dr2-lyman-alpha-results-shed-light-on-dark-energy/" target="_blank" rel="noopener noreferrer">DESI Collaboration context</a></article>
         <article><span class="epistemic-label">Inference boundary</span><h3>What cosmology does not identify</h3><p>A fitted Ωcdm quantifies a gravitating component within a model. It does not specify mass, spin, couplings or a laboratory detection channel.</p></article>
       </div>
+      </details>
       <div class="candidate-heading">
         <div><p class="kicker">Candidate atlas</p><h3>No single search covers “dark matter”</h3></div>
         <div><label for="candidateFamily">Filter candidate family</label><select id="candidateFamily"><option value="all">All families</option><option value="particle">Particles</option><option value="field">Coherent fields</option><option value="interaction">Interaction frameworks</option><option value="compact-object">Compact objects</option></select></div>
@@ -927,22 +934,30 @@
           </div>
           <p>These are conditional engineering studies, not predictions. Each visual starts from an explicit physics gate that current evidence has not yet crossed.</p>
         </div>
-        <div class="application-visual-grid">
-          <article>
-            <img src="assets/observations/rubin-lsst-camera.jpg" alt="Rubin Observatory camera representing future high-sensitivity survey instrumentation." loading="lazy">
-            <div><span class="certainty-tag certainty-conditional">first plausible application</span><h4>Directional sensing</h4><p>Use a reproducible interaction to map local phase space, streams or substructure in a channel independent of ordinary light.</p></div>
+        <div class="application-visual-grid application-visual-grid-six">
+          <article class="application-card">
+            <div class="application-concept application-sensing" aria-hidden="true"><span></span><i></i><b></b></div>
+            <div><span class="certainty-tag certainty-conditional">conditional · closest to present experiments</span><h4>Direct local sensing</h4><p>If a reproducible non-gravitational interaction exists, directional detectors could map the local dark-matter velocity field rather than only count events.</p><a href="essay-dark-sector-applications.html#sensing">Author perspective →</a></div>
           </article>
-          <article>
-            <img src="assets/observations/planck-cmb.jpg" alt="Planck microwave sky used here as visual context for information carried by weak signals across the cosmos." loading="lazy">
-            <div><span class="certainty-tag certainty-speculative">conditional</span><h4>Through-obstacle communication</h4><p>Penetrating matter is useful only if a dark-sector state can also be produced, modulated and detected with a realistic link budget.</p></div>
+          <article class="application-card">
+            <div class="application-concept application-mapping" aria-hidden="true"><span></span><i></i><b></b></div>
+            <div><span class="certainty-tag certainty-active">evidence-grounded</span><h4>Gravitational environment mapping</h4><p>Lensing, streams and precision dynamics already let us map unseen gravitating structure without identifying a particle.</p><a href="essay-cluster-lensing.html">Author perspective →</a></div>
           </article>
-          <article>
-            <img src="assets/observations/hubble-m51.webp" alt="Galaxy image used as visual context for ambient dark-matter environments." loading="lazy">
-            <div><span class="certainty-tag certainty-speculative">upper bound</span><h4>Energy extraction</h4><p>Ambient mass flux is not usable power by itself. Interaction, capture and conversion efficiency dominate the practical result.</p></div>
+          <article class="application-card">
+            <div class="application-concept application-communication" aria-hidden="true"><span></span><i></i><b></b></div>
+            <div><span class="certainty-tag certainty-speculative">speculative</span><h4>Dark-sector communication</h4><p>A weakly interacting messenger could penetrate ordinary matter, but the same weak coupling makes generation and detection extraordinarily difficult.</p><a href="essay-dark-sector-applications.html#communication">Author perspective →</a></div>
           </article>
-          <article>
-            <img src="assets/observations/bullet-cluster-lensing.jpg" alt="Cluster lensing map used as visual context for momentum and mass-distribution reasoning." loading="lazy">
-            <div><span class="certainty-tag certainty-speculative">physics gate</span><h4>Propulsion</h4><p>An engine must close the momentum ledger. No reactionless propulsion follows from current dark-matter evidence.</p></div>
+          <article class="application-card">
+            <div class="application-concept application-navigation" aria-hidden="true"><span></span><i></i><b></b></div>
+            <div><span class="certainty-tag certainty-conditional">conditional</span><h4>Precision inertial navigation</h4><p>Future field or stream sensors could become an independent reference for local gravitational structure if a stable directional signal were ever demonstrated.</p><a href="essay-future-technologies.html#navigation">Author perspective →</a></div>
+          </article>
+          <article class="application-card">
+            <div class="application-concept application-energy" aria-hidden="true"><span></span><i></i><b></b></div>
+            <div><span class="certainty-tag certainty-speculative">upper-bound exercise</span><h4>Energy extraction limits</h4><p>Ambient density provides a mass-flux ceiling, but usable power collapses unless capture and conversion physics exist at practical efficiencies.</p><a href="essay-future-technologies.html#energy">Author perspective →</a></div>
+          </article>
+          <article class="application-card">
+            <div class="application-concept application-propulsion" aria-hidden="true"><span></span><i></i><b></b></div>
+            <div><span class="certainty-tag certainty-unknown">not supported by current evidence</span><h4>Propulsion thought experiment</h4><p>Any engine must transfer directed momentum and close a complete mass, power and heat ledger. Reactionless thrust is not implied by dark matter.</p><a href="essay-future-technologies.html#propulsion">Author perspective →</a></div>
           </article>
         </div>
       </section>
@@ -1047,6 +1062,21 @@
           <button id="exportWorkspace" class="primary-button" type="button">Export workspace JSON</button>
           <span id="shareStatus" class="share-status" role="status" aria-live="polite"></span>
         </div>
+      </div>
+    </section>
+
+    <section class="essay-hub" aria-labelledby="essay-hub-title">
+      <div class="section-heading">
+        <div><p class="kicker">Author perspective · long-horizon synthesis</p><h2 id="essay-hub-title">Six deeper essays behind the laboratory</h2></div>
+        <p>These pages separate my interpretation from the measured evidence. They are first-person scientific reflections, not claims that unresolved physics has been solved.</p>
+      </div>
+      <div class="essay-hub-grid">
+        <a href="essay-dark-matter-evidence.html"><span>01</span><strong>How I read the evidence for dark matter</strong><small>independent probes · inference · falsifiability</small></a>
+        <a href="essay-galaxy-rotation.html"><span>02</span><strong>What galaxy rotation curves actually tell us</strong><small>baryons · haloes · degeneracies</small></a>
+        <a href="essay-cluster-lensing.html"><span>03</span><strong>Why cluster lensing changed the argument</strong><small>projected mass · mergers · systematics</small></a>
+        <a href="essay-early-universe.html"><span>04</span><strong>The early-universe case for non-baryonic matter</strong><small>CMB · BAO · growth</small></a>
+        <a href="essay-dark-sector-applications.html"><span>05</span><strong>If we could control a dark-sector interaction</strong><small>sensing · communication · metrology</small></a>
+        <a href="essay-future-technologies.html"><span>06</span><strong>A 50-year technology horizon without science fiction</strong><small>energy · navigation · propulsion gates</small></a>
       </div>
     </section>
 
