@@ -360,6 +360,20 @@ h2 {
 .likelihood-panel { grid-column: 3; }
 .metrics-panel { grid-column: 2 / span 2; }
 
+.curve-panel,
+.residual-panel,
+.likelihood-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.curve-panel,
+.residual-panel,
+.likelihood-panel,
+.chart-frame {
+  min-height: 0;
+}
+
 .panel-heading {
   min-height: 68px;
   display: flex;
@@ -484,10 +498,30 @@ button:disabled { cursor: wait; opacity: 0.58; }
 .export-actions { display: flex; gap: 8px; }
 .compact-button { min-width: 52px; min-height: 38px; padding: 7px 10px; font: 700 0.72rem var(--mono); }
 
-.chart-frame { position: relative; background: #091725; }
-.chart-frame-large { height: calc(100% - 69px); min-height: 350px; }
-.chart-frame-small { height: calc(100% - 61px); min-height: 198px; }
-canvas { width: 100%; height: 100%; display: block; }
+.chart-frame {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #091725;
+}
+.chart-frame-large,
+.chart-frame-small {
+  height: auto;
+  min-height: 0;
+}
+.curve-panel .chart-frame { min-height: 350px; }
+.residual-panel .chart-frame,
+.likelihood-panel .chart-frame { min-height: 220px; }
+canvas {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: block;
+}
 
 .sr-summary {
   position: absolute;
@@ -1332,7 +1366,7 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
 .observation-grid { gap: 1px; border-radius: 0; }
 .observation-card { border-radius: 0; }
 .panel { border-radius: 2px; box-shadow: none; }
-.workspace-grid { grid-template-rows: minmax(520px, auto) minmax(300px, auto) minmax(180px, auto); }
+.workspace-grid { grid-template-rows: clamp(430px, 52vh, 670px) 300px minmax(180px, auto); }
 .kicker, .eyebrow { font-size: 0.76rem; }
 .candidate-methods span, .certainty-tag { border-radius: 2px; font-size: 0.7rem; }
 
@@ -1354,7 +1388,7 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   .observation-card-wide { grid-column: 1 / -1; grid-row: auto; }
   .observation-card { grid-column: auto; }
   .observation-card:last-child { grid-column: 1 / -1; }
-  .workspace-grid { grid-template-columns: minmax(250px, 0.72fr) minmax(500px, 1.5fr); grid-template-rows: clamp(420px, 50vh, 610px) 300px 300px auto; }
+  .workspace-grid { grid-template-columns: minmax(250px, 0.72fr) minmax(500px, 1.5fr); grid-template-rows: clamp(420px, 50vh, 610px) 300px 300px auto; align-items: stretch; }
   .controls-panel { grid-column: 1; grid-row: 1 / span 4; }
   .curve-panel { grid-column: 2; grid-row: 1; }
   .residual-panel { grid-column: 2; grid-row: 2; }
@@ -1402,7 +1436,13 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   .observation-card-wide { height: 420px; }
   .roadmap { grid-template-columns: 1fr; }
   .roadmap-date { writing-mode: horizontal-tb; }
-  .workspace-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 460px 300px 340px auto; }
+  .workspace-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-auto-rows: auto;
+    align-items: start;
+  }
   .controls-panel,
   .curve-panel,
   .residual-panel,
@@ -1462,7 +1502,7 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   .export-actions { width: 100%; }
   .compact-button { flex: 1; }
   .axis-note { max-width: 42%; }
-  .workspace-grid { grid-template-rows: auto 430px 290px 320px auto; }
+  .workspace-grid { grid-template-rows: none; grid-auto-rows: auto; }
   .metrics { grid-template-columns: 1fr; }
   .inference-actions,
   .posterior-metrics { grid-template-columns: 1fr; }
@@ -1573,4 +1613,47 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   .future-method-band article,
   .future-method-band article:last-child { grid-column: auto; min-height: 0; }
   .future-method-band strong { margin-top: 14px; }
+}
+
+/* Critical chart containment fix: prevent canvas/grid intrinsic-height feedback. */
+@media (max-width: 800px) {
+  .curve-panel,
+  .residual-panel,
+  .likelihood-panel {
+    width: 100%;
+    height: auto;
+    align-self: start;
+  }
+
+  .curve-panel .chart-frame {
+    height: 390px;
+    min-height: 390px;
+  }
+
+  .residual-panel .chart-frame {
+    height: 260px;
+    min-height: 260px;
+  }
+
+  .likelihood-panel .chart-frame {
+    height: 300px;
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .curve-panel .chart-frame {
+    height: 340px;
+    min-height: 340px;
+  }
+
+  .residual-panel .chart-frame {
+    height: 230px;
+    min-height: 230px;
+  }
+
+  .likelihood-panel .chart-frame {
+    height: 270px;
+    min-height: 270px;
+  }
 }
