@@ -1,7 +1,12 @@
 'use strict';
 
-const BUILD_VERSION = '3.0.0-beta.1';
+const BUILD_VERSION = '3.0.0-beta.2';
 const INITIAL_QUERY = new URLSearchParams(window.location.search);
+
+function queryNumber(name, fallback, minimum = -Infinity, maximum = Infinity) {
+  const raw = Number(INITIAL_QUERY.get(name));
+  return Number.isFinite(raw) && raw >= minimum && raw <= maximum ? raw : fallback;
+}
 
 const CONTROL_DEFINITIONS = [
   { key: 'massToLightDisk', label: 'Disc mass-to-light ratio', unit: 'M☉/L☉ at 3.6 μm', value: 0.5, min: 0.1, max: 1, step: 0.01 },
@@ -32,15 +37,15 @@ const state = {
   reference: null,
   params: {
     haloModel: ['piso', 'nfw', 'burkert'].includes(INITIAL_QUERY.get('halo')) ? INITIAL_QUERY.get('halo') : 'piso',
-    massToLightDisk: 0.5,
+    massToLightDisk: queryNumber('ml', 0.5, 0.1, 1),
     massToLightBulge: 0.7,
-    haloVelocity: 170,
-    haloScale: 5
+    haloVelocity: queryNumber('hv', 170, 40, 320),
+    haloScale: queryNumber('hs', 5, 0.5, 25)
   },
   result: null,
   posterior: null,
   priorPredictive: null,
-  storyStage: 'lab',
+  storyStage: ['A','B','C','D','E','F','G','H','I','J','lab'].includes(INITIAL_QUERY.get('stage')) ? INITIAL_QUERY.get('stage') : 'lab',
   worker: null,
   requestId: 0,
   pendingFrame: null,
@@ -111,10 +116,18 @@ function selectReference(galaxyId) {
   if (!selected) throw new Error(`Unknown galaxy selection: ${galaxyId}`);
   const { galaxies, selection_count, total_points, ...shared } = state.catalog;
   state.reference = { ...shared, ...selected };
-  state.params.distanceMpc = selected.distance_mpc;
-  state.params.inclinationDeg = selected.inclination_deg;
-  if ($('distanceScale')) { $('distanceScale').value = 1; $('distanceScaleOutput').textContent = '1.00 × published'; }
-  if ($('inclinationOffset')) { $('inclinationOffset').value = 0; $('inclinationOffsetOutput').textContent = '0.0°'; }
+  const distanceScale = queryNumber('dscale', 1, 0.8, 1.2);
+  const inclinationOffset = queryNumber('ioffset', 0, -10, 10);
+  state.params.distanceMpc = selected.distance_mpc * distanceScale;
+  state.params.inclinationDeg = Math.min(90, Math.max(1, selected.inclination_deg + inclinationOffset));
+  if ($('distanceScale')) {
+    $('distanceScale').value = distanceScale;
+    $('distanceScaleOutput').textContent = `${formatNumber(distanceScale, 2)} × published`;
+  }
+  if ($('inclinationOffset')) {
+    $('inclinationOffset').value = inclinationOffset;
+    $('inclinationOffsetOutput').textContent = `${formatNumber(inclinationOffset, 1)}°`;
+  }
   $('referenceLabel').textContent = `${state.reference.n_points} SPARC points`;
   $('datasetName').textContent = state.reference.dataset;
   $('distanceValue').textContent = `${state.reference.distance_mpc} Mpc`;
@@ -251,15 +264,103 @@ function clearPosterior(message = 'Posterior not run for this galaxy and halo mo
 }
 
 function drawDiagnostics() {
-  for (const id of ['traceCanvas', 'autocorrelationCanvas']) {
-    const canvas = $(id);
-    if (!canvas) continue;
-    const { context, width, height } = prepareCanvas(canvas);
-    context.fillStyle = '#91a49d';
-    context.font = '12px ui-monospace, Consolas, monospace';
-    context.textAlign = 'center';
-    context.fillText(state.posterior ? 'Diagnostic rendering pending' : 'Run posterior chains', width / 2, height / 2);
+  const traceCanvas = $('traceCanvas');
+  const acfCanvas = $('autocorrelationCanvas');
+  if (!traceCanvas || !acfCanvas) return;
+
+  if (!state.posterior) {
+    for (const canvas of [traceCanvas, acfCanvas]) {
+      const { context, width, height } = prepareCanvas(canvas);
+      context.fillStyle = '#91a49d';
+      context.font = '12px ui-monospace, Consolas, monospace';
+      context.textAlign = 'center';
+      context.fillText('Run posterior chains', width / 2, height / 2);
+    }
+    $('traceSummary').textContent = 'Run posterior chains to inspect trace mixing.';
+    $('autocorrelationSummary').textContent = 'Run posterior chains to inspect autocorrelation.';
+    return;
   }
+
+  const { chains, parameterKeys, priors, summaries } = state.posterior;
+  const labels = { massToLightDisk: 'Disc M/L', haloVelocity: 'Halo velocity', haloScale: 'Scale radius' };
+  const colours = ['#54b8ea', '#f4b860', '#b1a7ff', '#67d6c0', '#ff8d7d', '#d9e4f2'];
+
+  {
+    const { context, width, height } = prepareCanvas(traceCanvas);
+    const left = 58, right = width - 14, top = 18, bottom = height - 32;
+    const panelHeight = (bottom - top) / parameterKeys.length;
+    parameterKeys.forEach((key, parameterIndex) => {
+      const [minimum, maximum] = priors[key];
+      const panelTop = top + panelHeight * parameterIndex;
+      const panelBottom = panelTop + panelHeight - 10;
+      context.strokeStyle = 'rgba(149, 166, 190, 0.22)';
+      context.strokeRect(left, panelTop, right - left, panelBottom - panelTop);
+      context.fillStyle = '#c8d1df';
+      context.font = '10px ui-monospace, Consolas, monospace';
+      context.textAlign = 'left';
+      context.fillText(labels[key], 8, panelTop + 11);
+      const median = summaries[key].median;
+      const y = value => panelBottom - (value - minimum) / (maximum - minimum || 1) * (panelBottom - panelTop);
+      context.strokeStyle = 'rgba(249,199,79,0.65)';
+      context.setLineDash([4, 4]);
+      context.beginPath(); context.moveTo(left, y(median)); context.lineTo(right, y(median)); context.stroke();
+      context.setLineDash([]);
+      chains.forEach((chain, chainIndex) => {
+        context.strokeStyle = colours[chainIndex % colours.length];
+        context.globalAlpha = 0.75;
+        context.lineWidth = 1;
+        context.beginPath();
+        chain.forEach((sample, drawIndex) => {
+          const x = left + drawIndex / Math.max(1, chain.length - 1) * (right - left);
+          const py = y(sample[key]);
+          if (drawIndex === 0) context.moveTo(x, py); else context.lineTo(x, py);
+        });
+        context.stroke();
+      });
+      context.globalAlpha = 1;
+    });
+    context.fillStyle = '#a8b4c8';
+    context.textAlign = 'center';
+    context.fillText('Retained draw index', (left + right) / 2, height - 10);
+  }
+
+  {
+    const { context, width, height } = prepareCanvas(acfCanvas);
+    const left = 48, right = width - 14, top = 18, bottom = height - 34;
+    const maxLag = 50;
+    context.strokeStyle = 'rgba(149, 166, 190, 0.22)';
+    context.strokeRect(left, top, right - left, bottom - top);
+    const scaleX = lag => left + lag / maxLag * (right - left);
+    const scaleY = value => bottom - (value + 0.2) / 1.2 * (bottom - top);
+    context.strokeStyle = 'rgba(149, 166, 190, 0.35)';
+    context.beginPath(); context.moveTo(left, scaleY(0)); context.lineTo(right, scaleY(0)); context.stroke();
+    parameterKeys.forEach((key, parameterIndex) => {
+      const perChain = chains.map(chain => window.RotationPhysics.autocorrelation(chain.map(sample => sample[key]), maxLag));
+      const longest = Math.max(...perChain.map(values => values.length));
+      const averaged = Array.from({ length: longest }, (_, lag) => {
+        const values = perChain.map(series => series[lag]).filter(Number.isFinite);
+        return values.reduce((sum, value) => sum + value, 0) / Math.max(1, values.length);
+      });
+      context.strokeStyle = colours[parameterIndex % colours.length];
+      context.lineWidth = 2;
+      context.beginPath();
+      averaged.forEach((value, lag) => {
+        const x = scaleX(lag), y = scaleY(value);
+        if (lag === 0) context.moveTo(x, y); else context.lineTo(x, y);
+      });
+      context.stroke();
+      context.fillStyle = colours[parameterIndex % colours.length];
+      context.font = '10px ui-monospace, Consolas, monospace';
+      context.textAlign = 'left';
+      context.fillText(labels[key], left + 8, top + 14 + parameterIndex * 14);
+    });
+    context.fillStyle = '#a8b4c8';
+    context.textAlign = 'center';
+    context.fillText('Lag [retained draws]', (left + right) / 2, height - 10);
+  }
+
+  $('traceSummary').textContent = `${chains.length} retained posterior chains are shown for disc mass-to-light ratio, halo velocity and halo scale. Stable overlapping traces without long drifts support, but do not prove, adequate mixing.`;
+  $('autocorrelationSummary').textContent = `Mean chain autocorrelation is shown through lag 50 for all fitted parameters. Slower decay implies fewer effectively independent posterior draws.`;
 }
 
 function runModel(action = 'evaluate', samplerOptions = null) {
@@ -350,21 +451,68 @@ function drawSeries() {
   const { context, width, height } = prepareCanvas(canvas);
   const points = state.result.observed;
   const predictive = state.posterior?.predictive;
+  const priorPredictive = state.priorPredictive;
+  const stageSeries = {
+    A: [],
+    B: ['gas'],
+    C: ['gas', 'disk'],
+    D: ['gas', 'disk', 'bulge'],
+    E: ['baryonic'],
+    F: ['baryonic'],
+    G: ['baryonic', 'halo', 'total'],
+    H: ['baryonic', 'halo', 'total'],
+    I: ['baryonic', 'halo', 'total'],
+    J: ['baryonic', 'halo', 'total'],
+    lab: state.result.series.map(series => series.id)
+  };
+  const visibleIds = new Set(stageSeries[state.storyStage] || stageSeries.lab);
+  const visibleSeries = state.result.series.filter(series => visibleIds.has(series.id));
   const legendItems = [
     { name: 'Observed ±1σ', color: '#f4b860', dash: [] },
-    ...(predictive ? [{ name: '68% predictive interval', color: '#54b8ea', dash: [3, 4], fill: true }] : []),
-    ...state.result.series
+    ...(priorPredictive ? [{ name: '90% prior-predictive interval', color: '#b1a7ff', dash: [6, 5], fill: 'prior' }] : []),
+    ...(predictive ? [{ name: '68% posterior-predictive interval', color: '#54b8ea', dash: [3, 4], fill: 'posterior' }] : []),
+    ...visibleSeries
   ];
   const columns = width < 720 ? 2 : legendItems.length;
   const legendRows = Math.ceil(legendItems.length / columns);
   const predictiveMaximum = predictive ? Math.max(...predictive.intervals.map(interval => interval.predictiveQ84)) : 0;
-  const maxY = Math.max(predictiveMaximum, ...points.map(point => point.observed + point.uncertainty), ...state.result.series.flatMap(series => series.y));
+  const priorMaximum = priorPredictive ? Math.max(...priorPredictive.intervals.map(interval => interval.q95)) : 0;
+  const plottedSeriesValues = visibleSeries.length ? visibleSeries.flatMap(series => series.y) : [0];
+  const maxY = Math.max(predictiveMaximum, priorMaximum, ...points.map(point => point.observed + point.uncertainty), ...plottedSeriesValues);
   const bounds = { minX: 0, maxX: points.at(-1).radius, minY: 0, maxY: Math.ceil(maxY / 20) * 20 };
   const { scaleX, scaleY } = drawAxes(context, { width, height }, bounds, {
     x: 'Galactocentric radius [kpc]',
     y: 'Circular velocity [km/s]',
     top: 28 + legendRows * 19
   });
+
+  if (priorPredictive?.intervals?.length) {
+    const intervals = priorPredictive.intervals;
+    context.fillStyle = 'rgba(177, 167, 255, 0.10)';
+    context.beginPath();
+    intervals.forEach((interval, index) => {
+      const x = scaleX(interval.radius);
+      const y = scaleY(interval.q95);
+      if (index === 0) context.moveTo(x, y); else context.lineTo(x, y);
+    });
+    for (let index = intervals.length - 1; index >= 0; index -= 1) {
+      context.lineTo(scaleX(intervals[index].radius), scaleY(intervals[index].q05));
+    }
+    context.closePath();
+    context.fill();
+    context.strokeStyle = 'rgba(177, 167, 255, 0.65)';
+    context.lineWidth = 1;
+    context.setLineDash([6, 5]);
+    for (const key of ['q05', 'q95']) {
+      context.beginPath();
+      intervals.forEach((interval, index) => {
+        const x = scaleX(interval.radius), y = scaleY(interval[key]);
+        if (index === 0) context.moveTo(x, y); else context.lineTo(x, y);
+      });
+      context.stroke();
+    }
+    context.setLineDash([]);
+  }
 
   if (predictive?.intervals?.length) {
     const intervals = predictive.intervals;
@@ -397,7 +545,7 @@ function drawSeries() {
     context.setLineDash([]);
   }
 
-  for (const series of state.result.series) {
+  for (const series of visibleSeries) {
     context.strokeStyle = series.color;
     context.lineWidth = series.id === 'total' ? 2.6 : 1.8;
     context.setLineDash(series.dash || []);
@@ -438,7 +586,7 @@ function drawSeries() {
     const x = 76 + column * itemWidth;
     const y = 34 + row * 19;
     if (item.fill) {
-      context.fillStyle = 'rgba(84, 184, 234, 0.24)';
+      context.fillStyle = item.fill === 'prior' ? 'rgba(177, 167, 255, 0.18)' : 'rgba(84, 184, 234, 0.24)';
       context.fillRect(x, y - 5, 20, 10);
       context.strokeStyle = item.color;
       context.strokeRect(x, y - 5, 20, 10);
@@ -467,6 +615,14 @@ function drawResiduals() {
   if (!state.result) return;
   const canvas = $('residualCanvas');
   const { context, width, height } = prepareCanvas(canvas);
+  if (!['H', 'I', 'J', 'lab'].includes(state.storyStage)) {
+    context.fillStyle = '#91a49d';
+    context.font = '12px ui-monospace, Consolas, monospace';
+    context.textAlign = 'center';
+    context.fillText('Stage H reveals standardised residuals', width / 2, height / 2);
+    $('residualSummary').textContent = 'Residuals are intentionally hidden until stage H in the guided evidence sequence.';
+    return;
+  }
   const residuals = state.result.residuals;
   const extent = Math.max(4, Math.ceil(Math.max(...residuals.map(item => Math.abs(item.standardised)))));
   const bounds = { minX: 0, maxX: residuals.at(-1).radius, minY: -extent, maxY: extent };
@@ -660,6 +816,7 @@ function drawPosterior() {
 
 function renderPosterior() {
   drawPosterior();
+  drawDiagnostics();
   if (!state.posterior) return;
   const { diagnostics, summaries, samples, config, predictive } = state.posterior;
   const metrics = [
@@ -1167,9 +1324,66 @@ function renderFutures() {
 function syncUrlState() {
   const url = new URL(window.location.href);
   url.searchParams.set('mode', state.mode);
-  if (state.reference) url.searchParams.set('galaxy', state.reference.galaxy_id);
+  if (state.reference) {
+    url.searchParams.set('galaxy', state.reference.galaxy_id);
+    url.searchParams.set('dscale', formatNumber(state.params.distanceMpc / state.reference.distance_mpc, 3));
+    url.searchParams.set('ioffset', formatNumber(state.params.inclinationDeg - state.reference.inclination_deg, 2));
+  }
   url.searchParams.set('halo', state.params.haloModel);
+  url.searchParams.set('ml', formatNumber(state.params.massToLightDisk, 4));
+  url.searchParams.set('hv', formatNumber(state.params.haloVelocity, 3));
+  url.searchParams.set('hs', formatNumber(state.params.haloScale, 3));
+  url.searchParams.set('stage', state.storyStage);
   window.history.replaceState(null, '', url);
+}
+
+async function copyAnalysisLink() {
+  syncUrlState();
+  const url = window.location.href;
+  try {
+    await navigator.clipboard.writeText(url);
+    $('shareStatus').textContent = 'Analysis link copied to clipboard.';
+  } catch {
+    const field = document.createElement('textarea');
+    field.value = url;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    document.body.append(field);
+    field.select();
+    document.execCommand('copy');
+    field.remove();
+    $('shareStatus').textContent = 'Analysis link copied.';
+  }
+}
+
+function setStoryStage(stage, scrollToPanel = false) {
+  const valid = new Set(['A','B','C','D','E','F','G','H','I','J','lab']);
+  state.storyStage = valid.has(stage) ? stage : 'lab';
+  const descriptions = {
+    A: 'A · Start with the measured circular velocities and their quoted random uncertainties.',
+    B: 'B · Add the SPARC gas contribution.',
+    C: 'C · Add the stellar disc under the current mass-to-light assumption.',
+    D: 'D · Add the bulge contribution where the source catalogue provides one.',
+    E: 'E · Combine baryonic components into the baryonic prediction.',
+    F: 'F · Compare observations with baryons alone to expose the mass discrepancy under these assumptions.',
+    G: 'G · Add the selected halo family and the total model.',
+    H: 'H · Inspect standardised residuals rather than judging a fit by eye.',
+    I: 'I · Move from a best-fit curve to posterior uncertainty and covariance.',
+    J: 'J · Check whether replicated observations resemble the measured curve.',
+    lab: 'Lab mode shows every available measured, modelled and inferred layer.'
+  };
+  for (const button of document.querySelectorAll('[data-story-stage]')) {
+    button.setAttribute('aria-pressed', String(button.dataset.storyStage === state.storyStage));
+  }
+  $('storyStatus').textContent = descriptions[state.storyStage];
+  drawSeries();
+  drawResiduals();
+  renderPosterior();
+  syncUrlState();
+  if (scrollToPanel && ['I','J'].includes(state.storyStage)) {
+    document.querySelector('.inference-section')?.scrollIntoView({ behavior: document.documentElement.dataset.motion === 'reduced' ? 'auto' : 'smooth', block: 'start' });
+  }
 }
 
 function applyMode(mode, updateUrl = true) {
@@ -1232,6 +1446,16 @@ function exportWorkspace() {
     lensing: { selectedId: state.lensing.selectedId, sourceRedshift: state.lensing.sourceRedshift, velocityDispersion: state.lensing.velocityDispersion },
     cosmology: { logScaleFactor: state.cosmology.logScaleFactor, parameters: state.cosmology.parameters },
     futures: { ...state.futures, data: undefined },
+    storyStage: state.storyStage,
+    analysisUrl: window.location.href,
+    populationFilters: {
+      name: $('populationSearch').value,
+      quality: $('qualityFilter').value,
+      subset: $('populationClass').value,
+      morphology: $('morphologyFilter').value,
+      minimumInclinationDeg: Number($('inclinationFilter').value),
+      minimumResolvedPoints: Number($('pointFilter').value)
+    },
     provenance: {
       galaxyCatalogSha256: state.catalog?.provenance?.source_checksums,
       graphSchemaVersion: state.evidence.graph?.schema_version,
@@ -1252,7 +1476,16 @@ function filteredPopulation() {
   const query = $('populationSearch').value.trim().toLowerCase();
   const quality = $('qualityFilter').value;
   const subset = $('populationClass').value;
+  const morphology = $('morphologyFilter').value;
+  const minimumInclination = Number($('inclinationFilter').value);
+  const minimumPoints = Number($('pointFilter').value);
   const surfaceMedian = median(state.catalog.galaxies.map(galaxy => galaxy.effective_surface_brightness_lsun_pc2));
+  const morphologyClass = galaxy => {
+    const type = String(galaxy.morphology || '').toLowerCase();
+    if (/s0|sa\b/.test(type)) return 'early';
+    if (/sab|sb|sbc|sc|scd/.test(type)) return 'spiral';
+    return 'dwarf';
+  };
   return state.catalog.galaxies.filter(galaxy => {
     if (query && !`${galaxy.galaxy} ${galaxy.galaxy_id}`.toLowerCase().includes(query)) return false;
     if (quality === '1' && galaxy.quality_flag !== 1) return false;
@@ -1260,6 +1493,9 @@ function filteredPopulation() {
     if (subset === 'low-sb' && galaxy.effective_surface_brightness_lsun_pc2 >= surfaceMedian) return false;
     if (subset === 'high-sb' && galaxy.effective_surface_brightness_lsun_pc2 < surfaceMedian) return false;
     if (subset === 'gas-rich' && galaxy.derived.gas_fraction_at_ml_0p5 <= 0.5) return false;
+    if (morphology !== 'all' && morphologyClass(galaxy) !== morphology) return false;
+    if (galaxy.inclination_deg < minimumInclination) return false;
+    if (galaxy.n_points < minimumPoints) return false;
     return true;
   });
 }
@@ -1407,7 +1643,14 @@ function exportPopulationJson() {
     dataset: state.catalog.dataset,
     datasetVersion: state.catalog.schema_version,
     sourceChecksums: state.catalog.provenance.source_checksums,
-    filters: { name: $('populationSearch').value, quality: $('qualityFilter').value, subset: $('populationClass').value },
+    filters: {
+      name: $('populationSearch').value,
+      quality: $('qualityFilter').value,
+      subset: $('populationClass').value,
+      morphology: $('morphologyFilter').value,
+      minimumInclinationDeg: Number($('inclinationFilter').value),
+      minimumResolvedPoints: Number($('pointFilter').value)
+    },
     assumptions: { stellarMassToLight3p6: 0.5, bulgeMassToLight3p6: 0.7, gasHeliumFactor: 1.33, rarGDaggerMps2: 1.2e-10 },
     selectedGalaxyIds: state.population.galaxies.map(galaxy => galaxy.galaxy_id)
   };
@@ -1473,9 +1716,35 @@ $('priorForm').addEventListener('submit', event => {
 
 $('exportPosterior').addEventListener('click', exportPosterior);
 $('exportPredictive').addEventListener('click', exportPredictive);
+$('runPriorPredictive').addEventListener('click', () => {
+  const priors = posteriorPriors();
+  if (!priors) return;
+  setBusy(true, 'prior-predictive');
+  $('posteriorStatus').textContent = 'Drawing predictions from the prior before conditioning on measured velocities…';
+  runModel('prior-predictive', { priors, draws: 400, seed: 20260928 });
+});
+$('priorPreset').addEventListener('change', event => {
+  const presets = {
+    reference: { priorMlMin: 0.1, priorMlMax: 1, priorVelocityMin: 40, priorVelocityMax: 320, priorScaleMin: 0.5, priorScaleMax: 25 },
+    conservative: { priorMlMin: 0.05, priorMlMax: 1.2, priorVelocityMin: 20, priorVelocityMax: 420, priorScaleMin: 0.2, priorScaleMax: 40 },
+    'stellar-tight': { priorMlMin: 0.35, priorMlMax: 0.75, priorVelocityMin: 50, priorVelocityMax: 300, priorScaleMin: 0.8, priorScaleMax: 20 }
+  };
+  const preset = presets[event.currentTarget.value] || presets.reference;
+  for (const [id, value] of Object.entries(preset)) $(id).value = value;
+});
 
 $('reset').addEventListener('click', () => {
-  state.params = { haloModel: 'piso', massToLightDisk: 0.5, massToLightBulge: 0.7, haloVelocity: 170, haloScale: 5 };
+  state.params = {
+    haloModel: 'piso',
+    massToLightDisk: 0.5,
+    massToLightBulge: 0.7,
+    haloVelocity: 170,
+    haloScale: 5,
+    distanceMpc: state.reference?.distance_mpc,
+    inclinationDeg: state.reference?.inclination_deg
+  };
+  if ($('distanceScale')) { $('distanceScale').value = 1; $('distanceScaleOutput').textContent = '1.00 × published'; }
+  if ($('inclinationOffset')) { $('inclinationOffset').value = 0; $('inclinationOffsetOutput').textContent = '0.0°'; }
   syncControls();
   syncUrlState();
   runModel();
@@ -1541,6 +1810,7 @@ $('candidateFamily').addEventListener('change', renderCandidates);
 $('modeEducator').addEventListener('click', () => applyMode('educator'));
 $('modeResearch').addEventListener('click', () => applyMode('research'));
 $('exportWorkspace').addEventListener('click', exportWorkspace);
+$('copyAnalysisLink').addEventListener('click', copyAnalysisLink);
 $('scaleRange').addEventListener('input', event => {
   state.futures.logScaleMetres = Number(event.currentTarget.value);
   renderFutures();
@@ -1557,8 +1827,33 @@ for (const [id, stateKey, output, formatter] of [
     renderFutures();
   });
 }
-for (const control of [$('populationSearch'), $('qualityFilter'), $('populationClass')]) {
+for (const control of [
+  $('populationSearch'),
+  $('qualityFilter'),
+  $('populationClass'),
+  $('morphologyFilter'),
+  $('inclinationFilter'),
+  $('pointFilter')
+]) {
   control.addEventListener(control.tagName === 'INPUT' ? 'input' : 'change', renderPopulation);
+}
+
+$('distanceScale').addEventListener('input', event => {
+  const scale = Number(event.currentTarget.value);
+  state.params.distanceMpc = state.reference.distance_mpc * scale;
+  $('distanceScaleOutput').textContent = `${formatNumber(scale, 2)} × published`;
+  syncUrlState();
+  scheduleModel();
+});
+$('inclinationOffset').addEventListener('input', event => {
+  const offset = Number(event.currentTarget.value);
+  state.params.inclinationDeg = Math.min(90, Math.max(1, state.reference.inclination_deg + offset));
+  $('inclinationOffsetOutput').textContent = `${formatNumber(offset, 1)}°`;
+  syncUrlState();
+  scheduleModel();
+});
+for (const button of document.querySelectorAll('[data-story-stage]')) {
+  button.addEventListener('click', () => setStoryStage(button.dataset.storyStage, true));
 }
 for (const canvas of [$('btfrCanvas'), $('rarCanvas')]) {
   canvas.addEventListener('pointermove', handlePopulationPointer);
@@ -1584,6 +1879,7 @@ document.querySelector('.population-section')?.before(document.querySelector('.i
 renderOpeningLedger('today');
 buildControls();
 drawPosterior();
+setStoryStage(state.storyStage, false);
 Promise.all([loadCatalog(), loadClusterCatalog(), loadCandidateAtlas(), loadResearchFrontier(), loadEvidenceGraph()])
   .then(() => { syncUrlState(); runModel(); })
   .catch(error => {
@@ -1594,6 +1890,7 @@ Promise.all([loadCatalog(), loadClusterCatalog(), loadCandidateAtlas(), loadRese
 const resizeObserver = new ResizeObserver(() => {
   if (state.result) renderAll();
   drawPosterior();
+  drawDiagnostics();
   if (state.catalog) renderPopulation();
   if (state.lensing.catalog) drawClusterMap();
   if (state.cosmology.atlas) drawCosmology();
