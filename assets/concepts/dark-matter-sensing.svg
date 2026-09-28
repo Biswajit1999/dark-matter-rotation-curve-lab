@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
+<title id="t">Directional dark-matter sensing concept</title><desc id="d">A scientific concept illustration showing a directional detector, Earth, and an inferred particle stream. Conditional concept, not a demonstrated technology.</desc>
+<rect width="1200" height="720" fill="#171411"/>
+<circle cx="965" cy="150" r="105" fill="#24201b" stroke="#f6efe5" stroke-width="3"/>
+<path d="M870 160c70-46 150-54 204-16" fill="none" stroke="#d55d3b" stroke-width="9" stroke-linecap="round"/>
+<g stroke="#e7aa40" stroke-width="3" opacity=".9">
+<path d="M80 132h430"/><path d="M80 210h510"/><path d="M80 288h390"/><path d="M80 366h550"/>
+</g>
+<g fill="#e7aa40"><circle cx="170" cy="132" r="7"/><circle cx="335" cy="210" r="7"/><circle cx="260" cy="288" r="7"/><circle cx="455" cy="366" r="7"/></g>
+<g transform="translate(540 318)">
+<ellipse cx="130" cy="128" rx="138" ry="52" fill="#2a2520" stroke="#f6efe5" stroke-width="3"/>
+<rect x="30" y="28" width="200" height="100" rx="18" fill="#f6efe5"/>
+<circle cx="130" cy="78" r="32" fill="#7a5db0"/>
+<path d="M130 110v68" stroke="#7a5db0" stroke-width="10"/>
+<path d="M82 178h96" stroke="#d55d3b" stroke-width="12" stroke-linecap="round"/>
+</g>
+<path d="M500 230c98 34 128 64 174 126" fill="none" stroke="#7a5db0" stroke-width="5" stroke-dasharray="12 12"/>
+<path d="M674 356l-28-4 12-26" fill="none" stroke="#7a5db0" stroke-width="5"/>
+<text x="78" y="82" fill="#f6efe5" font-family="system-ui,sans-serif" font-size="34" font-weight="700">Directional sensing</text>
+<text x="78" y="610" fill="#f6efe5" font-family="system-ui,sans-serif" font-size="24">Infer a preferred arrival direction from calibrated events</text>
+<text x="78" y="652" fill="#b9afa4" font-family="system-ui,sans-serif" font-size="18">Requires a reproducible non-gravitational interaction and directional detector response.</text>
+<rect x="78" y="674" width="438" height="2" fill="#d55d3b"/>
+</svg>
