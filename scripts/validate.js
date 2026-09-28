@@ -15,6 +15,13 @@ const required = [
   'cosmicBudget.js',
   'cosmic-budget.html',
   'vite.config.js',
+  'essay-future-technologies.html',
+  'essay-dark-sector-applications.html',
+  'essay-early-universe.html',
+  'essay-cluster-lensing.html',
+  'essay-galaxy-rotation.html',
+  'essay-dark-matter-evidence.html',
+  'essay.css',
   'physicsWorker.js',
   'rotationPhysics.js',
   'lensingPhysics.js',
@@ -104,6 +111,10 @@ if (failures.length === 0) {
     if (!source.includes(pattern)) failures.push(`accessibility contract missing: ${pattern}`);
   }
   const application = fs.readFileSync('app.js', 'utf8');
+  if (!application.includes("document.documentElement.dataset.view")) failures.push('Guide/Lab does not set the data-view guide/lab state');
+  const motionSystem = fs.readFileSync('motionSystem.mjs','utf8');
+  if (!motionSystem.includes("full','reduced','off")) failures.push('Motion system does not expose full/reduced/off states');
+  if (!fs.readFileSync('essay-dark-sector-applications.html','utf8').includes('Evidence ≠ speculation')) failures.push('Author essays are missing the evidence/speculation boundary');
   const budgetPage = fs.readFileSync('cosmic-budget.html', 'utf8');
   if (!budgetPage.includes('id="sources"')) failures.push('cosmic-budget source anchor is missing');
   if (!budgetPage.includes('Planck Collaboration VI')) failures.push('cosmic-budget primary Planck citation is missing');
