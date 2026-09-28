@@ -1,360 +1,310 @@
 # Dark Matter Evidence Lab
 
-Dark Matter Evidence Lab is a reproducible interactive research and teaching
-environment for a connected set of questions: what additional gravitating
-component is required by galaxy dynamics, how does cluster lensing locate mass
-relative to hot gas, what does cosmology measure, and which technologies could
-identify the underlying particle or field?
+**An open computational laboratory for following the evidence for unseen gravitation from galaxy rotation curves to lensing, cosmology and particle searches - while keeping observation, inference and speculation separate.**
 
-The interactive workbench fits **3,391 published measurements across all 175
-SPARC galaxies**. It displays quoted random
-uncertainties, published gas and stellar contributions, a selected halo
-profile, the total model, standardised residuals and a two-parameter Δχ²
-surface. Real observatory imagery then connects this galaxy-scale evidence to
-the Bullet Cluster, Planck cosmology and Rubin survey technology. The app does
-not identify a dark-matter particle and does not treat an interactive grid
-minimum as a publication-quality posterior.
+![Reference cosmic matter-energy budget](docs/figures/cosmic-budget.svg)
 
-## What changed in v2
+> We can measure gravitational effects that ordinary baryons do not explain by themselves under the standard framework.  
+> We can test models and constrain candidate properties.  
+> We still do not know the microscopic identity of dark matter.
 
-The pre-upgrade teaching application is preserved at the `v1-legacy` tag. The
-active application now:
+Dark Matter Evidence Lab is a research-and-teaching project by **Biswajit Jana**. It combines published astronomical data, explicit equations, statistical inference, provenance, tests and interactive visualisation. A visitor should be able to move backwards from a conclusion to the data and assumptions that produced it.
 
-- uses the SPARC `Vgas`, `Vdisk` and `Vbul` columns instead of invented
-  exponential-like velocity proxies;
-- evaluates pseudo-isothermal, NFW and Burkert halo profiles in a shared,
-  unit-documented module;
-- computes a weighted likelihood from the quoted `e_Vobs` values, with χ²,
-  reduced χ², log likelihood, AIC, BIC and weighted RMS diagnostics;
-- reports the outer halo share as a velocity-squared decomposition, not as an
-  exact deprojected mass fraction;
-- plots standardised residuals and a real Δχ² response surface;
-- provides an accessible HTML data table plus CSV and SVG exports;
-- ignores stale Worker responses, keeps numerical work off the UI thread and
-  supports reduced motion, visible focus and responsive layouts;
-- pins the upstream table checksum and supplies a deterministic ingestion
-  script and analytic tests.
-- lets the same tested model run across the complete 175-galaxy SPARC sample;
-- preserves morphology, distance and inclination errors, luminosity, surface
-  brightness, H I mass, flat velocity, quality flags, original column names
-  and source references in a normalized, checksum-pinned schema;
-- adds a linked Population Lab with name, quality, surface-brightness and
-  gas-dominance filters, BTFR and RAR views, accessible data and CSV/JSON export;
-- adds a galaxy-level “Challenge the model” laboratory comparing baryons-only,
-  the current halo configuration, the empirical RAR form and a MOND-like simple
-  interpolation function with explicit acceleration-scale and M/L assumptions;
-- replaces generic generated-looking hero media with credited Hubble, Webb,
-  Chandra, Planck and Rubin products stored in the repository;
-- adds a 2026–2076 capability roadmap with explicit validation gates and labels
-  its later stages as conditional research directions, not mission forecasts.
-- provides explicit uniform prior bounds, deterministic adaptive Metropolis
-  chains, 68% credible intervals, split-R-hat, effective sample size, parameter
-  covariance visualisation and downloadable posterior samples;
-- generates deterministic posterior predictive intervals, reports predictive
-  coverage and a discrepancy-based Bayesian posterior-predictive p-value, and
-  exports the interval table as CSV;
-- verifies known-truth recovery on a deterministic synthetic galaxy fixture.
-- adds a quantitative multi-cluster lensing laboratory with live angular-diameter
-  distances, critical surface density, SIS Einstein-radius scale, independent
-  tracer layers and explicit reconstruction/systematic warnings;
-- includes Bullet Cluster, MACS J0025.4-1222 and disputed Abell 520 cases in a
-  machine-readable catalogue linked to primary papers and observatory records.
-- adds a typed evidence graph, educator/research views, URL-restorable core
-  state, full workspace JSON export, landmark navigation and print styling.
+Research contract: [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md)  
+Open questions: [OPEN_PROBLEMS.md](OPEN_PROBLEMS.md)  
+Release history: [CHANGELOG.md](CHANGELOG.md)
 
-## Development phases
+## The question
 
-| Phase | Scope | Status |
-|---|---|---|
-| A | Scientific correctness and repository cleanup | Complete |
-| B | Complete 175-galaxy SPARC workbench and normalized catalogue | Complete |
-| C | Bayesian inference workspace | Complete |
-| D | Population, BTFR and radial-acceleration laboratory | Complete |
-| E | Alternative-hypothesis residual and assumption laboratory | Complete |
-| F | Quantitative lensing and colliding-cluster laboratory | Complete |
-| G | Cosmology, particle-candidate and experiment landscape | Complete |
-| H | Scale explorer, research frontier and constrained-futures laboratory | Complete |
-| I | Evidence graph, educator/research modes and publication polish | Complete |
+The project began from a simple question:
 
-Overview imagery does not count as completion of a scientific module. A phase
-is marked complete only when its data, computation, provenance, interface and
-tests are implemented.
+**If the matter that emits light does not account for all measured gravitational behaviour, how far can a transparent computational experiment follow the evidence before it reaches assumptions and unknown physics?**
 
-## Run locally
+It does not claim that a dark-matter particle has been detected or that one halo family is uniquely true. Instead it exposes the chain:
 
-The application remains dependency-free and needs only a static HTTP server:
+![Evidence flow](docs/figures/evidence-flow.svg)
 
-```bash
-npx serve .
-```
+Observation -> calibration -> equation -> model -> uncertainty -> inference -> competing explanation -> new measurement.
 
-Open the URL printed by the server. A direct `file://` URL cannot reliably load
-Web Workers or the JSON dataset in modern browsers.
+## What are dark matter and dark energy?
 
-## Reproduce the dataset
+They are not the same thing.
 
-```bash
-npm run data:refresh
-```
+- **Ordinary baryonic matter** is the atoms, plasma, gas, dust, stars and compact baryonic objects that participate in familiar electromagnetic physics.
+- **Dark matter** is the additional gravitating component inferred in the standard cosmological framework from independent observations including dynamics, lensing, the CMB and structure formation. Its microscopic identity is unknown.
+- **Dark energy** is the component or phenomenon used to describe late-time accelerated expansion. The reference model uses a cosmological constant, while evolving equations of state remain an active research question.
 
-`scripts/import_sparc.mjs` downloads the official SPARC galaxy-sample and
-Newtonian mass-model tables. It verifies SHA-256
-`5aa0501f6b0d881fa579030e315e7b5b6ef561a5bd3a07472f9929c7e5728243`
-for `SPARC_Lelli2016c.mrt` and
-`9108994b12cc401b94a1768beca61c53ec354779385c9c9cc571049f3043244c`
-for `MassModels_Lelli2016c.mrt`. It preserves all 175 catalogue records and
-3,391 mass-model rows without interpolation. It writes `data/galaxies.json` plus the NGC 3198
-compatibility fixture in `data/reference.json`. A checksum mismatch stops the
-import so an upstream change cannot silently alter the fixtures.
+The cosmic-budget graphic above is a **model-labelled reference**, not three substances directly weighed in a laboratory.
 
-The table defines:
+## What is inside the lab?
 
-- `Vobs` and `e_Vobs`: observed velocity and its random uncertainty from
-  non-circular motions or kinematic asymmetries;
-- `Vgas`: gas contribution including the SPARC factor 1.33 for helium;
-- `Vdisk` and `Vbul`: stellar contributions at
-  \(\Upsilon_{3.6}=1\ M_\odot/L_\odot\);
-- `SBdisk` and `SBbul`: inclination-corrected surface-brightness profiles.
+The current release includes:
 
-The quoted random errors do **not** include systematic uncertainty from the
-inclination correction. The current browser fit also fixes SPARC's adopted
-distance for the selected galaxy. These limitations are displayed in the interface and are
-the next nuisance parameters to implement.
+- the complete public **175-galaxy SPARC sample** with **3,391 resolved measurements**;
+- sign-preserving gas, stellar-disc and bulge mass decomposition;
+- pseudo-isothermal, NFW and Burkert halo models;
+- weighted likelihood, chi-squared, reduced chi-squared, AIC, BIC and residual diagnostics;
+- explicit distance and inclination sensitivity experiments;
+- prior-predictive checks, adaptive Metropolis posterior sampling, split-R-hat, effective sample size, trace and autocorrelation diagnostics;
+- posterior-predictive intervals and downloadable samples;
+- linked BTFR and radial-acceleration population views with quality, morphology, inclination and resolved-point filtering;
+- baryons-only, empirical-RAR and MOND-like phenomenological comparison tools;
+- quantitative lensing geometry and colliding-cluster evidence;
+- a CPL dark-energy background model with H(z), comoving distance and BAO-style distance coordinates;
+- a dated dark-matter candidate / experiment atlas;
+- a scale explorer from subnuclear physics to the cosmic web;
+- an extra-dimension hypothesis explainer that explicitly states extra dimensions are **not required** for electromagnetic darkness;
+- a conservation-law futures laboratory for sensing, capture, energy and propulsion thought experiments;
+- a typed evidence graph, educator/research views, shareable analysis links and machine-readable state export.
 
-## Population laboratory
+## A representative galaxy
 
-The population view applies one shared selection to the accessible catalogue,
-BTFR and RAR panels. The BTFR uses published positive `Vflat` values and the
-explicit illustrative assumption:
+![NGC 3198 SPARC rotation curve](docs/figures/ngc3198-rotation.svg)
 
-```text
-Mbar = 0.5 L3.6 + 1.33 MHI
-```
+**Figure: NGC 3198 observations versus the baryonic prediction.** Blue points and error bars are published SPARC circular velocities and quoted random uncertainties. The warm curve is the baryonic contribution for the displayed stellar mass-to-light assumptions. It is a reproducible illustration of a mass discrepancy under those assumptions, **not** a direct image or particle detection of dark matter.
 
-The RAR evaluates each resolved radius using `g = v²/R`, fixed disc and bulge
-mass-to-light ratios of 0.5 and 0.7, and the sign-preserving SPARC gas
-contribution. Its violet reference is the McGaugh et al. (2016)
-phenomenological relation with `g† = 1.2e-10 m/s²`. Neither panel performs a
-hierarchical fit or propagates all distance, inclination and stellar-population
-systematics. The interface labels these assumptions and does not interpret a
-correlation as proof of a unique physical cause.
+The galaxy workbench lets the visitor build this reasoning in stages: observed velocities; gas; stellar disc; bulge where present; total baryonic prediction; discrepancy; selected halo model; residuals; posterior distributions; and posterior-predictive checks.
+
+## Core equations
+
+At radius r, the browser uses SPARC's sign-preserving baryonic convention:
+
+\[
+v_{\rm bar}^2 =
+\operatorname{sign}(V_{\rm gas})V_{\rm gas}^2 +
+\Upsilon_{\rm disk}\operatorname{sign}(V_{\rm disk})V_{\rm disk}^2 +
+\Upsilon_{\rm bul}\operatorname{sign}(V_{\rm bul})V_{\rm bul}^2 .
+\]
+
+The model is
+
+\[
+v_{\rm model}^2 = v_{\rm bar}^2 + v_{\rm halo}^2.
+\]
+
+Implemented halo families:
+
+    pISO:    v² = v∞² [1 - (rc/r) atan(r/rc)]
+
+    NFW:     v² = vs² [ln(1+x) - x/(1+x)] / x
+             x = r/rs
+
+    Burkert: v² = vs² {ln[(1+x)²(1+x²)] - 2 atan(x)} / x
+             x = r/r0
+
+The default weighted likelihood assumes independent Gaussian quoted random errors:
+
+\[
+\chi^2 = \sum_i \left[\frac{V_{{\rm obs},i}-V_{{\rm model},i}}{\sigma_i}\right]^2,
+\qquad
+\ln L = -\frac{1}{2}\chi^2 + {\rm constant}.
+\]
+
+That independence assumption is part of the result. It does not represent a complete covariance model.
+
+## Nuisance parameters and Bayesian workspace
+
+Distance and inclination can be varied as explicit sensitivity parameters. They are currently **held fixed during an individual posterior run**, not marginalised as sampled nuisance dimensions.
+
+The browser sampler exposes prior bounds and deterministic seeds. It reports posterior medians and 16th/84th percentiles, split-R-hat, an autocorrelation-based effective sample-size estimate, acceptance rates, chain traces and autocorrelation functions. Prior-predictive and posterior-predictive intervals are shown separately.
+
+A converged chain does not establish that a physical model is true.
+
+## Galaxies as a population
+
+The population laboratory uses one normalized catalogue and supports filters for galaxy name, quality flag, surface-brightness or gas-rich subsets, morphology, minimum inclination and minimum number of resolved points.
+
+The BTFR illustration uses the explicit working assumption:
+
+\[
+M_{\rm bar}=0.5\,L_{3.6}+1.33\,M_{\rm HI}.
+\]
+
+SPARC is broad but is **not a volume-limited statistically complete survey**, so the active selection is always part of the interpretation.
+
+![SPARC baryonic Tully-Fisher plane](docs/figures/btfr.svg)
+
+**Population figure — BTFR.** The plotted subset contains the 135 catalogue galaxies with a positive published flat velocity. The displayed OLS line is descriptive rather than a selection-corrected population likelihood.
+
+![SPARC radial-acceleration plane](docs/figures/rar.svg)
+
+**Population figure — radial acceleration.** The 3,389 resolved points use the documented stellar mass-to-light assumptions. The Newtonian equality line is a reference, not a claim that departures uniquely identify one physical mechanism.
 
 ## Challenge the model
 
-The selected galaxy can also be evaluated without adding a halo contribution.
-The laboratory compares baryons alone with two explicit acceleration mappings:
+The project does not hard-code "dark matter wins" into the interface. A selected galaxy can be compared against baryons-only behaviour, the selected halo family and phenomenological acceleration mappings. It shows assumptions, residuals and fit diagnostics rather than declaring a winner.
 
-```text
-Empirical RAR: gpred = gbar / [1 - exp(-sqrt(gbar/g†))]
-Simple ν:      gpred = [1/2 + sqrt(1/4 + a0/gbar)] gbar
-```
+## Gravitational lensing and colliding clusters
 
-The browser exposes the acceleration scale and disc mass-to-light ratio, then
-reports velocity curves, standardised residuals, χ², RMS and outlier counts at
-the displayed parameter values. These are phenomenological tests under fixed
-assumptions—not evidence that one framework is true. Relativistic completion,
-the MOND external-field effect and non-galaxy constraints are not implemented.
+The lensing laboratory implements angular-diameter geometry, critical surface density and an SIS scale:
 
-## Lensing and colliding clusters
+\[
+\Sigma_{\rm crit} = \frac{c^2}{4\pi G}\frac{D_s}{D_lD_{ls}}.
+\]
 
-Phase F adds a separate, tested geometry module. For each catalogued merger it
-computes angular-diameter distances in a flat ΛCDM reference cosmology,
-critical surface density and the Einstein-radius scale of a singular isothermal
-sphere. The displayed optical-galaxy, X-ray-gas, shear and total-mass layers are
-normalised explanatory reconstructions, not pixel fits to the credited
-observatory products. Layer labels deliberately distinguish direct tracers from
-the model-dependent mass inversion.
+The cluster catalogue includes the Bullet Cluster, MACS J0025.4-1222 and Abell 520 as a systematics/disagreement case. The Bullet Cluster record preserves both the classic separation of dominant X-ray gas from lensing-inferred total mass and the higher-resolution 2025 JWST reconstruction showing richer substructure.
 
-The default Bullet Cluster record uses `z_l = 0.296`; MACS J0025.4-1222 provides
-an independent merger case, while Abell 520 is explicitly labelled as a
-systematics stress case because published reconstructions have disagreed about
-its central mass peak. Interactive velocity dispersion is only an SIS scale
-proxy. It must not be interpreted as a fitted merger mass or a constraint on
-dark-matter self-interactions.
+The rendered layer map is an **educational reconstruction**. It is not a fresh inversion of a published shear catalogue.
 
-## Cosmology and candidate landscape
+## Cosmology and dark energy
 
-Phase G evaluates the background evolution of radiation, baryons, cold dark
-matter and a cosmological constant. The scale-factor control displays each
-component's fractional contribution to `H²`, matter–radiation equality and the
-baryon share of total matter. Present-day baryon and cold-dark-matter controls
-preserve flatness by assigning the remainder to ΩΛ. This is a background
-calculation, not a Boltzmann solver or Planck likelihood fit.
+The cosmology module supports a CPL equation of state:
 
-The machine-readable candidate atlas deliberately spans particles, coherent
-fields, interaction frameworks and compact objects. It links each candidate to
-complementary observables and keeps “operating”, “constrained”, “proposed” and
-“no accepted detection” conceptually separate. Exclusion contours are not
-compressed into one misleading universal mass–cross-section plot because the
-relevant coupling and observable differ by model.
+\[
+w(a)=w_0+w_a(1-a)
+\]
 
-## Scale explorer and constrained futures
+and computes component fractions, H(z), comoving distance, and educational BAO-style coordinates D_M/r_d and D_H/r_d. These are **background-model responses**, not a Planck or DESI likelihood and not a substitute for CLASS/CAMB.
 
-Phase H links eight scale milestones from subnuclear interactions to the
-observable universe. Its encounter-rate sandbox derives number flux,
-de Broglie wavelength, mean spacing and a deliberately simplified nucleon
-contact-count scale from displayed assumptions. The interface explicitly
-states that the count omits nuclear response, thresholds, velocity structure,
-backgrounds and statistical inference. When the wavelength becomes macroscopic
-it warns that a coherent-field treatment is required.
+The interface keeps a Planck-like flat-Lambda-CDM reference while noting the July 2026 DESI DR2 full-shape Ly-alpha result: the newest central value moved toward the reference Lambda-CDM prediction, so evolving dark energy remains an active model-comparison question rather than a settled discovery.
 
-The future-technology visual is an AI-generated scientific concept saved at
-`assets/concepts/future-dark-matter-detection.png`. Its caption states that the
-left panel is a lensing reconstruction rather than visible dark matter and that
-the right detector architecture is conditional on future physics. The Research
-Frontier and horizon table separate known constraints, open questions,
-decisive tests and confidence labels through 1,000 years; only near-term active
-or planned capabilities are presented as engineering programmes.
+## Candidate and experiment atlas
 
-## Evidence modes and publication state
+Different dark-matter hypotheses occupy different parameter spaces and require different instruments. The atlas does **not** compress every candidate into one misleading universal mass-versus-cross-section figure.
 
-Phase I connects observations, physical mappings, inferences and identity
-hypotheses in a typed directed graph. Selecting a node reveals its claim,
-source layer, limitations and incoming/outgoing relationships. The complete
-edge list is available as an accessible table in Research mode.
+Experiment rows are timestamped and classified as search, limit, survey or anomaly. The September 2026 LZ high-energy recoil candidate is recorded as a **background-only tension / anomaly, not a dark-matter discovery**.
 
-Educator mode keeps the core calculations and evidence visible while removing
-advanced audit tables and adding a guided graph explanation. Research mode
-exposes the full reproducibility layer. Mode, selected galaxy and halo family
-are encoded in the URL; the workspace export additionally records cluster,
-cosmology and future-sandbox controls with dataset checksums and software
-version. Print styling removes interactive controls and preserves the technical
-content for static review.
+## Where could dark matter be?
 
-## Model equations
+Under standard Galactic halo models a local dark-matter population is expected to pass through the Solar neighbourhood and Earth. "Dark matter is everywhere" is an oversimplification: density varies strongly with environment, and cosmological abundance does not imply easy capture or useful local energy density.
 
-At every radius the application uses SPARC's sign-preserving convention for
-component accelerations:
+## Could dark matter be hidden in another dimension?
 
-```text
-v_bar² = sign(Vgas) Vgas²
-       + Υdisk sign(Vdisk) Vdisk²
-       + Υbul  sign(Vbul)  Vbul²
+No extra spatial dimension is required for a particle to be optically dark. A state living in ordinary 3+1-dimensional spacetime can simply have no useful electromagnetic coupling.
 
-v_total² = v_bar² + v_halo²
-```
+Extra-dimensional, braneworld or Kaluza-Klein scenarios are therefore labelled **hypothesis**, not established explanation.
 
-The interactive release holds `Υbul` fixed at 0.7; galaxies with no SPARC bulge
-component are unaffected by that value. The three halo families are:
+## Physics-constrained futures
 
-```text
-pISO:   v² = v∞² [1 - (rc/r) atan(r/rc)]
+![Physics-constrained technology ladder](docs/figures/futures-decision-tree.svg)
 
-NFW:    v² = vs² [ln(1+x) - x/(1+x)] / x
-        x = r/rs,  vs² = 4πGρsrs²
+A discovery would not automatically create an engineering material. The project forces a sequence of physical gates:
 
-Burkert:v² = vs² {ln[(1+x)²(1+x²)] - 2 atan(x)} / x
-        x = r/r0,  vs² = πGρ0r0²
-```
+identity -> coupling -> control -> capture -> confinement -> energy transfer -> directed momentum -> engineering.
 
-The weighted likelihood assumes independent Gaussian random errors:
+For local density rho_chi and relative speed v_chi, the futures module calculates mass flux, kinetic-power flux, momentum flux and an explicitly idealised rest-energy ceiling. A toy target column uses:
 
-```text
-χ² = Σ [(Vobs - Vmodel) / σV]²
-ln L = -χ² / 2 + constant
-```
+\[
+P_{\rm int}=1-e^{-\sigma N}.
+\]
 
-That independence assumption is explicit: the current release does not claim
-to model covariance, distance uncertainty, inclination uncertainty or stellar
-population uncertainty beyond the interactive disc mass-to-light ratio.
+That interaction term often makes the engineering scenario collapse: a huge geometric collector can still be almost transparent to a very weakly interacting component. The purpose is to discover **where an idea fails**, not to manufacture a futuristic result.
 
-## Bayesian workspace
+## Reproducibility
 
-Phase C adds four deterministic adaptive Metropolis chains for the disc
-mass-to-light ratio, halo velocity scale and halo radius. The browser exposes
-all prior bounds and records the sampler configuration and seed. Proposal
-covariance is adapted only during warm-up; retained draws are not used to tune
-the sampler. The interface reports median and 16th/84th percentiles, split
-R-hat, an autocorrelation-based effective sample-size estimate and acceptance
-rate. It also propagates retained draws through the rotation model and quoted
-random errors to form a 68% posterior predictive interval at every observed
-radius. Predictive coverage and a discrepancy-based Bayesian p-value are model
-checks, not probabilities that a halo family is true. Samples and predictive
-intervals can be exported as separate CSV files.
+Install and verify:
 
-This is a transparent teaching and diagnostic implementation, not a substitute
-for a peer-reviewed inference workflow. Scientific publication should confirm
-results with a maintained inference package and include prior-sensitivity,
-repeated synthetic-coverage calibration and posterior-predictive tests using a
-complete treatment of correlated systematics.
+    npm ci
+    npm run verify
 
-## Validate
+Development server:
 
-```bash
-npm run verify
-```
+    npm run dev
 
-The verification chain performs JavaScript syntax checks, validates the data
-schema/provenance/citations/accessibility hooks, tests analytic profile limits
-and verifies that every halo family produces finite values for all 3,391
-observations across all 175 systems.
+Production build:
 
-## Repository map
+    npm run build
+
+Regenerate the README figures:
+
+    npm run docs:figures
+
+Refresh the checksum-pinned SPARC catalogue:
+
+    npm run data:refresh
+
+The import pipeline records upstream SPARC checksums and stops on a checksum mismatch.
+
+### Independent Python / SciPy cross-check
+
+A separate least-squares implementation does **not** import the browser JavaScript:
+
+    python -m venv .venv
+    pip install -r validation/requirements.txt
+    python validation/rotation_scipy.py --write
+
+Its role is cross-language numerical parity. Agreement would not prove the physical model.
+
+## Shareable analyses
+
+The application can copy a URL containing selected galaxy, halo family, fit parameters, distance scale, inclination offset, guided evidence stage and interface mode. Workspace JSON export additionally records the cosmology, lensing, population and futures state plus provenance and software version.
+
+## Repository architecture
+
+~~~mermaid
+flowchart TD
+  A[SPARC / cluster / cosmology / experiment sources] --> B[Provenance and machine-readable data]
+  B --> C[Tested physics modules]
+  C --> D[Worker inference and validation]
+  D --> E[Scientific visualisation]
+  E --> F[Educator / Research interface]
+  F --> G[CSV / JSON / SVG / shareable state]
+  C --> H[Independent SciPy validation]
+  B --> I[Open-problem registry]
+  I --> F
+~~~
+
+Key paths:
 
 | Path | Role |
 |---|---|
-| `index.html` | Semantic workstation, controls, chart descriptions and table |
-| `styles.css` | Responsive semantic-token theme and focus/reduced-motion states |
-| `app.js` | UI state, high-DPI plotting, exports and Worker request ordering |
-| `rotationPhysics.js` | Tested halo profiles, SPARC decomposition and likelihood |
-| `lensingPhysics.js` | Tested lens geometry, critical density and SIS scale |
-| `cosmologyPhysics.js` | Tested background-density evolution and equality scale |
-| `futuresPhysics.js` | Tested local-flux, spacing, wavelength and contact scaling |
-| `physicsWorker.js` | Off-thread evaluation and deterministic grid fit |
-| `data/galaxies.json` | Complete SPARC catalogue with 175 galaxies and 3,391 observations |
-| `data/reference.json` | NGC 3198 compatibility fixture |
-| `data/cluster_systems.json` | Multi-cluster evidence records and schematic coordinates |
-| `data/dark_matter_candidates.json` | Candidate and experiment landscape with source links |
-| `data/research_frontier.json` | Scale milestones, decisive tests and labelled horizons |
-| `data/evidence_graph.json` | Typed claim, source, limitation and relationship graph |
-| `assets/observations/` | Real Hubble, Chandra/Webb, Planck and Rubin imagery |
-| `assets/concepts/` | Clearly labelled generated scientific concept art |
-| `scripts/import_sparc.mjs` | Checksum-pinned SPARC ingestion |
-| `tests/rotationPhysics.test.js` | Analytic, data and finite-output tests |
-| `tests/lensingPhysics.test.js` | Distance-geometry and cluster-contract tests |
-| `tests/cosmologyPhysics.test.js` | Component-closure and candidate-schema tests |
-| `tests/futuresPhysics.test.js` | Dimensional monotonicity and frontier-schema tests |
-| `tests/evidenceGraph.test.js` | Graph integrity and publication-interface contracts |
+| rotationPhysics.js | SPARC decomposition, halo models, likelihood and posterior machinery |
+| lensingPhysics.js | distance geometry, critical density and lensing scale |
+| cosmologyPhysics.js | background expansion, CPL dark energy and BAO-style distances |
+| futuresPhysics.js | local flux, wave/particle scales and engineering upper bounds |
+| physicsWorker.js | off-thread galaxy fitting and posterior work |
+| data/galaxies.json | complete normalized SPARC catalogue |
+| data/open_problems.json | machine-readable research frontier |
+| validation/ | independent SciPy numerical cross-check |
+| docs/figures/ | reproducible publication figures |
+| docs/thesis/ | technical monograph source |
+| tests/ | analytic, schema, inference and UI-contract tests |
 
-## Research boundaries
+## What this repository does not claim
 
-- A low χ² for one profile does not establish that profile as uniquely true.
-- SPARC random uncertainties are not the complete error budget.
-- `v_halo²/v_total²` at one radius is a force decomposition, not an exact
-  three-dimensional enclosed dark-matter mass fraction for a flattened disc.
-- The catalogue is complete relative to the published SPARC sample, but SPARC
-  itself is not a volume-limited or statistically complete galaxy survey. Each
-  population view therefore exposes its selection and quality criteria.
-- Rotation curves constrain the gravitational field. They do not establish
-  the microscopic identity of dark matter.
+- It does not identify the dark-matter particle or field.
+- A low chi-squared does not make one halo profile uniquely true.
+- The SPARC quoted random uncertainties are not the complete covariance budget.
+- Distance and inclination are sensitivity controls, not fully marginalised posterior dimensions.
+- The browser MCMC is a transparent research/teaching implementation, not a replacement for a peer-reviewed inference pipeline.
+- Cluster maps are explanatory layers, not a fresh raw-shear reconstruction.
+- The cosmology explorer is not a Boltzmann solver or collaboration likelihood.
+- An experimental anomaly is not a discovery.
+- Extra dimensions are not required by the evidence.
+- The futures laboratory does not demonstrate practical capture, free energy, antigravity, reactionless propulsion, faster-than-light travel or wormholes.
 
-See [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md) for the validation contract.
-Image credits and primary-source links are displayed directly beneath every
-image in the application.
+## Open research frontier
 
-## References
+The durable question registry is in [OPEN_PROBLEMS.md](OPEN_PROBLEMS.md) and data/open_problems.json. Each record contains the question, importance, equations, current evidence, competing hypotheses, datasets, discriminating measurement, falsification criteria, degeneracies and status.
 
-- Lelli, F., McGaugh, S. S. and Schombert, J. M. (2016), “SPARC: Mass
-  Models for 175 Disk Galaxies with Spitzer Photometry and Accurate Rotation
-  Curves”, *The Astronomical Journal* 152, 157.
-  https://doi.org/10.3847/0004-6256/152/6/157
-- de Blok, W. J. G. et al. (2008), “High-Resolution Rotation Curves and
-  Galaxy Mass Models from THINGS”, *The Astronomical Journal* 136, 2648.
-  https://doi.org/10.1088/0004-6256/136/6/2648
-- Navarro, J. F., Frenk, C. S. and White, S. D. M. (1996), “The Structure
-  of Cold Dark Matter Halos”, *The Astrophysical Journal* 462, 563.
-  https://doi.org/10.1086/177173
-- Burkert, A. (1995), “The Structure of Dark Matter Halos in Dwarf
-  Galaxies”, *The Astrophysical Journal Letters* 447, L25.
-  https://doi.org/10.1086/309560
-- McGaugh, S. S., Lelli, F. and Schombert, J. M. (2016), “Radial Acceleration
-  Relation in Rotationally Supported Galaxies”, *Physical Review Letters* 117,
-  201101. https://doi.org/10.1103/PhysRevLett.117.201101
-- NASA/CXC/SAO et al. (2025), “New Image from NASA's Webb and Chandra
-  'Pierces' Bullet Cluster”.
-  https://chandra.harvard.edu/photo/2025/bullet/more.html
-- ESA/Planck Collaboration (2019), “The CMB temperature on large angular
-  scales”.
-  https://www.esa.int/ESA_Multimedia/Images/2019/06/The_CMB_temperature_on_large_angular_scales
-- NASA (2026), “Roman Space Telescope: Weak Lensing”.
-  https://science.nasa.gov/mission/roman-space-telescope/weak-lensing/
+The long-term goal is not to preserve a claim that dark matter was solved. It is to preserve enough data, assumptions and tests that a future researcher can replace one assumption with a new measurement and see which conclusions survive.
+
+## Project motivation
+
+This project began because the dark-matter problem has an unusual character: its gravitational evidence appears across many scales, while the entity responsible remains unidentified.
+
+I wanted to build something more useful than a static explanation - a laboratory where the observations, assumptions, equations and uncertainties could be inspected directly. A second question followed naturally: if the microscopic physics is eventually discovered, what additional physical properties would have to exist before that scientific unknown could become a sensing medium, an energy source or a propulsion concept?
+
+The repository therefore treats curiosity as the starting point and falsifiability as the constraint.
+
+## Citation
+
+Use [CITATION.cff](CITATION.cff) for the software citation and cite the original datasets/papers used in any derived analysis.
+
+## Selected references
+
+- Lelli, F., McGaugh, S. S. & Schombert, J. M. (2016), *SPARC: Mass Models for 175 Disk Galaxies with Spitzer Photometry and Accurate Rotation Curves*, AJ 152, 157. DOI: 10.3847/0004-6256/152/6/157.
+- de Blok, W. J. G. et al. (2008), *High-Resolution Rotation Curves and Galaxy Mass Models from THINGS*, AJ 136, 2648.
+- Navarro, J. F., Frenk, C. S. & White, S. D. M. (1996), *The Structure of Cold Dark Matter Halos*, ApJ 462, 563.
+- Burkert, A. (1995), *The Structure of Dark Matter Halos in Dwarf Galaxies*, ApJL 447, L25.
+- McGaugh, S. S., Lelli, F. & Schombert, J. M. (2016), *Radial Acceleration Relation in Rotationally Supported Galaxies*, PRL 117, 201101.
+- Clowe, D. et al. (2006), *A Direct Empirical Proof of the Existence of Dark Matter*, ApJL 648, L109.
+- Cha, S. et al. (2025), *A High-Caliber View of the Bullet Cluster Through JWST Strong and Weak Lensing Analyses*, arXiv:2503.21870.
+- Planck Collaboration VI (2020), *Planck 2018 results. VI. Cosmological parameters*, A&A 641, A6.
+- DESI Collaboration DR2 publications (2025-2026), BAO and Lyman-alpha full-shape cosmology results.
+- Particle Data Group, current dark-matter and cosmology reviews.
+- LZ Collaboration, September 2026 high-energy nuclear-recoil search status.
+
+## Licence
+
+MIT for repository code unless a file states otherwise. Observatory images and external datasets retain their original credits/licences; the interface links their sources directly.

@@ -45,6 +45,22 @@ function initialiseMotion() {
   document.querySelectorAll('.inference-chain li').forEach((item, index) => {
     inView(item, () => animate(item, { opacity: [0.35, 1] }, { duration: 0.35, delay: index * 0.025 }), { amount: 0.7 });
   });
+
+  inView('.future-method-band', element => {
+    animate(element.querySelectorAll('article'), { opacity: [0.38, 1], x: [-10, 0] }, {
+      duration: 0.45,
+      delay: (_, index) => index * 0.08,
+      ease: [0.22, 1, 0.36, 1]
+    });
+  }, { amount: 0.3 });
+
+  inView('.engine-decision-tree', element => {
+    animate(element.children, { opacity: [0.35, 1], scale: [0.985, 1] }, {
+      duration: 0.4,
+      delay: (_, index) => index * 0.06,
+      ease: [0.22, 1, 0.36, 1]
+    });
+  }, { amount: 0.35 });
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialiseMotion, { once: true });

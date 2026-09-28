@@ -72,3 +72,36 @@ Use “halo velocity-squared share at the outermost measured radius”, not “d
 matter mass fraction”. Use “best point on the displayed grid”, not “measured
 halo parameters”. Describe the result as evidence for a mass discrepancy under
 the stated dynamical assumptions, never as detection of a dark-matter particle.
+
+
+## Release 3 additions
+
+The final-upgrade branch additionally verifies prior-predictive output,
+trace/autocorrelation diagnostics, explicit population selection controls,
+shareable analysis-state encoding, CPL dark-energy background response, BAO
+distance calculations, local dark-matter engineering upper bounds and
+interaction-probability limits.
+
+Distance and inclination controls are sensitivity transformations. They are not
+yet sampled as nuisance parameters inside the posterior. The cosmology module
+does not run CLASS/CAMB and does not evaluate Planck or DESI likelihoods.
+The dark-matter-engine calculation is an assumption-ledger toy model enforcing
+energy and momentum accounting; it does not provide a demonstrated capture,
+confinement or conversion mechanism.
+
+An independent SciPy least-squares implementation is stored under
+validation/. Its purpose is cross-language numerical comparison. Agreement
+between two implementations can identify coding discrepancies; it cannot
+establish physical truth.
+
+Current experiment status is timestamped. The September 2026 LZ high-energy
+event is stored as an anomaly/background-only tension rather than a discovery.
+The Bullet Cluster catalogue distinguishes the classic lensing/X-ray result
+from the higher-resolution 2025 JWST reconstruction.
+
+## Archival rule
+
+When evidence is insufficient, update data/open_problems.json instead of
+filling the gap with a generated answer. Every future parameter-space exclusion,
+candidate status or technology claim should carry a source date and epistemic
+status.

@@ -1,8 +1,8 @@
 {
   "name": "dark-matter-evidence-lab",
-  "version": "3.0.0-beta.1",
+  "version": "3.0.0-beta.4",
   "private": true,
-  "description": "Evidence-first, reproducible dark-matter exploration across galaxy rotation curves, cluster lensing, cosmology and detector technology.",
+  "description": "Evidence-first, reproducible dark-matter laboratory spanning SPARC galaxy dynamics, lensing, cosmology, particle searches and physics-constrained futures.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -11,16 +11,20 @@
     "test": "node --test tests/rotationPhysics.test.js tests/lensingPhysics.test.js tests/cosmologyPhysics.test.js tests/futuresPhysics.test.js tests/evidenceGraph.test.js",
     "validate:research": "node scripts/validate_repository.mjs",
     "data:refresh": "node scripts/import_sparc.mjs",
-    "verify": "npm run check && npm test && npm run validate:research && npm run build"
+    "verify": "npm run docs:check && npm run check && npm test && npm run validate:research && npm run build",
+    "docs:figures": "node scripts/generate_readme_figures.mjs && node scripts/generate_population_figures.mjs",
+    "docs:check": "npm run docs:figures"
   },
   "keywords": [
+    "dark-matter",
     "astrophysics",
-    "simulation",
-    "canvas",
-    "web-worker",
-    "rotation",
+    "cosmology",
+    "galaxy-rotation-curves",
+    "sparc",
     "gravitational-lensing",
-    "cosmology"
+    "bayesian-inference",
+    "scientific-visualization",
+    "open-science"
   ],
   "author": "Biswajit Jana",
   "license": "MIT",

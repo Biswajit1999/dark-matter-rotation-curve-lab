@@ -11,7 +11,7 @@
   <meta property="og:type" content="website">
   <meta name="keywords" content="dark matter, astrophysics, cosmology, galaxy rotation curves, SPARC, gravitational lensing, Bullet Cluster, Bayesian inference, CMB, dark energy, open science">
   <title>Dark Matter Evidence Lab — From Light to Gravity</title>
-  <link rel="stylesheet" href="styles.css?v=3.0.0-beta.1">
+  <link rel="stylesheet" href="styles.css?v=3.0.0-beta.4">
 </head>
 <body class="mode-research">
   <a class="skip-link" href="#main-content">Skip to analysis</a>
@@ -573,7 +573,7 @@
       <div class="cluster-findings">
         <p id="clusterFinding"></p>
         <p id="clusterCaution"></p>
-        <div><a id="clusterPaper" href="#" target="_blank" rel="noopener noreferrer">Primary paper</a><a id="clusterObservatory" href="#" target="_blank" rel="noopener noreferrer">Observatory record</a></div>
+        <div><a id="clusterPaper" href="#" target="_blank" rel="noopener noreferrer">Primary paper</a><a id="clusterModernPaper" href="#" target="_blank" rel="noopener noreferrer" hidden>Modern reconstruction</a><a id="clusterObservatory" href="#" target="_blank" rel="noopener noreferrer">Observatory record</a></div>
       </div>
       <details>
         <summary>Show calculation contract and accessible system table</summary>
@@ -615,22 +615,49 @@
             <div class="range-label"><label for="cosmicDarkMatter">Ωcdm today</label><output id="cosmicDarkMatterOutput" for="cosmicDarkMatter">0.264</output></div>
             <input id="cosmicDarkMatter" type="range" min="0" max="0.5" step="0.002" value="0.264">
           </div>
-          <button id="resetCosmology" class="secondary-button" type="button">Restore Planck-like reference</button>
-          <p class="method-note">This background-density explorer preserves spatial flatness by assigning the remaining present-day density to ΩΛ. It does not calculate the CMB angular power spectrum or fit Planck likelihoods.</p>
-        </form>
-        <div class="cosmology-chart-card">
-          <div class="cluster-canvas-heading">
-            <div><span class="epistemic-label">Calculated background</span><h3>Component fractions through expansion</h3></div>
-            <span class="axis-note">radiation · baryons · cold dark matter · Λ</span>
+          <div class="range-field">
+            <div class="range-label"><label for="darkEnergyW0">Dark-energy w₀</label><output id="darkEnergyW0Output" for="darkEnergyW0">−1.00</output></div>
+            <input id="darkEnergyW0" type="range" min="-1.5" max="-0.5" step="0.01" value="-1">
           </div>
-          <canvas id="cosmologyCanvas" role="img" aria-describedby="cosmologySummary"></canvas>
-          <p id="cosmologySummary" class="sr-summary">Cosmological component evolution is loading.</p>
+          <div class="range-field">
+            <div class="range-label"><label for="darkEnergyWa">Dark-energy wₐ</label><output id="darkEnergyWaOutput" for="darkEnergyWa">0.00</output></div>
+            <input id="darkEnergyWa" type="range" min="-2" max="2" step="0.02" value="0">
+          </div>
+          <div class="range-field">
+            <div class="range-label"><label for="cosmicH0">H₀</label><output id="cosmicH0Output" for="cosmicH0">67.4 km/s/Mpc</output></div>
+            <input id="cosmicH0" type="range" min="60" max="75" step="0.1" value="67.4">
+          </div>
+          <div class="range-field">
+            <div class="range-label"><label for="baoRedshift">BAO comparison redshift</label><output id="baoRedshiftOutput" for="baoRedshift">0.80</output></div>
+            <input id="baoRedshift" type="range" min="0.1" max="3" step="0.02" value="0.8">
+          </div>
+          <button id="resetCosmology" class="secondary-button" type="button">Restore Planck-like reference</button>
+          <p class="method-note">This explorer preserves spatial flatness at the present epoch and uses the CPL form w(a)=w₀+wₐ(1−a). It calculates background expansion and distance response only; it does not compute CMB spectra, run a Boltzmann solver, or evaluate Planck/DESI likelihoods.</p>
+        </form>
+        <div class="cosmology-figures">
+          <div class="cosmology-chart-card">
+            <div class="cluster-canvas-heading">
+              <div><span class="epistemic-label">Calculated background</span><h3>Component fractions through expansion</h3></div>
+              <span class="axis-note">radiation · baryons · cold dark matter · dark energy</span>
+            </div>
+            <canvas id="cosmologyCanvas" role="img" aria-describedby="cosmologySummary"></canvas>
+            <p id="cosmologySummary" class="sr-summary">Cosmological component evolution is loading.</p>
+          </div>
+          <div class="cosmology-chart-card">
+            <div class="cluster-canvas-heading">
+              <div><span class="epistemic-label">Model response · not a DESI likelihood</span><h3>BAO distance coordinates</h3></div>
+              <span class="axis-note">D_M/r_d · D_H/r_d</span>
+            </div>
+            <canvas id="baoCanvas" role="img" aria-describedby="baoSummary"></canvas>
+            <p id="baoSummary" class="sr-summary">BAO distance response is loading.</p>
+          </div>
         </div>
       </div>
       <div id="cosmologyMetrics" class="lensing-metrics" aria-live="polite"></div>
       <div class="cosmology-logic">
         <article><span class="epistemic-label">Independent baryon anchor</span><h3>Why “all matter is baryonic” fails</h3><p>Primordial nucleosynthesis and CMB acoustic structure constrain the baryon density. Replacing Ωcdm with baryons changes photon–baryon oscillations instead of reproducing the same sky.</p></article>
         <article><span class="epistemic-label">Growth mechanism</span><h3>Why early clustering matters</h3><p>Before recombination, baryons are coupled to photons. A non-baryonic component can begin building gravitational wells without participating in that acoustic fluid.</p></article>
+        <article><span class="epistemic-label">DESI · updated July 2026</span><h3>Evolving dark energy remains an open test</h3><p>DESI DR2 full-shape Lyα measurements moved toward the Planck ΛCDM prediction. The site therefore treats w₀–wₐ exploration as a competing-model exercise, not a discovery of evolving dark energy.</p><a href="https://www.desi.lbl.gov/2026/07/30/new-desi-dr2-lyman-alpha-results-shed-light-on-dark-energy/" target="_blank" rel="noopener noreferrer">DESI Collaboration context</a></article>
         <article><span class="epistemic-label">Inference boundary</span><h3>What cosmology does not identify</h3><p>A fitted Ωcdm quantifies a gravitating component within a model. It does not specify mass, spin, couplings or a laboratory detection channel.</p></article>
       </div>
       <div class="candidate-heading">
@@ -643,8 +670,8 @@
         <div class="table-wrap">
           <table>
             <caption>Complementary dark-matter search channels; status as recorded 28 September 2026</caption>
-            <thead><tr><th scope="col">Programme</th><th scope="col">Channel</th><th scope="col">Observable</th><th scope="col">Interpretive status</th><th scope="col">Source</th></tr></thead>
-            <tbody id="experimentRows"><tr><td colspan="5">Experiment records are loading.</td></tr></tbody>
+            <thead><tr><th scope="col">Programme</th><th scope="col">Channel</th><th scope="col">Observable</th><th scope="col">Class</th><th scope="col">Current result/status</th><th scope="col">Updated</th><th scope="col">Source</th></tr></thead>
+            <tbody id="experimentRows"><tr><td colspan="7">Experiment records are loading.</td></tr></tbody>
           </table>
         </div>
         <div class="cosmology-sources">
@@ -723,7 +750,7 @@
           </div>
           <div class="model-check-note">
             <span class="epistemic-label">Model-dependent inference</span>
-            <p>The rotation plot gains a 68% posterior predictive interval after sampling. It combines uncertainty in the fitted parameters with the quoted SPARC random velocity errors. It does not include distance, inclination or correlated systematics. A posterior-predictive p-value near 0 or 1 can flag model mismatch; it is not the probability that a halo model is true.</p>
+            <p>The rotation plot gains a 68% posterior predictive interval after sampling. It combines fitted-parameter uncertainty with the quoted SPARC random velocity errors. The current distance and inclination sensitivity settings are held fixed rather than marginalised, and correlated systematics remain outside this browser model. A posterior-predictive p-value near 0 or 1 can flag mismatch; it is not the probability that a halo model is true.</p>
           </div>
         </div>
       </div>
@@ -761,17 +788,32 @@
         </div>
         <p>Explore what changes with physical scale, calculate a deliberately simplified encounter rate and distinguish active engineering from conditional or speculative future capability.</p>
       </div>
-      <div class="future-hero">
-        <figure>
-          <img src="assets/concepts/future-dark-matter-detection.png" width="1536" height="1024" alt="AI-generated two-panel scientific concept: a galaxy-cluster field with cyan reconstructed lensing contours, and a cutaway underground cryogenic detector with shielded sensor stages." loading="lazy">
-          <figcaption><strong>AI-generated scientific concept—not an observation.</strong> Left: a future mass-reconstruction display inferred from gravitational lensing, not visible dark matter. Right: a conditional cryogenic sensor concept; its final architecture would depend on the particle or field physics that remains viable. <span>Credit: OpenAI image generation for the Dark Matter Evidence Lab, 2026.</span></figcaption>
-        </figure>
-        <div class="future-hero-copy">
-          <span class="epistemic-label">What “seeing dark matter” could mean</span>
-          <h3>Translate an invisible cause into calibrated observables</h3>
-          <p>No physically honest camera can simply photograph dark matter as glowing fog. A defensible future visual would combine a measured signal—shear, recoil, conversion photon, phase shift or timing correlation—with a reconstruction and quantified uncertainty.</p>
-          <ul><li><strong>Sky:</strong> deeper source redshifts, stable point-spread functions and independent lensing pipelines.</li><li><strong>Laboratory:</strong> lower thresholds, radiopure materials, directional information and multiple target nuclei.</li><li><strong>Networks:</strong> clocks, interferometers or pulsars searching for correlated transient and oscillatory fields.</li></ul>
-        </div>
+      <div id="futureMethodBand" class="future-method-band" aria-label="From measurement to conditional engineering">
+        <article data-future-stage="measurement">
+          <span>01 · observed</span>
+          <strong>Measured signal</strong>
+          <p>Recoil, lensing shear, conversion photon, timing shift or another calibrated observable.</p>
+        </article>
+        <article data-future-stage="reconstruction">
+          <span>02 · derived</span>
+          <strong>Physical reconstruction</strong>
+          <p>Instrument calibration and a stated model transform the raw signal into a mass, field or event-rate constraint.</p>
+        </article>
+        <article data-future-stage="identity">
+          <span>03 · discovery gate</span>
+          <strong>Microscopic identity</strong>
+          <p>A reproducible interaction must establish mass, coupling and consistency with the astrophysical abundance.</p>
+        </article>
+        <article data-future-stage="control">
+          <span>04 · new-physics gate</span>
+          <strong>Control and capture</strong>
+          <p>Detection is not enough: useful engineering requires controllable production, capture, confinement or state manipulation.</p>
+        </article>
+        <article data-future-stage="engineering">
+          <span>05 · conditional</span>
+          <strong>Engineering</strong>
+          <p>Only then can sensing, communication, energy or propulsion be evaluated with ordinary conservation laws.</p>
+        </article>
       </div>
       <div class="scale-explorer">
         <div class="scale-control">
@@ -795,6 +837,60 @@
           <div class="validity-panel"><span class="epistemic-label">Model boundary</span><h3 id="futureValidityTitle">Illustrative contact scale only</h3><p id="futureValidity">A real exclusion or sensitivity curve must specify an interaction operator, target response, detector exposure and statistical treatment.</p></div>
         </div>
       </div>
+      <section class="dimension-hypothesis" aria-labelledby="dimension-question">
+        <div class="section-heading compact-heading">
+          <div><p class="kicker">Hypothesis laboratory</p><h3 id="dimension-question">Is dark matter hidden in another dimension?</h3></div>
+          <p>No extra spatial dimension is required for matter to be electromagnetically dark. A particle in ordinary 3+1-dimensional spacetime can simply lack a useful electromagnetic coupling. Extra-dimensional models are separate, testable beyond-Standard-Model hypotheses.</p>
+        </div>
+        <div class="dimension-grid">
+          <article>
+            <span class="certainty-tag certainty-active">baseline physics</span>
+            <h4>3 spatial dimensions + time</h4>
+            <p>Weak or absent electromagnetic coupling is enough to prevent ordinary imaging. Gravity can still reveal the mass distribution.</p>
+            <div class="dimension-diagram" aria-label="Ordinary spacetime dark matter concept"><span>ordinary spacetime</span><i>photons</i><b>dark state</b><em>gravity</em></div>
+          </article>
+          <article>
+            <span class="certainty-tag certainty-speculative">hypothesis</span>
+            <h4>3+1+n dimensions</h4>
+            <p>Kaluza–Klein, braneworld or bulk-state scenarios can introduce additional states or mediators, but must earn their place through observable deviations—not visual intuition.</p>
+            <div class="dimension-diagram extra" aria-label="Extra-dimensional hypothesis concept"><span>visible brane</span><i>compact/bulk dimension</i><b>hypothetical state</b><em>testable signature?</em></div>
+          </article>
+          <article>
+            <span class="epistemic-label">Discriminating question</span>
+            <h4>What measurement would tell the scenarios apart?</h4>
+            <p>Collider spectra, modified force laws, missing-energy signatures or other model-specific observables must differ from an ordinary weakly coupled dark sector. “We cannot see it” alone is not evidence for extra dimensions.</p>
+            <a href="https://pdg.lbl.gov/" target="_blank" rel="noopener noreferrer">Particle Data Group reviews</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="engine-lab" aria-labelledby="engine-title">
+        <div class="section-heading compact-heading">
+          <div><p class="kicker">Discovery-dependent engineering</p><h3 id="engine-title">Could dark matter power or propel a spacecraft?</h3></div>
+          <p>Only after specifying interaction, capture, energy transfer and momentum transfer. This calculator makes the missing physics explicit and treats a failed engine as a useful result.</p>
+        </div>
+        <div class="engine-decision-tree" aria-label="Dark matter technology decision tree">
+          <span>identity known?</span><b>→ coupling?</b><b>→ controllable?</b><b>→ capture?</b><b>→ energy transfer?</b><b>→ directed momentum?</b><strong>→ engineering</strong>
+        </div>
+        <div class="engine-layout">
+          <form class="future-controls" id="engineForm">
+            <h4>Assumption ledger</h4>
+            <div class="range-field"><div class="range-label"><label for="engineArea">Collector area</label><output id="engineAreaOutput" for="engineArea">10⁶ m²</output></div><input id="engineArea" type="range" min="0" max="8" step="1" value="6"></div>
+            <div class="range-field"><div class="range-label"><label for="engineMass">Spacecraft mass</label><output id="engineMassOutput" for="engineMass">10⁵ kg</output></div><input id="engineMass" type="range" min="2" max="8" step="1" value="5"></div>
+            <div class="range-field"><div class="range-label"><label for="engineColumn">Target column</label><output id="engineColumnOutput" for="engineColumn">10³⁰ cm⁻²</output></div><input id="engineColumn" type="range" min="20" max="35" step="1" value="30"></div>
+            <div class="range-field"><div class="range-label"><label for="engineCapture">Engineering capture factor</label><output id="engineCaptureOutput" for="engineCapture">100%</output></div><input id="engineCapture" type="range" min="0" max="1" step="0.01" value="1"></div>
+            <div class="range-field"><div class="range-label"><label for="engineConversion">Mass-energy conversion efficiency</label><output id="engineConversionOutput" for="engineConversion">100%</output></div><input id="engineConversion" type="range" min="0" max="1" step="0.01" value="1"></div>
+            <div class="range-field"><div class="range-label"><label for="engineMomentum">Momentum-transfer factor</label><output id="engineMomentumOutput" for="engineMomentum">1.00</output></div><input id="engineMomentum" type="range" min="0" max="2" step="0.05" value="1"></div>
+            <p class="method-note">Cross section and local density are inherited from the encounter sandbox above. The target column is a deliberately simplified optical-depth proxy. No known material can be assumed to capture dark matter with the selected efficiencies.</p>
+          </form>
+          <div>
+            <div id="engineMetrics" class="future-metrics engine-metrics" aria-live="polite"></div>
+            <div id="engineVerdict" class="validity-panel"></div>
+            <p id="engineSummary" class="sr-summary">Engine feasibility calculation is loading.</p>
+          </div>
+        </div>
+      </section>
+
       <div class="frontier-heading"><p class="kicker">Research Frontier</p><h3>What is known, unknown and decisive</h3></div>
       <div id="frontierGrid" class="frontier-grid"></div>
       <details>
@@ -819,7 +915,11 @@
       </details>
       <div class="publication-actions">
         <div><strong>Reproducible workspace state</strong><span>Export the current galaxy, halo, cluster, cosmology, future-sandbox and view-mode settings.</span></div>
-        <button id="exportWorkspace" class="primary-button" type="button">Export workspace JSON</button>
+        <div class="publication-button-group">
+          <button id="copyAnalysisLink" class="secondary-button" type="button">Copy analysis link</button>
+          <button id="exportWorkspace" class="primary-button" type="button">Export workspace JSON</button>
+          <span id="shareStatus" class="share-status" role="status" aria-live="polite"></span>
+        </div>
       </div>
     </section>
 
@@ -872,11 +972,11 @@
       <a href="https://orcid.org/0009-0002-2411-1891" target="_blank" rel="noopener noreferrer">ORCID</a>
     </nav>
   </footer>
-  <script src="rotationPhysics.js?v=3.0.0-beta.1"></script>
-  <script src="lensingPhysics.js?v=3.0.0-beta.1"></script>
-  <script src="cosmologyPhysics.js?v=3.0.0-beta.1"></script>
-  <script src="futuresPhysics.js?v=3.0.0-beta.1"></script>
-  <script src="app.js?v=3.0.0-beta.1"></script>
+  <script src="rotationPhysics.js?v=3.0.0-beta.4"></script>
+  <script src="lensingPhysics.js?v=3.0.0-beta.4"></script>
+  <script src="cosmologyPhysics.js?v=3.0.0-beta.4"></script>
+  <script src="futuresPhysics.js?v=3.0.0-beta.4"></script>
+  <script src="app.js?v=3.0.0-beta.4"></script>
   <script type="module" src="motionSystem.mjs"></script>
 </body>
 </html>

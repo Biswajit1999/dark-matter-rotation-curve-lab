@@ -340,7 +340,7 @@ h2 {
 .workspace-grid {
   display: grid;
   grid-template-columns: minmax(272px, 0.74fr) minmax(520px, 1.8fr) minmax(320px, 0.95fr);
-  grid-template-rows: minmax(430px, 58vh) minmax(260px, 33vh) minmax(150px, auto);
+  grid-template-rows: clamp(430px, 52vh, 670px) clamp(260px, 29vh, 350px) minmax(150px, auto);
   gap: 14px;
 }
 
@@ -359,6 +359,20 @@ h2 {
 .residual-panel { grid-column: 2; }
 .likelihood-panel { grid-column: 3; }
 .metrics-panel { grid-column: 2 / span 2; }
+
+.curve-panel,
+.residual-panel,
+.likelihood-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.curve-panel,
+.residual-panel,
+.likelihood-panel,
+.chart-frame {
+  min-height: 0;
+}
 
 .panel-heading {
   min-height: 68px;
@@ -484,10 +498,30 @@ button:disabled { cursor: wait; opacity: 0.58; }
 .export-actions { display: flex; gap: 8px; }
 .compact-button { min-width: 52px; min-height: 38px; padding: 7px 10px; font: 700 0.72rem var(--mono); }
 
-.chart-frame { position: relative; background: #091725; }
-.chart-frame-large { height: calc(100% - 69px); min-height: 350px; }
-.chart-frame-small { height: calc(100% - 61px); min-height: 198px; }
-canvas { width: 100%; height: 100%; display: block; }
+.chart-frame {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #091725;
+}
+.chart-frame-large,
+.chart-frame-small {
+  height: auto;
+  min-height: 0;
+}
+.curve-panel .chart-frame { min-height: 350px; }
+.residual-panel .chart-frame,
+.likelihood-panel .chart-frame { min-height: 220px; }
+canvas {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: block;
+}
 
 .sr-summary {
   position: absolute;
@@ -927,25 +961,46 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
 .candidate-methods span { border: 1px solid var(--border); border-radius: 999px; padding: 3px 7px; color: var(--accent-strong); font: 650 0.6rem var(--mono); }
 .cosmology-sources { display: flex; flex-wrap: wrap; gap: 10px 22px; padding: 14px 20px; font-size: 0.73rem; font-weight: 700; }
 
-.future-hero {
+.future-method-band {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(300px, 0.7fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1px;
   border-block: 1px solid var(--border);
   background: var(--border);
 }
 
-.future-hero figure { position: relative; min-width: 0; margin: 0; background: #03070c; }
-.future-hero img { width: 100%; height: 520px; display: block; object-fit: cover; }
-.future-hero figcaption { position: absolute; inset: auto 0 0; padding: 18px 20px; color: #d7e0eb; background: linear-gradient(transparent, rgba(3, 7, 12, 0.97) 32%); font-size: 0.75rem; }
-.future-hero figcaption strong { color: var(--warm); }
-.future-hero figcaption span { display: block; margin-top: 5px; color: var(--text-muted); font-size: 0.66rem; }
-.future-hero-copy { padding: 24px; background: var(--surface-raised); }
-.future-hero-copy h3 { margin: 14px 0 10px; font-size: 1.12rem; }
-.future-hero-copy p,
-.future-hero-copy li { color: var(--text-muted); font-size: 0.78rem; }
-.future-hero-copy ul { display: grid; gap: 9px; padding-left: 18px; }
-.future-hero-copy li strong { color: var(--text); }
+.future-method-band article {
+  position: relative;
+  min-width: 0;
+  min-height: 220px;
+  padding: clamp(20px, 2.6vw, 34px);
+  background: var(--surface);
+}
+
+.future-method-band article::after {
+  content: "→";
+  position: absolute;
+  right: -13px;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--background);
+  color: var(--accent-strong);
+  font: 700 0.8rem var(--mono);
+  transform: translateY(-50%);
+}
+
+.future-method-band article:last-child::after { display: none; }
+.future-method-band span { color: var(--accent-strong); font: 700 0.64rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; }
+.future-method-band strong { display: block; margin-top: 26px; color: var(--text); font: 600 clamp(1.05rem, 1.6vw, 1.35rem) var(--display); }
+.future-method-band p { margin: 10px 0 0; color: var(--text-muted); font-size: 0.78rem; line-height: 1.55; }
+.future-method-band article:nth-child(3) { background: color-mix(in srgb, var(--surface) 88%, var(--accent) 12%); }
+.future-method-band article:nth-child(5) { background: color-mix(in srgb, var(--surface) 88%, var(--warm) 12%); }
 
 .scale-explorer { display: grid; grid-template-columns: minmax(300px, 0.75fr) minmax(0, 1.25fr); gap: 1px; background: var(--border); border-bottom: 1px solid var(--border); }
 .scale-control { padding: 20px; background: var(--surface-raised); }
@@ -1311,7 +1366,7 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
 .observation-grid { gap: 1px; border-radius: 0; }
 .observation-card { border-radius: 0; }
 .panel { border-radius: 2px; box-shadow: none; }
-.workspace-grid { grid-template-rows: minmax(520px, auto) minmax(300px, auto) minmax(180px, auto); }
+.workspace-grid { grid-template-rows: clamp(430px, 52vh, 670px) 300px minmax(180px, auto); }
 .kicker, .eyebrow { font-size: 0.76rem; }
 .candidate-methods span, .certainty-tag { border-radius: 2px; font-size: 0.7rem; }
 
@@ -1333,7 +1388,7 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   .observation-card-wide { grid-column: 1 / -1; grid-row: auto; }
   .observation-card { grid-column: auto; }
   .observation-card:last-child { grid-column: 1 / -1; }
-  .workspace-grid { grid-template-columns: minmax(250px, 0.72fr) minmax(500px, 1.5fr); grid-template-rows: minmax(420px, 56vh) 300px 300px auto; }
+  .workspace-grid { grid-template-columns: minmax(250px, 0.72fr) minmax(500px, 1.5fr); grid-template-rows: clamp(420px, 50vh, 610px) 300px 300px auto; align-items: stretch; }
   .controls-panel { grid-column: 1; grid-row: 1 / span 4; }
   .curve-panel { grid-column: 2; grid-row: 1; }
   .residual-panel { grid-column: 2; grid-row: 2; }
@@ -1349,7 +1404,6 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   .lensing-layout { grid-template-columns: minmax(250px, 0.65fr) minmax(500px, 1.35fr); }
   .cosmology-layout { grid-template-columns: minmax(250px, 0.65fr) minmax(500px, 1.35fr); }
   .candidate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .future-hero { grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr); }
   .evidence-graph-layout { grid-template-columns: 1fr; }
 }
 
@@ -1382,7 +1436,13 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   .observation-card-wide { height: 420px; }
   .roadmap { grid-template-columns: 1fr; }
   .roadmap-date { writing-mode: horizontal-tb; }
-  .workspace-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 460px 300px 340px auto; }
+  .workspace-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-auto-rows: auto;
+    align-items: start;
+  }
   .controls-panel,
   .curve-panel,
   .residual-panel,
@@ -1403,10 +1463,9 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   .cluster-interpretation { grid-template-columns: 1fr; }
   .cosmology-layout,
   .cosmology-logic { grid-template-columns: 1fr; }
-  .future-hero,
+  .future-method-band,
   .scale-explorer,
   .future-calculator { grid-template-columns: 1fr; }
-  .future-hero img { height: 440px; }
   .frontier-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .evidence-graph { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .evidence-node::after { content: ""; }
@@ -1443,7 +1502,7 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   .export-actions { width: 100%; }
   .compact-button { flex: 1; }
   .axis-note { max-width: 42%; }
-  .workspace-grid { grid-template-rows: auto 430px 290px 320px auto; }
+  .workspace-grid { grid-template-rows: none; grid-auto-rows: auto; }
   .metrics { grid-template-columns: 1fr; }
   .inference-actions,
   .posterior-metrics { grid-template-columns: 1fr; }
@@ -1451,8 +1510,6 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   .population-metrics,
   .lensing-metrics { grid-template-columns: 1fr; }
   .candidate-grid { grid-template-columns: 1fr; }
-  .future-hero img { height: 400px; }
-  .future-hero figcaption { position: static; background: #07111f; }
   .future-metrics,
   .frontier-grid { grid-template-columns: 1fr; }
   .evidence-graph { grid-template-columns: 1fr; }
@@ -1492,4 +1549,111 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   .panel { break-inside: avoid; box-shadow: none !important; }
   a { color: #111827; text-decoration: underline; }
   .research-only { display: block !important; }
+}
+
+
+/* Phase 2 completion: diagnostics, storytelling and reproducibility */
+.publication-button-group { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.share-status { min-height: 1.2em; color: var(--text-muted); font-size: 0.72rem; }
+.story-steps button[aria-pressed="true"] { background: var(--text); color: var(--background); border-color: var(--text); }
+.diagnostic-figures canvas { width: 100%; min-height: 240px; }
+@media (max-width: 800px) {
+  .publication-button-group { width: 100%; justify-content: stretch; }
+  .publication-button-group button { flex: 1 1 190px; }
+}
+
+
+/* Phase 3: paired cosmology figures and dated experiment evidence */
+.cosmology-figures { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--border); }
+.cosmology-figures .cosmology-chart-card { background: var(--surface); }
+#baoCanvas { width: 100%; min-height: 330px; }
+.cosmology-metrics, .lensing-metrics { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+@media (min-width: 1250px) { .cosmology-figures { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+
+.certainty-anomaly { border-color: var(--warm); color: var(--warm); }
+.certainty-limit { border-color: var(--accent); color: var(--accent-strong); }
+.certainty-search, .certainty-survey { border-color: var(--border-strong); color: var(--text-muted); }
+
+
+/* Phase 4: hypothesis and physics-constrained futures */
+.dimension-hypothesis, .engine-lab { margin-top: clamp(56px, 8vw, 110px); padding-block: clamp(28px, 5vw, 64px); border-block: 1px solid var(--border-strong); }
+.compact-heading { margin-bottom: 34px; }
+.dimension-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--border); }
+.dimension-grid article { min-height: 290px; padding: clamp(20px, 3vw, 34px); background: var(--surface); }
+.dimension-grid h4, .engine-lab h4 { margin: 18px 0 8px; font: 600 1.2rem var(--display); }
+.dimension-grid p { color: var(--text-muted); }
+.dimension-diagram { min-height: 96px; margin-top: 24px; display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; gap: 6px; border-top: 1px solid var(--border); font: 0.68rem var(--mono); }
+.dimension-diagram > * { padding-top: 12px; font-style: normal; font-weight: 500; color: var(--text-muted); }
+.dimension-diagram b { color: var(--accent-strong); }
+.dimension-diagram em { color: var(--warm); }
+.dimension-diagram.extra { border-top-style: dashed; }
+.engine-decision-tree { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; margin-bottom: 1px; background: var(--border); }
+.engine-decision-tree > * { min-height: 76px; display: grid; place-items: center; padding: 12px; background: var(--surface-raised); color: var(--text-muted); text-align: center; font: 0.7rem var(--mono); }
+.engine-decision-tree strong { color: var(--warm); }
+.engine-layout { display: grid; grid-template-columns: minmax(280px, .7fr) minmax(0, 1.3fr); gap: 1px; background: var(--border); }
+.engine-layout > * { background: var(--surface); padding: clamp(18px, 3vw, 32px); }
+.engine-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) {
+  .dimension-grid, .engine-layout { grid-template-columns: 1fr; }
+  .engine-decision-tree { grid-template-columns: 1fr 1fr; }
+  .engine-metrics { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 520px) {
+  .engine-decision-tree, .engine-metrics { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 1050px) {
+  .future-method-band { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .future-method-band article::after { display: none; }
+  .future-method-band article:last-child { grid-column: 1 / -1; min-height: 170px; }
+}
+@media (max-width: 620px) {
+  .future-method-band { grid-template-columns: 1fr; }
+  .future-method-band article,
+  .future-method-band article:last-child { grid-column: auto; min-height: 0; }
+  .future-method-band strong { margin-top: 14px; }
+}
+
+/* Critical chart containment fix: prevent canvas/grid intrinsic-height feedback. */
+@media (max-width: 800px) {
+  .curve-panel,
+  .residual-panel,
+  .likelihood-panel {
+    width: 100%;
+    height: auto;
+    align-self: start;
+  }
+
+  .curve-panel .chart-frame {
+    height: 390px;
+    min-height: 390px;
+  }
+
+  .residual-panel .chart-frame {
+    height: 260px;
+    min-height: 260px;
+  }
+
+  .likelihood-panel .chart-frame {
+    height: 300px;
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .curve-panel .chart-frame {
+    height: 340px;
+    min-height: 340px;
+  }
+
+  .residual-panel .chart-frame {
+    height: 230px;
+    min-height: 230px;
+  }
+
+  .likelihood-panel .chart-frame {
+    height: 270px;
+    min-height: 270px;
+  }
 }

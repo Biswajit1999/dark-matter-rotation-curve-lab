@@ -1,7 +1,7 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "status_as_of": "2026-09-28",
-  "status_note": "A search status is not a detection claim. Numerical exclusion curves depend on interaction model and must be read from the linked collaboration result.",
+  "status_note": "Statuses are dated snapshots. An anomaly or background tension is not a dark-matter detection; exclusions and sensitivities are interaction-model dependent.",
   "candidates": [
     {
       "id": "wimp",
@@ -10,7 +10,11 @@
       "mass_scale": "sub-GeV to multi-TeV",
       "production": "Thermal freeze-out or non-thermal production",
       "signatures": "Nuclear/electron recoil, annihilation products, missing momentum",
-      "methods": ["Direct detection", "Colliders", "Indirect detection"],
+      "methods": [
+        "Direct detection",
+        "Colliders",
+        "Indirect detection"
+      ],
       "status": "Broad parameter space constrained; no universally accepted detection",
       "source": "https://lz.lbl.gov/publications/"
     },
@@ -21,7 +25,11 @@
       "mass_scale": "neV to meV, model dependent",
       "production": "Misalignment and topological defects",
       "signatures": "Photon conversion in magnetic fields, spin precession",
-      "methods": ["Resonant cavities", "Helioscopes", "Quantum sensors"],
+      "methods": [
+        "Resonant cavities",
+        "Helioscopes",
+        "Quantum sensors"
+      ],
       "status": "Targeted mass–coupling bands remain under active scan",
       "source": "https://depts.washington.edu/admx/"
     },
@@ -32,7 +40,11 @@
       "mass_scale": "ultralight to GeV",
       "production": "Model dependent",
       "signatures": "Photon conversion, spectral features, stellar effects",
-      "methods": ["Haloscopes", "Helioscopes", "Astrophysical spectra"],
+      "methods": [
+        "Haloscopes",
+        "Helioscopes",
+        "Astrophysical spectra"
+      ],
       "status": "Large model-dependent coupling space remains",
       "source": "https://cds.cern.ch/record/1560759"
     },
@@ -43,7 +55,10 @@
       "mass_scale": "keV scale in warm-DM scenarios",
       "production": "Oscillation or beyond-standard-model mechanisms",
       "signatures": "Radiative-decay line and suppressed small-scale structure",
-      "methods": ["X-ray spectroscopy", "Structure formation"],
+      "methods": [
+        "X-ray spectroscopy",
+        "Structure formation"
+      ],
       "status": "Candidate interpretations remain disputed and model dependent",
       "source": "https://arxiv.org/abs/1602.04816"
     },
@@ -54,7 +69,11 @@
       "mass_scale": "Model dependent",
       "production": "Hidden-sector thermal or non-thermal histories",
       "signatures": "Halo cores, offsets or drag in merging systems",
-      "methods": ["Cluster collisions", "Halo populations", "Simulations"],
+      "methods": [
+        "Cluster collisions",
+        "Halo populations",
+        "Simulations"
+      ],
       "status": "Cross-section constraints depend on velocity and merger geometry",
       "source": "https://arxiv.org/abs/1503.07675"
     },
@@ -65,7 +84,11 @@
       "mass_scale": "around 10⁻²² eV in benchmark models",
       "production": "Coherent field production",
       "signatures": "Wave-scale structure, soliton-like cores, timing effects",
-      "methods": ["Lyman-alpha forest", "Galaxy structure", "Precision timing"],
+      "methods": [
+        "Lyman-alpha forest",
+        "Galaxy structure",
+        "Precision timing"
+      ],
       "status": "Benchmark masses face structure constraints; broader models remain",
       "source": "https://arxiv.org/abs/1705.01443"
     },
@@ -76,7 +99,11 @@
       "mass_scale": "Asteroid to stellar and higher masses",
       "production": "Early-universe density collapse",
       "signatures": "Microlensing, accretion, gravitational waves, evaporation",
-      "methods": ["Microlensing", "CMB", "Gravitational waves"],
+      "methods": [
+        "Microlensing",
+        "CMB",
+        "Gravitational waves"
+      ],
       "status": "Allowed abundance is strongly mass-window dependent",
       "source": "https://arxiv.org/abs/2002.12778"
     },
@@ -87,18 +114,85 @@
       "mass_scale": "sub-eV to multi-TeV",
       "production": "Freeze-in, secluded freeze-out or asymmetric histories",
       "signatures": "Dark photons, long-lived particles, electron recoils",
-      "methods": ["Accelerators", "Beam dumps", "Low-threshold detectors"],
+      "methods": [
+        "Accelerators",
+        "Beam dumps",
+        "Low-threshold detectors"
+      ],
       "status": "Many portals and lifetime regimes remain experimentally open",
       "source": "https://arxiv.org/abs/1311.0029"
     }
   ],
   "experiments": [
-    {"name": "LZ", "channel": "Direct detection", "target": "Liquid xenon nuclear/electron recoils", "status": "Operating / published constraints", "source": "https://lz.lbl.gov/publications/"},
-    {"name": "XENONnT", "channel": "Direct detection", "target": "Liquid xenon rare events", "status": "Operating / published constraints", "source": "https://xenonexperiment.org/"},
-    {"name": "ADMX", "channel": "Axion haloscope", "target": "Resonant microwave photons", "status": "Scanning selected axion bands", "source": "https://depts.washington.edu/admx/"},
-    {"name": "CERN CAST / IAXO programme", "channel": "Solar axions", "target": "Magnet conversion to X-rays", "status": "CAST constraints / IAXO proposed", "source": "https://home.cern/science/experiments/cast"},
-    {"name": "ATLAS and CMS", "channel": "Collider", "target": "Missing transverse momentum and mediators", "status": "Model-dependent searches", "source": "https://home.cern/science/physics/dark-matter"},
-    {"name": "Fermi-LAT", "channel": "Indirect detection", "target": "Gamma-ray spectra and morphology", "status": "Survey constraints and anomaly tests", "source": "https://fermi.gsfc.nasa.gov/science/"},
-    {"name": "Euclid / Rubin / Roman", "channel": "Cosmic structure", "target": "Weak lensing and galaxy clustering", "status": "Survey inference, not particle capture", "source": "https://www.esa.int/Science_Exploration/Space_Science/Euclid"}
+    {
+      "name": "LZ",
+      "channel": "Direct detection",
+      "target": "Liquid-xenon nuclear recoils in an extended high-energy search",
+      "classification": "anomaly",
+      "updated": "2026-09-01",
+      "status": "Open anomaly/background tension; no accepted dark-matter detection",
+      "result": "2.84 tonne-year exposure; one nuclear-recoil-like event at 248 ± 23(stat) ± 23(sys) keV. Background-only tension: 2.6σ global after look-elsewhere effects; maximum local significance 3.4σ across tested models.",
+      "source": "https://lz.lbl.gov/"
+    },
+    {
+      "name": "XENONnT",
+      "channel": "Direct detection",
+      "target": "Liquid-xenon nuclear/electron recoils and solar-neutrino backgrounds",
+      "classification": "limit",
+      "updated": "2026-09-28",
+      "status": "Open search programme with published constraints; no accepted dark-matter detection",
+      "result": "Rare-event searches continue while neutrino interactions become an increasingly important irreducible background and calibration signal.",
+      "source": "https://xenonexperiment.org/"
+    },
+    {
+      "name": "ADMX",
+      "channel": "Axion haloscope",
+      "target": "Resonant microwave photons from axion conversion",
+      "classification": "search",
+      "updated": "2026-09-28",
+      "status": "Open scan of selected axion mass–coupling bands",
+      "result": "Frequency-dependent exclusions/sensitivity; interpretation requires a specified axion model and local halo assumption.",
+      "source": "https://depts.washington.edu/admx/"
+    },
+    {
+      "name": "CERN CAST / IAXO programme",
+      "channel": "Solar axions",
+      "target": "Magnet conversion to X-rays",
+      "classification": "limit",
+      "updated": "2026-09-28",
+      "status": "CAST constraints remain; IAXO-class sensitivity is future-facing",
+      "result": "Helioscope constraints test solar axion/ALP couplings rather than generic dark matter as a single parameter.",
+      "source": "https://home.cern/science/experiments/cast"
+    },
+    {
+      "name": "ATLAS and CMS",
+      "channel": "Collider",
+      "target": "Missing transverse momentum, mediators and visible recoil objects",
+      "classification": "limit",
+      "updated": "2026-09-28",
+      "status": "Open model-dependent searches; no universally accepted dark-matter production signal",
+      "result": "Collider exclusions depend on mediator masses, widths, couplings and effective-model validity.",
+      "source": "https://home.cern/science/physics/dark-matter"
+    },
+    {
+      "name": "Fermi-LAT",
+      "channel": "Indirect detection",
+      "target": "Gamma-ray spectra and morphology",
+      "classification": "limit",
+      "updated": "2026-09-28",
+      "status": "Open survey constraints and anomaly tests",
+      "result": "Astrophysical foregrounds and source populations remain central to interpretation of any excess.",
+      "source": "https://fermi.gsfc.nasa.gov/science/"
+    },
+    {
+      "name": "Euclid / Rubin / Roman",
+      "channel": "Cosmic structure",
+      "target": "Weak lensing, galaxy clustering, substructure and growth",
+      "classification": "survey",
+      "updated": "2026-09-28",
+      "status": "Open gravitational-inference programmes rather than particle-capture experiments",
+      "result": "Survey combinations constrain clustering and mass distributions; translating those constraints to microphysics remains model dependent.",
+      "source": "https://www.esa.int/Science_Exploration/Space_Science/Euclid"
+    }
   ]
 }
