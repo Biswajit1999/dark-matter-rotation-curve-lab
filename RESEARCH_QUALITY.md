@@ -29,7 +29,12 @@ not establish.
 11. normalized population metadata retain original fields and quality flags,
     while resolved acceleration transforms remain finite for all radii;
 12. empirical-RAR and simple-ν acceleration mappings recover their Newtonian
-    and deep-acceleration asymptotic limits.
+    and deep-acceleration asymptotic limits;
+13. lens–source distances remain geometrically ordered, while the Bullet
+    Cluster reference produces finite, plausible critical surface density,
+    Einstein radius and angular scale;
+14. every colliding-cluster record links primary evidence and carries an
+    explicit schematic, geometry, reconstruction or dispute warning.
 
 ## Guarantees requiring future work
 
@@ -42,6 +47,12 @@ complete survey. Grid minimisation is deterministic
 exploration, not Bayesian inference. A later release should add repeated
 synthetic coverage experiments and JavaScript/Python parity fixtures before
 claiming research-grade parameter constraints.
+
+The colliding-cluster canvas is an explanatory layer renderer. Automated tests
+do not reproduce published shear catalogues, point-spread-function correction,
+photometric-redshift calibration, mass-map inversion or merger simulations.
+Quantitative publication use requires those source data and an independently
+validated lensing pipeline.
 
 ## Claim language
 

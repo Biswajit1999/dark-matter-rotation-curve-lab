@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-09-28",
+  "calculation_contract": {
+    "cosmology": "Flat LCDM with H0 = 70 km/s/Mpc and Omega_m = 0.3",
+    "renderer": "Normalised, explanatory reconstruction; not a pixel fit to the credited observation",
+    "mass_proxy": "Two singular-isothermal-sphere Einstein radii controlled by one velocity-dispersion parameter"
+  },
+  "systems": [
+    {
+      "id": "bullet",
+      "name": "Bullet Cluster (1E 0657-56)",
+      "redshift": 0.296,
+      "source_redshift": 1.0,
+      "velocity_dispersion_kms": 1150,
+      "mass_peaks": [[0.25, 0.48], [0.77, 0.53]],
+      "gas_peaks": [[0.39, 0.50], [0.63, 0.52]],
+      "galaxy_peaks": [[0.24, 0.47], [0.78, 0.54]],
+      "finding": "The lensing-derived total-mass peaks approximately follow the collisionless galaxies rather than the X-ray-bright gas.",
+      "caution": "The map shown here is a schematic layer model. Published mass maps require shape calibration, redshift estimates, inversion choices and uncertainty propagation.",
+      "primary_reference": "Clowe et al. (2006), ApJL 648, L109",
+      "reference_url": "https://arxiv.org/abs/astro-ph/0608407",
+      "observatory_url": "https://chandra.harvard.edu/photo/2006/1e0657/"
+    },
+    {
+      "id": "macs-j0025",
+      "name": "MACS J0025.4-1222",
+      "redshift": 0.586,
+      "source_redshift": 1.4,
+      "velocity_dispersion_kms": 1050,
+      "mass_peaks": [[0.28, 0.46], [0.73, 0.54]],
+      "gas_peaks": [[0.43, 0.49], [0.59, 0.52]],
+      "galaxy_peaks": [[0.27, 0.46], [0.74, 0.54]],
+      "finding": "A second merging system shows total-mass peaks separated from the centrally concentrated X-ray gas.",
+      "caution": "The merger geometry and projection are system-specific; similarity to the Bullet Cluster is evidence for replication, not identical dynamics.",
+      "primary_reference": "Bradač et al. (2008), ApJ 687, 959",
+      "reference_url": "https://arxiv.org/abs/0806.2320",
+      "observatory_url": "https://chandra.harvard.edu/photo/2008/macs/"
+    },
+    {
+      "id": "abell-520",
+      "name": "Abell 520",
+      "redshift": 0.201,
+      "source_redshift": 0.9,
+      "velocity_dispersion_kms": 1000,
+      "mass_peaks": [[0.30, 0.43], [0.53, 0.54], [0.73, 0.48]],
+      "gas_peaks": [[0.47, 0.51], [0.59, 0.55]],
+      "galaxy_peaks": [[0.29, 0.42], [0.74, 0.48]],
+      "finding": "Published reconstructions have debated whether a central mass concentration is present, making this a useful systematic-stress case.",
+      "caution": "Treat the central peak as disputed and reconstruction-dependent; do not generalise it as a settled dark-matter morphology.",
+      "primary_reference": "Clowe et al. (2012), ApJ 758, 128",
+      "reference_url": "https://arxiv.org/abs/1209.2143",
+      "observatory_url": "https://www.chandra.harvard.edu/photo/2012/a520/"
+    }
+  ]
+}

@@ -54,6 +54,11 @@ active application now:
   coverage and a discrepancy-based Bayesian posterior-predictive p-value, and
   exports the interval table as CSV;
 - verifies known-truth recovery on a deterministic synthetic galaxy fixture.
+- adds a quantitative multi-cluster lensing laboratory with live angular-diameter
+  distances, critical surface density, SIS Einstein-radius scale, independent
+  tracer layers and explicit reconstruction/systematic warnings;
+- includes Bullet Cluster, MACS J0025.4-1222 and disputed Abell 520 cases in a
+  machine-readable catalogue linked to primary papers and observatory records.
 
 ## Development phases
 
@@ -64,8 +69,8 @@ active application now:
 | C | Bayesian inference workspace | Complete |
 | D | Population, BTFR and radial-acceleration laboratory | Complete |
 | E | Alternative-hypothesis residual and assumption laboratory | Complete |
-| F | Quantitative lensing, Bullet Cluster and archive infrastructure | Next |
-| G | CMB, particle-search and future-sensitivity laboratories | Pending |
+| F | Quantitative lensing and colliding-cluster laboratory | Complete |
+| G | Cosmology, particle-candidate and experiment landscape | Next |
 | H | Scale explorer, research frontier and constrained-futures laboratory | Pending |
 | I | Evidence graph, educator/research modes and publication polish | Pending |
 
@@ -148,6 +153,23 @@ the displayed parameter values. These are phenomenological tests under fixed
 assumptions—not evidence that one framework is true. Relativistic completion,
 the MOND external-field effect and non-galaxy constraints are not implemented.
 
+## Lensing and colliding clusters
+
+Phase F adds a separate, tested geometry module. For each catalogued merger it
+computes angular-diameter distances in a flat ΛCDM reference cosmology,
+critical surface density and the Einstein-radius scale of a singular isothermal
+sphere. The displayed optical-galaxy, X-ray-gas, shear and total-mass layers are
+normalised explanatory reconstructions, not pixel fits to the credited
+observatory products. Layer labels deliberately distinguish direct tracers from
+the model-dependent mass inversion.
+
+The default Bullet Cluster record uses `z_l = 0.296`; MACS J0025.4-1222 provides
+an independent merger case, while Abell 520 is explicitly labelled as a
+systematics stress case because published reconstructions have disagreed about
+its central mass peak. Interactive velocity dispersion is only an SIS scale
+proxy. It must not be interpreted as a fitted merger mass or a constraint on
+dark-matter self-interactions.
+
 ## Model equations
 
 At every radius the application uses SPARC's sign-preserving convention for
@@ -224,12 +246,15 @@ observations across all 175 systems.
 | `styles.css` | Responsive semantic-token theme and focus/reduced-motion states |
 | `app.js` | UI state, high-DPI plotting, exports and Worker request ordering |
 | `rotationPhysics.js` | Tested halo profiles, SPARC decomposition and likelihood |
+| `lensingPhysics.js` | Tested lens geometry, critical density and SIS scale |
 | `physicsWorker.js` | Off-thread evaluation and deterministic grid fit |
 | `data/galaxies.json` | Complete SPARC catalogue with 175 galaxies and 3,391 observations |
 | `data/reference.json` | NGC 3198 compatibility fixture |
+| `data/cluster_systems.json` | Multi-cluster evidence records and schematic coordinates |
 | `assets/observations/` | Real Hubble, Chandra/Webb, Planck and Rubin imagery |
 | `scripts/import_sparc.mjs` | Checksum-pinned SPARC ingestion |
 | `tests/rotationPhysics.test.js` | Analytic, data and finite-output tests |
+| `tests/lensingPhysics.test.js` | Distance-geometry and cluster-contract tests |
 
 ## Research boundaries
 

@@ -6,7 +6,7 @@
   <meta name="description" content="Explore all 175 SPARC galaxies, population scaling relations, cluster lensing, cosmology and the technology roadmap for identifying dark matter.">
   <meta name="theme-color" content="#07111f">
   <title>Dark Matter Evidence Lab — Galaxies to Detectors</title>
-  <link rel="stylesheet" href="styles.css?v=2.0.0-beta.4">
+  <link rel="stylesheet" href="styles.css?v=2.0.0-beta.5">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to analysis</a>
@@ -368,6 +368,76 @@
       </details>
     </section>
 
+    <section class="lensing-section" aria-labelledby="lensing-title">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">Phase F · clusters as gravitational laboratories</p>
+          <h2 id="lensing-title">Quantitative lensing and colliding-cluster laboratory</h2>
+        </div>
+        <p>Change the lens geometry, reveal each measured tracer and test why a separation between hot gas, galaxies and reconstructed total mass is informative.</p>
+      </div>
+      <div class="lensing-layout">
+        <form id="lensingForm" class="lensing-controls">
+          <div class="field-group">
+            <label for="clusterSelect">Merging system</label>
+            <select id="clusterSelect" aria-describedby="clusterFinding"></select>
+          </div>
+          <div class="range-field">
+            <div class="range-label"><label for="sourceRedshift">Background-source redshift</label><output id="sourceRedshiftOutput" for="sourceRedshift">1.00</output></div>
+            <input id="sourceRedshift" type="range" min="0.35" max="3" step="0.01" value="1">
+          </div>
+          <div class="range-field">
+            <div class="range-label"><label for="clusterDispersion">Velocity-dispersion proxy</label><output id="clusterDispersionOutput" for="clusterDispersion">1,150 km/s</output></div>
+            <input id="clusterDispersion" type="range" min="500" max="1600" step="10" value="1150">
+          </div>
+          <fieldset class="layer-fieldset">
+            <legend>Evidence layers</legend>
+            <label><input type="checkbox" name="clusterLayer" value="galaxies" checked> Optical galaxy positions</label>
+            <label><input type="checkbox" name="clusterLayer" value="gas" checked> X-ray gas proxy</label>
+            <label><input type="checkbox" name="clusterLayer" value="mass" checked> Lensing mass contours</label>
+            <label><input type="checkbox" name="clusterLayer" value="shear" checked> Background-galaxy shear</label>
+            <label><input type="checkbox" name="clusterLayer" value="uncertainty" checked> Centroid uncertainty</label>
+          </fieldset>
+          <p class="method-note">Flat ΛCDM geometry: H₀ = 70 km/s/Mpc, Ωm = 0.3. The velocity dispersion sets an illustrative singular-isothermal-sphere scale; it is not a fit to the displayed image.</p>
+        </form>
+        <div class="lensing-visual">
+          <div class="cluster-canvas-heading">
+            <div><span class="epistemic-label">Derived reconstruction</span><h3 id="clusterCanvasTitle">Cluster layer map</h3></div>
+            <div class="layer-legend" aria-label="Map legend"><span class="legend-galaxy">Galaxy</span><span class="legend-gas">X-ray gas</span><span class="legend-mass">Total mass</span></div>
+          </div>
+          <canvas id="clusterCanvas" role="img" aria-describedby="clusterCanvasSummary"></canvas>
+          <p id="clusterCanvasSummary" class="sr-summary">Cluster reconstruction is loading.</p>
+          <p class="schematic-warning"><strong>Schematic, not a dark-matter photograph.</strong> Lensing contours represent a model-dependent inversion of many background-galaxy shapes; the gas layer represents an X-ray tracer.</p>
+        </div>
+      </div>
+      <div id="lensingMetrics" class="lensing-metrics" aria-live="polite"></div>
+      <div class="cluster-interpretation">
+        <article><span class="epistemic-label">Observed tracer</span><h3>What telescopes measure</h3><p>Optical images locate galaxies, X-ray photons trace hot plasma and coherent distortions appear in background-galaxy shapes.</p></article>
+        <article><span class="epistemic-label">Reconstructed quantity</span><h3>What lensing infers</h3><p>Shape distortions constrain projected gravitational potential. Recovering a convergence or mass map requires source redshifts, calibration and inversion assumptions.</p></article>
+        <article><span class="epistemic-label">Discriminating pattern</span><h3>Why collisions matter</h3><p>Gas experiences ram pressure; stars are nearly collisionless. When most reconstructed mass follows galaxies instead of gas, the dominant gravitating component is not the plasma.</p></article>
+      </div>
+      <div class="cluster-findings">
+        <p id="clusterFinding"></p>
+        <p id="clusterCaution"></p>
+        <div><a id="clusterPaper" href="#" target="_blank" rel="noopener noreferrer">Primary paper</a><a id="clusterObservatory" href="#" target="_blank" rel="noopener noreferrer">Observatory record</a></div>
+      </div>
+      <details>
+        <summary>Show calculation contract and accessible system table</summary>
+        <div class="population-method">
+          <p><strong>Critical density:</strong> Σcrit = c²Ds/(4πG DlDls). A lower value means the chosen lens–source geometry is more efficient.</p>
+          <p><strong>SIS scale:</strong> θE = 4π(σv/c)²Dls/Ds. This compact proxy connects velocity dispersion to angular lens strength; real merging clusters require multi-component mass models.</p>
+          <p><strong>Inference limit:</strong> Lensing responds to projected total gravity. Calling the residual component “dark matter” combines that map with baryonic tracers and a gravity model.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <caption>Cluster systems and live lens-geometry calculations</caption>
+            <thead><tr><th scope="col">System</th><th scope="col">Lens z</th><th scope="col">Source z</th><th scope="col">kpc/arcsec</th><th scope="col">Σcrit (M☉/pc²)</th><th scope="col">θE (arcsec)</th><th scope="col">Evidence status</th></tr></thead>
+            <tbody id="clusterRows"><tr><td colspan="7">Cluster data are loading.</td></tr></tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
     <section class="inference-section" aria-labelledby="inference-title">
       <div class="section-heading">
         <div>
@@ -502,7 +572,8 @@
       <a href="https://orcid.org/0009-0002-2411-1891" target="_blank" rel="noopener noreferrer">ORCID</a>
     </nav>
   </footer>
-  <script src="rotationPhysics.js?v=2.0.0-beta.4"></script>
-  <script src="app.js?v=2.0.0-beta.4"></script>
+  <script src="rotationPhysics.js?v=2.0.0-beta.5"></script>
+  <script src="lensingPhysics.js?v=2.0.0-beta.5"></script>
+  <script src="app.js?v=2.0.0-beta.5"></script>
 </body>
 </html>

@@ -11,10 +11,13 @@ const required = [
   'app.js',
   'physicsWorker.js',
   'rotationPhysics.js',
+  'lensingPhysics.js',
   'data/galaxies.json',
   'data/reference.json',
+  'data/cluster_systems.json',
   'scripts/import_sparc.mjs',
-  'tests/rotationPhysics.test.js'
+  'tests/rotationPhysics.test.js',
+  'tests/lensingPhysics.test.js'
 ];
 const failures = [];
 
@@ -67,7 +70,7 @@ if (failures.length === 0) {
   }
 
   const html = fs.readFileSync('index.html', 'utf8');
-  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'id="populationSearch"', 'id="btfrCanvas"', 'id="rarCanvas"', 'id="challengeRelation"', 'id="challengeCurveCanvas"', 'id="challengeResidualCanvas"', 'id="challengeRows"', 'id="priorForm"', 'id="posteriorRows"', 'id="predictiveRows"', 'id="exportPredictive"', 'prefers-reduced-motion']) {
+  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'id="populationSearch"', 'id="btfrCanvas"', 'id="rarCanvas"', 'id="challengeRelation"', 'id="challengeCurveCanvas"', 'id="challengeResidualCanvas"', 'id="challengeRows"', 'id="clusterSelect"', 'id="clusterCanvas"', 'id="clusterRows"', 'Schematic, not a dark-matter photograph', 'id="priorForm"', 'id="posteriorRows"', 'id="predictiveRows"', 'id="exportPredictive"', 'prefers-reduced-motion']) {
     const source = pattern === 'prefers-reduced-motion' ? fs.readFileSync('styles.css', 'utf8') : html;
     if (!source.includes(pattern)) failures.push(`accessibility contract missing: ${pattern}`);
   }

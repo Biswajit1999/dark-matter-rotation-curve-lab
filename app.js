@@ -1,6 +1,6 @@
 'use strict';
 
-const BUILD_VERSION = '2.0.0-beta.4';
+const BUILD_VERSION = '2.0.0-beta.5';
 
 const CONTROL_DEFINITIONS = [
   { key: 'massToLightDisk', label: 'Disc mass-to-light ratio', unit: 'M☉/L☉ at 3.6 μm', value: 0.5, min: 0.1, max: 1, step: 0.01 },
@@ -40,7 +40,8 @@ const state = {
   requestId: 0,
   pendingFrame: null,
   population: { galaxies: [], highlightedGalaxyId: null, plotPoints: { btfrCanvas: [], rarCanvas: [] } },
-  challenge: { relation: 'rar', accelerationScale: 1.2e-10, massToLightDisk: 0.5, rows: [] }
+  challenge: { relation: 'rar', accelerationScale: 1.2e-10, massToLightDisk: 0.5, rows: [] },
+  lensing: { catalog: null, selectedId: 'bullet', sourceRedshift: 1, velocityDispersion: 1150 }
 };
 
 const $ = id => document.getElementById(id);
@@ -117,6 +118,21 @@ async function loadCatalog() {
   $('galaxySelect').value = 'NGC3198';
   selectReference('NGC3198');
   renderPopulation();
+}
+
+async function loadClusterCatalog() {
+  const response = await fetch(`data/cluster_systems.json?v=${BUILD_VERSION}`, { cache: 'no-cache' });
+  if (!response.ok) throw new Error(`Cluster catalogue request failed with HTTP ${response.status}.`);
+  state.lensing.catalog = await response.json();
+  const options = state.lensing.catalog.systems.map(system => {
+    const option = document.createElement('option');
+    option.value = system.id;
+    option.textContent = `${system.name} · z=${system.redshift}`;
+    return option;
+  });
+  $('clusterSelect').replaceChildren(...options);
+  $('clusterSelect').value = state.lensing.selectedId;
+  selectCluster(state.lensing.selectedId);
 }
 
 function renderGalaxyOptions(query = '') {
@@ -812,6 +828,159 @@ function exportChallenge() {
   download(`${state.reference.galaxy_id.toLowerCase()}-alternative-comparison.csv`, 'text/csv;charset=utf-8', [header, ...values].map(row => row.join(',')).join('\n'));
 }
 
+function selectedCluster() {
+  return state.lensing.catalog?.systems.find(system => system.id === state.lensing.selectedId) || null;
+}
+
+function activeClusterLayers() {
+  return new Set([...document.querySelectorAll('input[name="clusterLayer"]:checked')].map(input => input.value));
+}
+
+function selectCluster(clusterId) {
+  const cluster = state.lensing.catalog.systems.find(system => system.id === clusterId);
+  if (!cluster) return;
+  state.lensing.selectedId = cluster.id;
+  state.lensing.sourceRedshift = cluster.source_redshift;
+  state.lensing.velocityDispersion = cluster.velocity_dispersion_kms;
+  $('sourceRedshift').min = Math.min(2.9, cluster.redshift + 0.05).toFixed(2);
+  $('sourceRedshift').value = cluster.source_redshift;
+  $('clusterDispersion').value = cluster.velocity_dispersion_kms;
+  $('sourceRedshiftOutput').textContent = formatNumber(cluster.source_redshift, 2);
+  $('clusterDispersionOutput').textContent = `${formatNumber(cluster.velocity_dispersion_kms, 0)} km/s`;
+  renderLensing();
+}
+
+function drawClusterContours(context, point, width, height, index, showUncertainty) {
+  const x = point[0] * width;
+  const y = point[1] * height;
+  for (let ring = 1; ring <= 4; ring += 1) {
+    context.strokeStyle = `rgba(84, 184, 234, ${0.82 - ring * 0.13})`;
+    context.lineWidth = ring === 1 ? 2.5 : 1.4;
+    context.beginPath();
+    context.ellipse(x, y, 23 + ring * 22, 15 + ring * 14, index % 2 ? -0.2 : 0.18, 0, Math.PI * 2);
+    context.stroke();
+  }
+  context.fillStyle = '#9bdcf7';
+  context.font = '700 11px ui-monospace, monospace';
+  context.textAlign = 'center';
+  context.fillText(`M${index + 1}`, x, y + 4);
+  if (showUncertainty) {
+    context.setLineDash([5, 5]);
+    context.strokeStyle = '#f4f7fb';
+    context.lineWidth = 1;
+    context.beginPath(); context.arc(x, y, 16, 0, Math.PI * 2); context.stroke();
+    context.setLineDash([]);
+  }
+}
+
+function drawClusterMap() {
+  const cluster = selectedCluster();
+  if (!cluster) return;
+  const layers = activeClusterLayers();
+  const { context, width, height } = prepareCanvas($('clusterCanvas'));
+  const background = context.createLinearGradient(0, 0, width, height);
+  background.addColorStop(0, '#07111f');
+  background.addColorStop(1, '#13263a');
+  context.fillStyle = background;
+  context.fillRect(0, 0, width, height);
+  context.strokeStyle = 'rgba(173, 186, 200, 0.08)';
+  for (let x = 0; x < width; x += 44) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, height); context.stroke(); }
+  for (let y = 0; y < height; y += 44) { context.beginPath(); context.moveTo(0, y); context.lineTo(width, y); context.stroke(); }
+
+  if (layers.has('shear')) {
+    context.strokeStyle = 'rgba(244, 184, 96, 0.72)';
+    context.lineWidth = 1.4;
+    for (let index = 0; index < 54; index += 1) {
+      const x = 24 + ((index * 97) % Math.max(40, width - 48));
+      const y = 25 + ((index * 53) % Math.max(40, height - 50));
+      const nearest = cluster.mass_peaks.reduce((best, peak) => {
+        const distance = (x - peak[0] * width) ** 2 + (y - peak[1] * height) ** 2;
+        return distance < best.distance ? { peak, distance } : best;
+      }, { peak: cluster.mass_peaks[0], distance: Infinity }).peak;
+      const angle = Math.atan2(y - nearest[1] * height, x - nearest[0] * width) + Math.PI / 2;
+      context.beginPath();
+      context.moveTo(x - Math.cos(angle) * 5, y - Math.sin(angle) * 5);
+      context.lineTo(x + Math.cos(angle) * 5, y + Math.sin(angle) * 5);
+      context.stroke();
+    }
+  }
+
+  if (layers.has('gas')) {
+    for (const [index, point] of cluster.gas_peaks.entries()) {
+      const gradient = context.createRadialGradient(point[0] * width, point[1] * height, 2, point[0] * width, point[1] * height, 88);
+      gradient.addColorStop(0, 'rgba(244, 122, 96, 0.78)');
+      gradient.addColorStop(0.55, 'rgba(244, 184, 96, 0.32)');
+      gradient.addColorStop(1, 'rgba(244, 184, 96, 0)');
+      context.fillStyle = gradient;
+      context.beginPath();
+      context.ellipse(point[0] * width, point[1] * height, 96, 52, index ? 0.15 : -0.18, 0, Math.PI * 2);
+      context.fill();
+      context.fillStyle = '#ffd6a0'; context.font = '700 11px ui-monospace, monospace'; context.textAlign = 'center';
+      context.fillText(`X${index + 1}`, point[0] * width, point[1] * height + 4);
+    }
+  }
+
+  if (layers.has('galaxies')) {
+    for (const [peakIndex, point] of cluster.galaxy_peaks.entries()) {
+      for (let index = 0; index < 28; index += 1) {
+        const angle = index * 2.399 + peakIndex;
+        const radius = 7 + (index * 13) % 62;
+        const x = point[0] * width + Math.cos(angle) * radius;
+        const y = point[1] * height + Math.sin(angle) * radius * 0.62;
+        context.fillStyle = index % 3 ? '#f4f7fb' : '#f4b860';
+        context.beginPath(); context.arc(x, y, index % 5 === 0 ? 2.8 : 1.7, 0, Math.PI * 2); context.fill();
+      }
+      context.strokeStyle = '#f4f7fb'; context.lineWidth = 1.3;
+      const x = point[0] * width; const y = point[1] * height;
+      context.beginPath(); context.moveTo(x - 8, y); context.lineTo(x + 8, y); context.moveTo(x, y - 8); context.lineTo(x, y + 8); context.stroke();
+    }
+  }
+
+  if (layers.has('mass')) cluster.mass_peaks.forEach((point, index) => drawClusterContours(context, point, width, height, index, layers.has('uncertainty')));
+
+  context.fillStyle = 'rgba(7, 17, 31, 0.88)';
+  context.fillRect(12, 12, Math.min(width - 24, 330), 34);
+  context.fillStyle = '#f4f7fb'; context.font = '12px ui-monospace, monospace'; context.textAlign = 'left';
+  context.fillText(`${cluster.name} · layer reconstruction`, 24, 33);
+}
+
+function renderClusterRows() {
+  const selected = selectedCluster();
+  $('clusterRows').innerHTML = state.lensing.catalog.systems.map(system => {
+    const sourceRedshift = system.id === selected.id ? state.lensing.sourceRedshift : system.source_redshift;
+    const dispersion = system.id === selected.id ? state.lensing.velocityDispersion : system.velocity_dispersion_kms;
+    const scale = LensingPhysics.angularScaleKpcPerArcsec(system.redshift);
+    const critical = LensingPhysics.criticalSurfaceDensity(system.redshift, sourceRedshift);
+    const einstein = LensingPhysics.einsteinRadiusArcsec(dispersion, system.redshift, sourceRedshift);
+    const status = system.id === 'abell-520' ? 'Systematics stress case' : 'Independent collision case';
+    return `<tr><th scope="row">${system.name}</th><td>${formatNumber(system.redshift, 3)}</td><td>${formatNumber(sourceRedshift, 2)}</td><td>${formatNumber(scale, 2)}</td><td>${formatNumber(critical, 0)}</td><td>${formatNumber(einstein, 1)}</td><td>${status}</td></tr>`;
+  }).join('');
+}
+
+function renderLensing() {
+  const cluster = selectedCluster();
+  if (!cluster) return;
+  const critical = LensingPhysics.criticalSurfaceDensity(cluster.redshift, state.lensing.sourceRedshift);
+  const einstein = LensingPhysics.einsteinRadiusArcsec(state.lensing.velocityDispersion, cluster.redshift, state.lensing.sourceRedshift);
+  const scale = LensingPhysics.angularScaleKpcPerArcsec(cluster.redshift);
+  const layers = activeClusterLayers();
+  $('clusterCanvasTitle').textContent = cluster.name;
+  $('lensingMetrics').innerHTML = [
+    ['Lens redshift', formatNumber(cluster.redshift, 3), 'catalogued system'],
+    ['Angular scale', `${formatNumber(scale, 2)} kpc/″`, 'flat ΛCDM'],
+    ['Critical surface density', `${formatNumber(critical, 0)} M☉/pc²`, `sources at z=${formatNumber(state.lensing.sourceRedshift, 2)}`],
+    ['SIS Einstein radius', `${formatNumber(einstein, 1)}″`, `σv=${formatNumber(state.lensing.velocityDispersion, 0)} km/s`]
+  ].map(([label, value, note]) => `<div><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+  $('clusterFinding').innerHTML = `<strong>Published finding:</strong> ${cluster.finding}`;
+  $('clusterCaution').innerHTML = `<strong>Interpretive limit:</strong> ${cluster.caution}`;
+  $('clusterPaper').href = cluster.reference_url;
+  $('clusterPaper').textContent = cluster.primary_reference;
+  $('clusterObservatory').href = cluster.observatory_url;
+  $('clusterCanvasSummary').textContent = `${cluster.name} schematic with ${layers.has('galaxies') ? 'optical galaxy positions, ' : ''}${layers.has('gas') ? 'X-ray gas proxies, ' : ''}${layers.has('mass') ? 'lensing-derived total-mass contours, ' : ''}${layers.has('shear') ? 'and background-galaxy shear ticks' : ''}. The normalized centroids explain the published separation qualitatively and are not fitted image coordinates.`;
+  drawClusterMap();
+  renderClusterRows();
+}
+
 function median(values) {
   if (!values.length) return NaN;
   const sorted = [...values].sort((a, b) => a - b);
@@ -1068,6 +1237,18 @@ $('challengeMl').addEventListener('input', event => {
   $('challengeMlOutput').textContent = `${formatNumber(event.currentTarget.value, 2)} M☉/L☉`;
   renderChallenge();
 });
+$('clusterSelect').addEventListener('change', event => selectCluster(event.currentTarget.value));
+$('sourceRedshift').addEventListener('input', event => {
+  state.lensing.sourceRedshift = Number(event.currentTarget.value);
+  $('sourceRedshiftOutput').textContent = formatNumber(state.lensing.sourceRedshift, 2);
+  renderLensing();
+});
+$('clusterDispersion').addEventListener('input', event => {
+  state.lensing.velocityDispersion = Number(event.currentTarget.value);
+  $('clusterDispersionOutput').textContent = `${formatNumber(state.lensing.velocityDispersion, 0)} km/s`;
+  renderLensing();
+});
+for (const layer of document.querySelectorAll('input[name="clusterLayer"]')) layer.addEventListener('change', renderLensing);
 for (const control of [$('populationSearch'), $('qualityFilter'), $('populationClass')]) {
   control.addEventListener(control.tagName === 'INPUT' ? 'input' : 'change', renderPopulation);
 }
@@ -1092,7 +1273,7 @@ for (const canvas of [$('btfrCanvas'), $('rarCanvas')]) {
 
 buildControls();
 drawPosterior();
-loadCatalog()
+Promise.all([loadCatalog(), loadClusterCatalog()])
   .then(() => runModel())
   .catch(error => {
     $('workerStatus').textContent = 'Reference data unavailable';
@@ -1103,5 +1284,6 @@ const resizeObserver = new ResizeObserver(() => {
   if (state.result) renderAll();
   drawPosterior();
   if (state.catalog) renderPopulation();
+  if (state.lensing.catalog) drawClusterMap();
 });
 for (const canvas of document.querySelectorAll('canvas')) resizeObserver.observe(canvas);
