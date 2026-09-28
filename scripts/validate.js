@@ -88,6 +88,48 @@ if (failures.length === 0) {
   }
 
   const readme = fs.readFileSync('README.md', 'utf8');
+  if (/^\$/m.test(readme)) failures.push('README contains a lone display-math dollar delimiter; use $ on its own line');
+  if (/\\\(|\\\)/.test(readme)) failures.push('README contains unsupported \\( ... \\) inline math delimiters; use $...
+  for (const citation of reference.requiredCitations || []) {
+    const family = citation.split(',')[0];
+    if (!readme.includes(family)) failures.push(`README is missing citation family ${family}`);
+  }
+  for (const requiredPhrase of ['weighted likelihood', 'pseudo-isothermal', 'NFW', 'Burkert', 'inclination']) {
+    if (!readme.toLowerCase().includes(requiredPhrase.toLowerCase())) failures.push(`README is missing scientific contract: ${requiredPhrase}`);
+  }
+
+  const html = fs.readFileSync('index.html', 'utf8');
+  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'id="populationSearch"', 'id="btfrCanvas"', 'id="rarCanvas"', 'id="challengeRelation"', 'id="challengeCurveCanvas"', 'id="challengeResidualCanvas"', 'id="challengeRows"', 'id="clusterSelect"', 'id="clusterCanvas"', 'id="clusterRows"', 'Schematic, not a dark-matter photograph', 'id="cosmologyCanvas"', 'id="baoCanvas"', 'id="candidateFamily"', 'id="candidateGrid"', 'id="experimentRows"', 'id="futureMethodBand"', 'id="dimension-question"', 'id="engine-title"', 'id="scaleRange"', 'id="futureMetrics"', 'id="frontierGrid"', 'id="futureTimelineRows"', 'id="modeEducator"', 'id="modeResearch"', 'id="evidenceGraph"', 'id="evidenceRelations"', 'id="copyAnalysisLink"', 'id="exportWorkspace"', 'aria-label="Evidence laboratory sections"', 'id="priorForm"', 'id="posteriorRows"', 'id="predictiveRows"', 'id="exportPredictive"', 'id="themeToggle"', 'cosmic-budget.html', 'prefers-reduced-motion', '@media print']) {
+    const source = ['prefers-reduced-motion', '@media print'].includes(pattern) ? fs.readFileSync('styles.css', 'utf8') : html;
+    if (!source.includes(pattern)) failures.push(`accessibility contract missing: ${pattern}`);
+  }
+  const application = fs.readFileSync('app.js', 'utf8');
+  const budgetPage = fs.readFileSync('cosmic-budget.html', 'utf8');
+  if (!budgetPage.includes('id="sources"')) failures.push('cosmic-budget source anchor is missing');
+  if (!budgetPage.includes('Planck Collaboration VI')) failures.push('cosmic-budget primary Planck citation is missing');
+  if (!fs.readFileSync('themeController.js', 'utf8').includes('themeToggle')) failures.push('standalone theme controller is missing toggle binding');
+  const worker = fs.readFileSync('physicsWorker.js', 'utf8');
+  const version = packageMetadata.version;
+  for (const asset of [`styles.css?v=${version}`, `app.js?v=${version}`]) {
+    if (!html.includes(asset)) failures.push(`HTML asset version is not pinned: ${asset}`);
+  }
+  if (!application.includes(`const BUILD_VERSION = '${version}'`)) failures.push('application build version does not match package version');
+  if (!worker.includes(`rotationPhysics.js?v=${version}`)) failures.push('worker physics asset version does not match package version');
+
+  const combined = required.map(file => fs.readFileSync(file, 'utf8')).join('\n');
+  const banned = ['TO' + 'DO', 'insert ' + 'logic', 'coming ' + 'soon', 'solar_residual_kms', 'Milky-Way-like anchors'];
+  for (const token of banned) {
+    if (combined.toLowerCase().includes(token.toLowerCase())) failures.push(`unfinished or stale token: ${token}`);
+  }
+}
+
+if (failures.length) {
+  console.error(failures.join('\n'));
+  process.exit(1);
+}
+
+console.log('Dark Matter Evidence Lab: schema, provenance, citation and accessibility contracts passed.');
+);
   for (const citation of reference.requiredCitations || []) {
     const family = citation.split(',')[0];
     if (!readme.includes(family)) failures.push(`README is missing citation family ${family}`);
