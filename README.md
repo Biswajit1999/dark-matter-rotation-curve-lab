@@ -122,6 +122,14 @@ M_{\rm bar}=0.5\,L_{3.6}+1.33\,M_{\rm HI}.
 
 SPARC is broad but is **not a volume-limited statistically complete survey**, so the active selection is always part of the interpretation.
 
+![SPARC baryonic Tully-Fisher plane](docs/figures/btfr.svg)
+
+**Population figure — BTFR.** The plotted subset contains the 135 catalogue galaxies with a positive published flat velocity. The displayed OLS line is descriptive rather than a selection-corrected population likelihood.
+
+![SPARC radial-acceleration plane](docs/figures/rar.svg)
+
+**Population figure — radial acceleration.** The 3,389 resolved points use the documented stellar mass-to-light assumptions. The Newtonian equality line is a reference, not a claim that departures uniquely identify one physical mechanism.
+
 ## Challenge the model
 
 The project does not hard-code "dark matter wins" into the interface. A selected galaxy can be compared against baryons-only behaviour, the selected halo family and phenomenological acceleration mappings. It shows assumptions, residuals and fit diagnostics rather than declaring a winner.
