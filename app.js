@@ -2,6 +2,9 @@
 
 const BUILD_VERSION = '3.0.0-beta.4';
 const INITIAL_QUERY = new URLSearchParams(window.location.search);
+const STORED_VIEW = (() => {
+  try { return localStorage.getItem('dm-view'); } catch (_) { return null; }
+})();
 
 function queryNumber(name, fallback, minimum = -Infinity, maximum = Infinity) {
   const raw = Number(INITIAL_QUERY.get(name));
@@ -31,7 +34,7 @@ const METRIC_LABELS = {
 };
 
 const state = {
-  mode: INITIAL_QUERY.get('mode') === 'educator' ? 'educator' : 'research',
+  mode: INITIAL_QUERY.get('mode') === 'educator' || (!INITIAL_QUERY.get('mode') && STORED_VIEW === 'guide') ? 'educator' : 'research',
   requestedGalaxy: INITIAL_QUERY.get('galaxy') || 'NGC3198',
   catalog: null,
   reference: null,
@@ -1358,7 +1361,27 @@ function renderCandidates() {
   if (!state.cosmology.atlas) return;
   const family = $('candidateFamily').value;
   const candidates = state.cosmology.atlas.candidates.filter(candidate => family === 'all' || candidate.family === family);
-  $('candidateGrid').innerHTML = candidates.map(candidate => `<article><div><span class="candidate-family">${candidate.family}</span><h3>${candidate.name}</h3></div><dl><div><dt>Mass scale</dt><dd>${candidate.mass_scale}</dd></div><div><dt>Production</dt><dd>${candidate.production}</dd></div><div><dt>Observable</dt><dd>${candidate.signatures}</dd></div></dl><p><strong>Status:</strong> ${candidate.status}</p><p class="candidate-methods">${candidate.methods.map(method => `<span>${method}</span>`).join('')}</p><a href="${candidate.source}" target="_blank" rel="noopener noreferrer">Primary/review source</a></article>`).join('');
+  const why = {
+    wimp: 'Tests whether a weak-scale relic can produce repeatable recoil or collider signatures.',
+    'qcd-axion': 'Connects a solution to the strong-CP problem with a dark-matter field that can coherently convert to photons.',
+    alp: 'Extends axion-like field searches across a much wider mass–coupling landscape.',
+    'sterile-neutrino': 'Links X-ray spectroscopy and structure growth to a warm-relic hypothesis.',
+    sidm: 'Asks whether the dark sector can scatter with itself strongly enough to reshape haloes.',
+    fuzzy: 'Tests whether wave mechanics can become astrophysically visible on kiloparsec scales.',
+    pbh: 'Tests whether compact objects formed in the early universe could supply some dark matter.',
+    'hidden-sector': 'Searches for portals between ordinary particles and otherwise secluded dark states.'
+  };
+  $('candidateGrid').innerHTML = candidates.map(candidate => `<article class="candidate-card candidate-${candidate.id}">
+    <div class="candidate-visual" aria-hidden="true"><span></span><i></i><b></b></div>
+    <div class="candidate-card-body">
+      <div class="candidate-title-row"><span class="candidate-family">${candidate.family}</span><h3>${candidate.name}</h3></div>
+      <p class="candidate-why">${why[candidate.id] || 'A distinct hypothesis with its own observable and instrumental requirements.'}</p>
+      <dl><div><dt>Mass</dt><dd>${candidate.mass_scale}</dd></div><div><dt>Production</dt><dd>${candidate.production}</dd></div><div><dt>Observable</dt><dd>${candidate.signatures}</dd></div></dl>
+      <p class="candidate-status"><strong>Status:</strong> ${candidate.status}</p>
+      <p class="candidate-methods">${candidate.methods.map(method => `<span>${method}</span>`).join('')}</p>
+      <a href="${candidate.source}" target="_blank" rel="noopener noreferrer">Primary / review source →</a>
+    </div>
+  </article>`).join('');
   $('experimentRows').innerHTML = state.cosmology.atlas.experiments.map(experiment => `<tr><th scope="row">${experiment.name}</th><td>${experiment.channel}</td><td>${experiment.target}</td><td><span class="certainty-tag certainty-${experiment.classification || 'active'}">${experiment.classification || 'active'}</span></td><td>${experiment.result || experiment.status}</td><td>${experiment.updated || state.cosmology.atlas.status_as_of}</td><td><a href="${experiment.source}" target="_blank" rel="noopener noreferrer">Source</a></td></tr>`).join('');
 }
 
@@ -1428,7 +1451,7 @@ function renderFutures() {
     : '<strong>Conditional scenario:</strong> this toy column interacts appreciably. That does not establish a real material, confinement scheme, reaction channel or engine.';
   $('engineSummary').textContent = `The engine thought experiment encounters ${engine.encounteredMassRateKgS.toExponential(2)} kilograms per second geometrically, but the toy interaction probability is ${engine.interactionProbability.toExponential(2)}. The resulting thrust is ${engine.thrustN.toExponential(2)} newtons. The rest-mass power figure is an upper-bound calculation contingent on capture and conversion physics that is not known to exist.`;
 
-  $('frontierGrid').innerHTML = state.futures.data.frontiers.map(item => `<article><h3>${item.name}</h3><dl><div><dt>Known</dt><dd>${item.known}</dd></div><div><dt>Unknown</dt><dd>${item.unknown}</dd></div><div><dt>Decisive test</dt><dd>${item.decisive}</dd></div></dl></article>`).join('');
+  $('frontierGrid').innerHTML = state.futures.data.frontiers.map((item,index) => `<details class="frontier-card" ${index === 0 ? 'open' : ''}><summary><span>${String(index + 1).padStart(2,'0')}</span><strong>${item.name}</strong><small>${item.instrument || 'multi-instrument test'}</small></summary><div class="frontier-body"><div><b>Signal</b><p>${item.known}</p></div><div><b>Unknown</b><p>${item.unknown}</p></div><div><b>Decisive test</b><p>${item.decisive}</p></div><div><b>Instrument path</b><p>${item.instrument || 'Independent instruments and cross-calibrated analysis.'}</p></div><div><b>Risk / caveat</b><p>${item.risk || 'A background or astrophysical degeneracy could imitate the signal.'}</p></div></div></details>`).join('');
   $('futureTimelineRows').innerHTML = state.futures.data.timeline.map(item => `<tr><th scope="row">${item.horizon}</th><td>${item.capability}</td><td>${item.gate}</td><td><span class="certainty-tag certainty-${item.certainty}">${item.certainty}</span></td></tr>`).join('');
 }
 
@@ -1499,14 +1522,20 @@ function setStoryStage(stage, scrollToPanel = false) {
 
 function applyMode(mode, updateUrl = true) {
   state.mode = mode === 'educator' ? 'educator' : 'research';
-  document.body.classList.toggle('mode-educator', state.mode === 'educator');
-  document.body.classList.toggle('mode-research', state.mode === 'research');
-  $('modeEducator').setAttribute('aria-pressed', String(state.mode === 'educator'));
-  $('modeResearch').setAttribute('aria-pressed', String(state.mode === 'research'));
-  $('modeStatus').textContent = state.mode === 'educator'
-    ? 'Educator mode active. Core evidence remains visible; advanced audit tables are hidden.'
-    : 'Research mode active. Full audit tables and reproducibility controls are visible.';
-  if (state.mode === 'educator') document.querySelectorAll('details').forEach(detail => { detail.open = false; });
+  const guide = state.mode === 'educator';
+  document.documentElement.dataset.view = guide ? 'guide' : 'lab';
+  document.body.classList.toggle('mode-educator', guide);
+  document.body.classList.toggle('mode-research', !guide);
+  $('modeEducator').setAttribute('aria-pressed', String(guide));
+  $('modeResearch').setAttribute('aria-pressed', String(!guide));
+  $('modeStatus').textContent = guide
+    ? 'Guide mode active. Narrative evidence and interpretation are prioritised; specialist controls are folded away.'
+    : 'Lab mode active. Quantitative controls, residuals, diagnostics and audit tables are available.';
+  try { localStorage.setItem('dm-view', guide ? 'guide' : 'lab'); } catch (_) {}
+  if (guide) {
+    document.querySelectorAll('details').forEach(detail => { detail.open = false; });
+    document.querySelector('.home-basics')?.scrollIntoView({ block: 'nearest' });
+  }
   if (updateUrl) syncUrlState();
 }
 
