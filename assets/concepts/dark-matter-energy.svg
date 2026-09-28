@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
+<title id="t">Dark-matter energy upper-bound concept</title><desc id="d">Particle stream enters a large collector and passes through an interaction bottleneck before an energy gauge, illustrating why ambient abundance is not automatically usable power.</desc>
+<rect width="1200" height="720" fill="#171411"/>
+<g stroke="#e7aa40" stroke-width="4" opacity=".85">
+<path d="M72 170h330"/><path d="M72 250h360"/><path d="M72 330h300"/><path d="M72 410h350"/>
+</g>
+<g fill="#e7aa40"><circle cx="126" cy="170" r="8"/><circle cx="258" cy="250" r="8"/><circle cx="178" cy="330" r="8"/><circle cx="320" cy="410" r="8"/></g>
+<path d="M450 135v350" stroke="#f6efe5" stroke-width="24"/>
+<path d="M478 135v350" stroke="#d55d3b" stroke-width="8"/>
+<path d="M520 310h150" stroke="#7a5db0" stroke-width="7" stroke-dasharray="10 10"/>
+<circle cx="705" cy="310" r="74" fill="#24201b" stroke="#7a5db0" stroke-width="6"/>
+<path d="M705 310l38-30" stroke="#e7aa40" stroke-width="8" stroke-linecap="round"/>
+<path d="M820 310h260" stroke="#d55d3b" stroke-width="9" opacity=".32"/>
+<text x="72" y="84" fill="#f6efe5" font-family="system-ui,sans-serif" font-size="34" font-weight="700">Energy is an interaction problem</text>
+<text x="397" y="538" fill="#f6efe5" font-family="system-ui,sans-serif" font-size="18">collector</text>
+<text x="594" y="430" fill="#b9afa4" font-family="system-ui,sans-serif" font-size="18">interaction bottleneck</text>
+<text x="72" y="608" fill="#f6efe5" font-family="system-ui,sans-serif" font-size="24">Mass flux sets an upper ceiling; coupling, capture and conversion determine what is usable.</text>
+<text x="72" y="650" fill="#b9afa4" font-family="system-ui,sans-serif" font-size="18">The project calculator deliberately shows when the practical power collapses toward zero.</text>
+</svg>

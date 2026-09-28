@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Follow the evidence for unseen gravitation through 175 SPARC galaxies, lensing, cosmology, particle searches and physics-constrained futures.">
-  <meta name="theme-color" content="#07100f">
+  <meta name="theme-color" content="#f4efe6">
   <meta name="author" content="Biswajit Jana">
   <meta property="og:title" content="Dark Matter Evidence Lab">
   <meta property="og:description" content="An open computational investigation of the observations, equations and experiments behind the dark-matter problem.">
@@ -35,7 +35,13 @@
   </header>
 
   <nav class="section-nav" aria-label="Evidence laboratory sections">
-    <a href="#dark-universe-title">Start</a><a href="#workbench-title">Galaxies</a><a href="#inference-title">Inference</a><a href="#population-title">Populations</a><a href="#challenge-title">Alternatives</a><a href="#lensing-title">Lensing</a><a href="#cosmology-title">Cosmology</a><a href="#futures-title">Futures</a><a href="#evidence-graph-title">Methods</a>
+    <a href="#opening-title">Question</a>
+    <a href="#dark-universe-title">What is it?</a>
+    <a href="#workbench-title">Galaxy evidence</a>
+    <a href="#lensing-title">Across scales</a>
+    <a href="#cosmology-title">Particle & cosmos</a>
+    <a href="#futures-title">Applications</a>
+    <a href="#evidence-graph-title">Open questions</a>
   </nav>
 
   <main id="main-content" class="shell" tabindex="-1">
@@ -238,7 +244,9 @@
           <p id="haloHelp" class="field-help">Cored profile with an asymptotically flat halo contribution.</p>
         </div>
 
-        <div id="controls"></div>
+        <details class="advanced-controls">
+          <summary>Tune the live model <span>sliders update the graph instantly</span></summary>
+          <div id="controls"></div>
 
         <fieldset class="nuisance-controls">
           <legend>Nuisance-parameter experiment</legend>
@@ -258,6 +266,7 @@
           <button id="reset" class="secondary-button" type="button">Reset parameters</button>
         </div>
         <p class="method-note">The fit minimises χ² using published random velocity uncertainties. Distance and inclination systematics are not yet marginalised.</p>
+        </details>
       </aside>
 
       <section class="panel curve-panel" aria-labelledby="curve-title">
@@ -613,6 +622,8 @@
             <input id="cosmicEpoch" type="range" min="-6" max="0" step="0.02" value="0">
             <div class="range-bounds" aria-hidden="true"><span>early radiation era</span><span>today</span></div>
           </div>
+          <details class="advanced-controls cosmology-advanced">
+            <summary>Advanced cosmology parameters <span>Ω, w₀–wₐ, H₀ and BAO redshift</span></summary>
           <div class="range-field">
             <div class="range-label"><label for="cosmicBaryons">Ωb today</label><output id="cosmicBaryonsOutput" for="cosmicBaryons">0.049</output></div>
             <input id="cosmicBaryons" type="range" min="0.01" max="0.15" step="0.001" value="0.0493">
@@ -639,6 +650,7 @@
           </div>
           <button id="resetCosmology" class="secondary-button" type="button">Restore Planck-like reference</button>
           <p class="method-note">This explorer preserves spatial flatness at the present epoch and uses the CPL form w(a)=w₀+wₐ(1−a). It calculates background expansion and distance response only; it does not compute CMB spectra, run a Boltzmann solver, or evaluate Planck/DESI likelihoods.</p>
+          </details>
         </form>
         <div class="cosmology-figures">
           <div class="cosmology-chart-card">
@@ -829,6 +841,37 @@
         </div>
         <article id="scaleMilestone" aria-live="polite"><span class="epistemic-label">Galactic halo</span><h3>Which density profile and phase-space distribution fit multiple tracers?</h3><p>Dynamics, streams, microlensing and lensing</p></article>
       </div>
+      <section class="application-story" aria-labelledby="application-story-title">
+        <div class="application-story-heading">
+          <div>
+            <span class="chapter-number">06</span>
+            <p class="kicker">If the microscopic physics became controllable</p>
+            <h3 id="application-story-title">What could humanity actually try to build?</h3>
+          </div>
+          <p>These are conditional engineering studies, not predictions. Each visual starts from an explicit physics gate that current evidence has not yet crossed.</p>
+        </div>
+        <div class="application-visual-grid">
+          <article>
+            <img src="assets/concepts/dark-matter-sensing.svg" alt="Directional dark-matter sensing concept showing a detector and inferred incoming stream." loading="lazy">
+            <div><span class="certainty-tag certainty-conditional">first plausible application</span><h4>Directional sensing</h4><p>Use a reproducible interaction to map local phase space, streams or substructure in a channel independent of ordinary light.</p></div>
+          </article>
+          <article>
+            <img src="assets/concepts/dark-matter-communication.svg" alt="Hypothetical communication concept showing a weakly interacting channel passing through a planet." loading="lazy">
+            <div><span class="certainty-tag certainty-speculative">conditional</span><h4>Through-obstacle communication</h4><p>Penetrating matter is useful only if a dark-sector state can also be produced, modulated and detected with a realistic link budget.</p></div>
+          </article>
+          <article>
+            <img src="assets/concepts/dark-matter-energy.svg" alt="Energy upper-bound concept showing an ambient stream, collector and interaction bottleneck." loading="lazy">
+            <div><span class="certainty-tag certainty-speculative">upper bound</span><h4>Energy extraction</h4><p>Ambient mass flux is not usable power by itself. Interaction, capture and conversion efficiency dominate the practical result.</p></div>
+          </article>
+          <article>
+            <img src="assets/concepts/dark-matter-propulsion.svg" alt="Propulsion feasibility concept showing a spacecraft collector, incoming stream and thrust direction." loading="lazy">
+            <div><span class="certainty-tag certainty-speculative">physics gate</span><h4>Propulsion</h4><p>An engine must close the momentum ledger. No reactionless propulsion follows from current dark-matter evidence.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <details class="advanced-lab-block">
+        <summary>Open the quantitative futures lab <span>encounter rate · capture · energy · momentum</span></summary>
       <div class="future-calculator">
         <form id="futureForm" class="future-controls">
           <h3>Encounter-rate sandbox</h3>
@@ -896,6 +939,7 @@
           </div>
         </div>
       </section>
+      </details>
 
       <div class="frontier-heading"><p class="kicker">Research Frontier</p><h3>What is known, unknown and decisive</h3></div>
       <div id="frontierGrid" class="frontier-grid"></div>

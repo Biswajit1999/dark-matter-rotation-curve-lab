@@ -1790,3 +1790,304 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
   .ledger-key-item { padding-block: 12px; }
   .ledger-note { align-items: flex-start; flex-direction: column; }
 }
+
+
+/* Editorial redesign branch — warm, section-led, progressive disclosure. */
+:root {
+  color-scheme: light;
+  --background: #f4efe6;
+  --surface: #fffdf8;
+  --surface-raised: #eee6db;
+  --surface-soft: #e4d9ca;
+  --border: #d7cbbb;
+  --border-strong: #aa9c89;
+  --text: #1a1714;
+  --text-muted: #6d645b;
+  --accent: #d45f3b;
+  --accent-strong: #a94125;
+  --warm: #e4a33a;
+  --violet: #7a5db0;
+  --danger: #b43d35;
+  --focus: #6b55a2;
+  --display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --shadow: 0 14px 36px rgba(48, 37, 24, 0.08);
+}
+
+html { background: var(--background); }
+body {
+  background:
+    radial-gradient(circle at 84% 2%, rgba(212,95,59,.09), transparent 32rem),
+    linear-gradient(180deg, #f7f2e9 0%, #f4efe6 54%, #efe8dd 100%);
+  color: var(--text);
+}
+
+a { color: var(--accent-strong); }
+a:hover { color: var(--accent); }
+
+.topbar {
+  min-height: 88px;
+  border-bottom: 1px solid rgba(26,23,20,.12);
+  background: rgba(247,242,233,.92);
+  backdrop-filter: blur(18px);
+}
+.eyebrow,.kicker { color: var(--accent); }
+.subtitle,.status-card { color: var(--text-muted); }
+.status-card strong { color: var(--accent-strong); }
+
+.mode-switch { border-color: var(--border); background: var(--surface); }
+.mode-switch button { background: var(--surface); color: var(--text-muted); }
+.mode-switch button[aria-pressed="true"] { background: var(--text); color: #fffaf1; }
+
+.section-nav {
+  top: 0;
+  justify-content: center;
+  gap: 18px;
+  padding-block: 10px;
+  border-bottom: 1px solid rgba(26,23,20,.1);
+  background: rgba(247,242,233,.94);
+  backdrop-filter: blur(20px);
+}
+.section-nav a {
+  border-radius: 999px;
+  padding: 7px 11px;
+  color: var(--text-muted);
+  font-size: .7rem;
+  letter-spacing: .02em;
+}
+.section-nav a:hover,.section-nav a:focus-visible { background: #e8ded0; color: var(--text); }
+
+.shell { width: min(1500px,100%); padding-inline: clamp(18px,4vw,64px); }
+
+.opening-sequence {
+  min-height: 82vh;
+  margin-inline: calc(clamp(18px,4vw,64px) * -1);
+  padding: clamp(86px,12vw,170px) clamp(24px,7vw,118px);
+  background:
+    radial-gradient(circle at 77% 34%, rgba(228,163,58,.22), transparent 20rem),
+    #171411;
+  color: #f7f2e9;
+}
+.hero-statement { max-width: 11ch; font-size: clamp(4.2rem,8.2vw,8.8rem); line-height: .93; }
+.hero-statement span:first-child { color: #f7f2e9; }
+.hero-statement span:last-child { color: #e4a33a; }
+.hero-deck { max-width: 690px; color: #c7beb3; font-size: clamp(1rem,1.4vw,1.2rem); }
+.hero-thesis { border-left: 1px solid rgba(247,242,233,.22); }
+.hero-thesis p { color: #c7beb3; }
+.hero-index { color: #e4a33a; }
+.opening-sequence .primary-button { background: #f7f2e9; border-color: #f7f2e9; color: #171411; }
+.opening-sequence .text-action { color: #f7f2e9; }
+
+.dark-universe,
+.measurement-bridge,
+.observation-panel,
+.inference-section,
+.population-section,
+.challenge-section,
+.lensing-section,
+.cosmology-section,
+.futures-section,
+.evidence-graph-section,
+.roadmap-section {
+  margin: clamp(90px,11vw,160px) 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.editorial-heading,
+.section-heading,
+.workbench-heading {
+  align-items: end;
+  padding: 0 0 32px;
+  border-bottom: 1px solid var(--border);
+}
+.editorial-heading h2,
+.section-heading h2,
+.workbench-heading h2 {
+  max-width: 16ch;
+  font-family: var(--display);
+  font-size: clamp(2.4rem,5vw,5.2rem);
+  font-weight: 500;
+  line-height: .98;
+  letter-spacing: -.045em;
+}
+.section-heading > p,.workbench-heading > p,.editorial-heading > p:last-child {
+  max-width: 52ch;
+  color: var(--text-muted);
+  font-size: .9rem;
+  line-height: 1.65;
+}
+
+.evidence-strip {
+  border: 0;
+  border-block: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.evidence-strip > div { border-color: var(--border); }
+
+.panel,
+.cosmology-controls,
+.challenge-controls,
+.prior-panel,
+.posterior-panel,
+.lensing-controls,
+.future-controls,
+.evidence-detail {
+  background: var(--surface);
+}
+.panel { border-color: var(--border); box-shadow: none; }
+
+button,select,input[type="search"] {
+  border-color: var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+}
+button:hover { border-color: var(--accent); background: #f2e6da; }
+button:active { background: #ead9c9; }
+.primary-button { border-color: var(--accent); background: var(--accent); color: #fff9f2; }
+.primary-button:hover { background: #b94b2d; color: #fff; }
+.secondary-button { color: var(--text-muted); }
+
+input[type="range"] { accent-color: var(--accent); }
+.range-label output { color: var(--accent-strong); }
+
+.chart-frame,
+.challenge-charts article,
+.population-chart-card,
+.posterior-chart,
+.lensing-visual,
+.cosmology-chart-card {
+  background: #191512 !important;
+}
+
+.metric,.posterior-metric,.challenge-metric,.population-metric {
+  border-color: var(--border);
+  background: #fbf7f0;
+}
+.metric strong,.posterior-metric strong,.challenge-metric strong,.population-metric strong { color: var(--accent-strong); }
+
+.advanced-controls,
+.advanced-lab-block {
+  margin: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fbf7f0;
+  overflow: hidden;
+}
+.advanced-controls > summary,
+.advanced-lab-block > summary {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  background: #fbf7f0;
+  color: var(--text);
+  font-size: .82rem;
+}
+.advanced-controls > summary span,
+.advanced-lab-block > summary span {
+  color: var(--text-muted);
+  font: .68rem var(--mono);
+  font-weight: 500;
+}
+.advanced-controls[open] > summary,
+.advanced-lab-block[open] > summary { border-bottom: 1px solid var(--border); }
+.cosmology-advanced { margin: 4px 0 0; }
+
+.controls-panel > .field-group { margin-inline: 16px; }
+.controls-panel > .panel-heading { padding: 16px; }
+.controls-panel .advanced-controls #controls { padding-top: 8px; }
+
+.workspace-grid { gap: 16px; background: transparent; }
+.curve-panel,.residual-panel,.likelihood-panel,.metrics-panel,.controls-panel { border-radius: 16px; overflow: hidden; }
+.curve-panel { box-shadow: 0 16px 50px rgba(33,24,17,.12); }
+
+.application-story { margin: 68px 0 36px; }
+.application-story-heading {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(260px,.7fr);
+  gap: 48px;
+  align-items: end;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.application-story-heading h3 {
+  max-width: 13ch;
+  margin: 6px 0 0;
+  font: 500 clamp(2.2rem,4.5vw,4.6rem)/.98 var(--display);
+  letter-spacing: -.04em;
+}
+.application-story-heading > p { margin: 0; color: var(--text-muted); line-height: 1.65; }
+.application-visual-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 22px;
+  margin-top: 26px;
+}
+.application-visual-grid article {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: 0 12px 30px rgba(43,32,21,.07);
+}
+.application-visual-grid img { width: 100%; aspect-ratio: 5/3; object-fit: cover; display: block; background: #171411; }
+.application-visual-grid article > div { padding: 18px 20px 22px; }
+.application-visual-grid h4 { margin: 12px 0 8px; font: 600 1.3rem var(--display); }
+.application-visual-grid p { margin: 0; color: var(--text-muted); font-size: .82rem; line-height: 1.6; }
+
+.observation-grid { gap: 18px; background: transparent; }
+.observation-card { border: 1px solid var(--border); border-radius: 18px; overflow: hidden; box-shadow: 0 12px 30px rgba(43,32,21,.07); }
+.observation-card figcaption { background: linear-gradient(180deg, transparent, rgba(23,20,17,.92)); color: #fff; }
+
+.cosmic-ledger,.dark-comparison,.equation-band,.population-charts,.challenge-layout,.lensing-layout,.cosmology-layout,.future-calculator,.dimension-grid,.engine-layout,.evidence-graph-layout,.roadmap {
+  border-color: var(--border);
+  background: var(--border);
+}
+.ledger-key-item,.dark-comparison article,.cosmology-logic article,.dimension-grid article,.future-method-band article,.frontier-grid article,.roadmap li { background: var(--surface); }
+.ledger-key-item strong,.dark-comparison h3 { color: var(--text); }
+
+.ledger-radiation { background:#e8b94f; }
+.ledger-baryon { background:#eee8dc; }
+.ledger-dark-matter { background:#d45f3b; }
+.ledger-dark-energy { background:#7a5db0; }
+.ledger-key-radiation { color:#c8901e; }
+.ledger-key-baryon { color:#8e8375; }
+.ledger-key-dark-matter { color:#d45f3b; }
+.ledger-key-dark-energy { color:#7a5db0; }
+
+.epistemic-label { border-color: var(--accent); color: var(--accent-strong); }
+.certainty-active { color:#8f6d12; }
+.certainty-planned { color:#8f3c25; }
+.certainty-conditional { color:#7a5db0; }
+.certainty-speculative,.certainty-unknown { color:var(--text-muted); }
+
+.validity-panel { background:#f0e7dc; }
+.layer-fieldset label { color: var(--text); }
+th { background:#2a241f; color:#fff9f2; }
+tbody tr:nth-child(even) { background:rgba(26,23,20,.025); }
+tbody tr:hover { background:rgba(212,95,59,.08); }
+
+@media (min-width: 1100px) {
+  .curve-panel { position: sticky; top: 68px; align-self: start; }
+}
+@media (max-width: 900px) {
+  .section-nav { justify-content: flex-start; gap: 6px; }
+  .application-story-heading { grid-template-columns: 1fr; gap: 18px; }
+  .application-visual-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 800px) {
+  .shell { padding-inline: 12px; }
+  .opening-sequence { margin-inline:-12px; min-height:auto; padding:88px 18px 96px; }
+  .hero-statement { font-size:clamp(3.6rem,16vw,6rem); }
+  .editorial-heading,.section-heading,.workbench-heading { align-items:flex-start; flex-direction:column; gap:16px; }
+  .editorial-heading h2,.section-heading h2,.workbench-heading h2 { max-width:none; font-size:clamp(2.4rem,11vw,4.2rem); }
+  .application-visual-grid { grid-template-columns:1fr; }
+  .advanced-controls > summary,.advanced-lab-block > summary { align-items:flex-start; flex-direction:column; gap:4px; }
+}
