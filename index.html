@@ -11,7 +11,7 @@
   <meta property="og:type" content="website">
   <meta name="keywords" content="dark matter, astrophysics, cosmology, galaxy rotation curves, SPARC, gravitational lensing, Bullet Cluster, Bayesian inference, CMB, dark energy, open science">
   <title>Dark Matter Evidence Lab — From Light to Gravity</title>
-  <link rel="stylesheet" href="styles.css?v=3.0.0-beta.1">
+  <link rel="stylesheet" href="styles.css?v=3.0.0-beta.2">
 </head>
 <body class="mode-research">
   <a class="skip-link" href="#main-content">Skip to analysis</a>
@@ -723,7 +723,7 @@
           </div>
           <div class="model-check-note">
             <span class="epistemic-label">Model-dependent inference</span>
-            <p>The rotation plot gains a 68% posterior predictive interval after sampling. It combines uncertainty in the fitted parameters with the quoted SPARC random velocity errors. It does not include distance, inclination or correlated systematics. A posterior-predictive p-value near 0 or 1 can flag model mismatch; it is not the probability that a halo model is true.</p>
+            <p>The rotation plot gains a 68% posterior predictive interval after sampling. It combines fitted-parameter uncertainty with the quoted SPARC random velocity errors. The current distance and inclination sensitivity settings are held fixed rather than marginalised, and correlated systematics remain outside this browser model. A posterior-predictive p-value near 0 or 1 can flag mismatch; it is not the probability that a halo model is true.</p>
           </div>
         </div>
       </div>
@@ -819,7 +819,11 @@
       </details>
       <div class="publication-actions">
         <div><strong>Reproducible workspace state</strong><span>Export the current galaxy, halo, cluster, cosmology, future-sandbox and view-mode settings.</span></div>
-        <button id="exportWorkspace" class="primary-button" type="button">Export workspace JSON</button>
+        <div class="publication-button-group">
+          <button id="copyAnalysisLink" class="secondary-button" type="button">Copy analysis link</button>
+          <button id="exportWorkspace" class="primary-button" type="button">Export workspace JSON</button>
+          <span id="shareStatus" class="share-status" role="status" aria-live="polite"></span>
+        </div>
       </div>
     </section>
 
@@ -872,11 +876,11 @@
       <a href="https://orcid.org/0009-0002-2411-1891" target="_blank" rel="noopener noreferrer">ORCID</a>
     </nav>
   </footer>
-  <script src="rotationPhysics.js?v=3.0.0-beta.1"></script>
-  <script src="lensingPhysics.js?v=3.0.0-beta.1"></script>
-  <script src="cosmologyPhysics.js?v=3.0.0-beta.1"></script>
-  <script src="futuresPhysics.js?v=3.0.0-beta.1"></script>
-  <script src="app.js?v=3.0.0-beta.1"></script>
+  <script src="rotationPhysics.js?v=3.0.0-beta.2"></script>
+  <script src="lensingPhysics.js?v=3.0.0-beta.2"></script>
+  <script src="cosmologyPhysics.js?v=3.0.0-beta.2"></script>
+  <script src="futuresPhysics.js?v=3.0.0-beta.2"></script>
+  <script src="app.js?v=3.0.0-beta.2"></script>
   <script type="module" src="motionSystem.mjs"></script>
 </body>
 </html>
