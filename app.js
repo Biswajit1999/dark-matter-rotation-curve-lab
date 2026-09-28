@@ -1300,8 +1300,17 @@ function renderOpeningLedger(epoch = 'today') {
   ];
   for (const [valueKey, elementId, fraction] of entries) {
     const percentage = fraction * 100;
-    $(elementId).style.setProperty('--share', `${Math.max(percentage, 0.08)}%`);
-    $(`ledger${valueKey}Value`).textContent = percentage < 0.01 ? '<0.01%' : `${formatNumber(percentage, percentage < 1 ? 2 : 1)}%`;
+    const displayValue = percentage < 0.01 ? '<0.01%' : `${formatNumber(percentage, percentage < 1 ? 2 : 1)}%`;
+    const segment = $(elementId);
+
+    // Keep the visual width physically proportional. Tiny components must not
+    // acquire artificial width merely because their text needs room.
+    segment.style.setProperty('--share', `${Math.max(percentage, 0.015)}%`);
+    segment.dataset.labelState = percentage >= 10 ? 'full' : percentage >= 6 ? 'compact' : 'hidden';
+
+    $(`ledger${valueKey}Value`).textContent = displayValue;
+    const keyValue = $(`ledger${valueKey}KeyValue`);
+    if (keyValue) keyValue.textContent = displayValue;
   }
   document.querySelector('.cosmic-ledger').dataset.epoch = epoch;
   $('epochToday').setAttribute('aria-pressed', String(epoch === 'today'));
