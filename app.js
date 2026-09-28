@@ -1,6 +1,6 @@
 'use strict';
 
-const BUILD_VERSION = '2.0.0-beta.5';
+const BUILD_VERSION = '2.0.0-beta.6';
 
 const CONTROL_DEFINITIONS = [
   { key: 'massToLightDisk', label: 'Disc mass-to-light ratio', unit: 'M☉/L☉ at 3.6 μm', value: 0.5, min: 0.1, max: 1, step: 0.01 },
@@ -41,7 +41,12 @@ const state = {
   pendingFrame: null,
   population: { galaxies: [], highlightedGalaxyId: null, plotPoints: { btfrCanvas: [], rarCanvas: [] } },
   challenge: { relation: 'rar', accelerationScale: 1.2e-10, massToLightDisk: 0.5, rows: [] },
-  lensing: { catalog: null, selectedId: 'bullet', sourceRedshift: 1, velocityDispersion: 1150 }
+  lensing: { catalog: null, selectedId: 'bullet', sourceRedshift: 1, velocityDispersion: 1150 },
+  cosmology: {
+    atlas: null,
+    logScaleFactor: 0,
+    parameters: { omegaRadiation: 0.00009, omegaBaryon: 0.0493, omegaDarkMatter: 0.264, omegaDarkEnergy: 0.68661 }
+  }
 };
 
 const $ = id => document.getElementById(id);
@@ -133,6 +138,14 @@ async function loadClusterCatalog() {
   $('clusterSelect').replaceChildren(...options);
   $('clusterSelect').value = state.lensing.selectedId;
   selectCluster(state.lensing.selectedId);
+}
+
+async function loadCandidateAtlas() {
+  const response = await fetch(`data/dark_matter_candidates.json?v=${BUILD_VERSION}`, { cache: 'no-cache' });
+  if (!response.ok) throw new Error(`Candidate atlas request failed with HTTP ${response.status}.`);
+  state.cosmology.atlas = await response.json();
+  renderCosmology();
+  renderCandidates();
 }
 
 function renderGalaxyOptions(query = '') {
@@ -981,6 +994,64 @@ function renderLensing() {
   renderClusterRows();
 }
 
+function updateCosmicClosure() {
+  const parameters = state.cosmology.parameters;
+  parameters.omegaDarkEnergy = Math.max(0, 1 - parameters.omegaRadiation - parameters.omegaBaryon - parameters.omegaDarkMatter);
+}
+
+function drawCosmology() {
+  const { context, width, height } = prepareCanvas($('cosmologyCanvas'));
+  const bounds = { minX: -6, maxX: 0, minY: 0, maxY: 1 };
+  const scales = drawPopulationAxes(context, width, height, bounds, { x: 'log₁₀ scale factor a', y: 'fraction of H²' });
+  const series = [
+    { key: 'radiation', label: 'Radiation', colour: '#f4b860', dash: [] },
+    { key: 'baryons', label: 'Baryons', colour: '#f4f7fb', dash: [7, 4] },
+    { key: 'darkMatter', label: 'Cold dark matter', colour: '#54b8ea', dash: [] },
+    { key: 'darkEnergy', label: 'Dark energy', colour: '#b1a7ff', dash: [2, 4] }
+  ];
+  for (const item of series) {
+    context.strokeStyle = item.colour; context.lineWidth = 2.2; context.setLineDash(item.dash); context.beginPath();
+    for (let index = 0; index <= 180; index += 1) {
+      const logA = -6 + index / 30;
+      const fractions = CosmologyPhysics.componentFractions(10 ** logA, state.cosmology.parameters);
+      const x = scales.x(logA); const y = scales.y(fractions[item.key]);
+      if (index) context.lineTo(x, y); else context.moveTo(x, y);
+    }
+    context.stroke();
+  }
+  context.setLineDash([]);
+  const selectedX = scales.x(state.cosmology.logScaleFactor);
+  context.strokeStyle = '#ffd166'; context.lineWidth = 1.5;
+  context.beginPath(); context.moveTo(selectedX, scales.plot.top); context.lineTo(selectedX, scales.plot.bottom); context.stroke();
+  context.font = '11px ui-monospace, monospace'; context.textAlign = 'left';
+  series.forEach((item, index) => { context.fillStyle = item.colour; context.fillText(`${index === 1 ? '┄' : '━'} ${item.label}`, scales.plot.left + 8 + (index % 2) * 148, scales.plot.top + 13 + Math.floor(index / 2) * 17); });
+}
+
+function renderCosmology() {
+  updateCosmicClosure();
+  const scaleFactor = 10 ** state.cosmology.logScaleFactor;
+  const redshift = 1 / scaleFactor - 1;
+  const fractions = CosmologyPhysics.componentFractions(scaleFactor, state.cosmology.parameters);
+  const equality = CosmologyPhysics.equalityRedshift(state.cosmology.parameters);
+  const baryonShare = CosmologyPhysics.baryonFractionOfMatter(state.cosmology.parameters);
+  $('cosmologyMetrics').innerHTML = [
+    ['Selected redshift', redshift > 10000 ? redshift.toExponential(2) : formatNumber(redshift, 1), `a=${scaleFactor.toExponential(2)}`],
+    ['Radiation fraction', `${formatNumber(fractions.radiation * 100, 2)}%`, 'of H² at selected epoch'],
+    ['Matter split', `${formatNumber(baryonShare * 100, 1)}% baryonic`, `${formatNumber((1 - baryonShare) * 100, 1)}% cold dark component`],
+    ['Matter–radiation equality', `z≈${formatNumber(equality, 0)}`, `ΩΛ=${formatNumber(state.cosmology.parameters.omegaDarkEnergy, 3)}`]
+  ].map(([label, value, note]) => `<div><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+  $('cosmologySummary').textContent = `For the displayed flat background model at scale factor ${scaleFactor.toExponential(2)}, radiation contributes ${formatNumber(fractions.radiation * 100, 2)} percent, baryons ${formatNumber(fractions.baryons * 100, 2)} percent, cold dark matter ${formatNumber(fractions.darkMatter * 100, 2)} percent and dark energy ${formatNumber(fractions.darkEnergy * 100, 2)} percent of H squared. Matter–radiation equality occurs near redshift ${formatNumber(equality, 0)}.`;
+  drawCosmology();
+}
+
+function renderCandidates() {
+  if (!state.cosmology.atlas) return;
+  const family = $('candidateFamily').value;
+  const candidates = state.cosmology.atlas.candidates.filter(candidate => family === 'all' || candidate.family === family);
+  $('candidateGrid').innerHTML = candidates.map(candidate => `<article><div><span class="candidate-family">${candidate.family}</span><h3>${candidate.name}</h3></div><dl><div><dt>Mass scale</dt><dd>${candidate.mass_scale}</dd></div><div><dt>Production</dt><dd>${candidate.production}</dd></div><div><dt>Observable</dt><dd>${candidate.signatures}</dd></div></dl><p><strong>Status:</strong> ${candidate.status}</p><p class="candidate-methods">${candidate.methods.map(method => `<span>${method}</span>`).join('')}</p><a href="${candidate.source}" target="_blank" rel="noopener noreferrer">Primary/review source</a></article>`).join('');
+  $('experimentRows').innerHTML = state.cosmology.atlas.experiments.map(experiment => `<tr><th scope="row">${experiment.name}</th><td>${experiment.channel}</td><td>${experiment.target}</td><td>${experiment.status}</td><td><a href="${experiment.source}" target="_blank" rel="noopener noreferrer">Programme source</a></td></tr>`).join('');
+}
+
 function median(values) {
   if (!values.length) return NaN;
   const sorted = [...values].sort((a, b) => a - b);
@@ -1249,6 +1320,30 @@ $('clusterDispersion').addEventListener('input', event => {
   renderLensing();
 });
 for (const layer of document.querySelectorAll('input[name="clusterLayer"]')) layer.addEventListener('change', renderLensing);
+$('cosmicEpoch').addEventListener('input', event => {
+  state.cosmology.logScaleFactor = Number(event.currentTarget.value);
+  $('cosmicEpochOutput').textContent = formatNumber(state.cosmology.logScaleFactor, 2);
+  renderCosmology();
+});
+$('cosmicBaryons').addEventListener('input', event => {
+  state.cosmology.parameters.omegaBaryon = Number(event.currentTarget.value);
+  $('cosmicBaryonsOutput').textContent = formatNumber(state.cosmology.parameters.omegaBaryon, 3);
+  renderCosmology();
+});
+$('cosmicDarkMatter').addEventListener('input', event => {
+  state.cosmology.parameters.omegaDarkMatter = Number(event.currentTarget.value);
+  $('cosmicDarkMatterOutput').textContent = formatNumber(state.cosmology.parameters.omegaDarkMatter, 3);
+  renderCosmology();
+});
+$('resetCosmology').addEventListener('click', () => {
+  state.cosmology.logScaleFactor = 0;
+  state.cosmology.parameters = { omegaRadiation: 0.00009, omegaBaryon: 0.0493, omegaDarkMatter: 0.264, omegaDarkEnergy: 0.68661 };
+  $('cosmicEpoch').value = 0; $('cosmicEpochOutput').textContent = '0.00';
+  $('cosmicBaryons').value = 0.0493; $('cosmicBaryonsOutput').textContent = '0.049';
+  $('cosmicDarkMatter').value = 0.264; $('cosmicDarkMatterOutput').textContent = '0.264';
+  renderCosmology();
+});
+$('candidateFamily').addEventListener('change', renderCandidates);
 for (const control of [$('populationSearch'), $('qualityFilter'), $('populationClass')]) {
   control.addEventListener(control.tagName === 'INPUT' ? 'input' : 'change', renderPopulation);
 }
@@ -1273,7 +1368,7 @@ for (const canvas of [$('btfrCanvas'), $('rarCanvas')]) {
 
 buildControls();
 drawPosterior();
-Promise.all([loadCatalog(), loadClusterCatalog()])
+Promise.all([loadCatalog(), loadClusterCatalog(), loadCandidateAtlas()])
   .then(() => runModel())
   .catch(error => {
     $('workerStatus').textContent = 'Reference data unavailable';
@@ -1285,5 +1380,6 @@ const resizeObserver = new ResizeObserver(() => {
   drawPosterior();
   if (state.catalog) renderPopulation();
   if (state.lensing.catalog) drawClusterMap();
+  if (state.cosmology.atlas) drawCosmology();
 });
 for (const canvas of document.querySelectorAll('canvas')) resizeObserver.observe(canvas);

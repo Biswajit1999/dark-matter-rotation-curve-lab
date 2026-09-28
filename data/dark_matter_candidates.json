@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0.0",
+  "status_as_of": "2026-09-28",
+  "status_note": "A search status is not a detection claim. Numerical exclusion curves depend on interaction model and must be read from the linked collaboration result.",
+  "candidates": [
+    {
+      "id": "wimp",
+      "name": "WIMP-like thermal relic",
+      "family": "particle",
+      "mass_scale": "sub-GeV to multi-TeV",
+      "production": "Thermal freeze-out or non-thermal production",
+      "signatures": "Nuclear/electron recoil, annihilation products, missing momentum",
+      "methods": ["Direct detection", "Colliders", "Indirect detection"],
+      "status": "Broad parameter space constrained; no universally accepted detection",
+      "source": "https://lz.lbl.gov/publications/"
+    },
+    {
+      "id": "qcd-axion",
+      "name": "QCD axion",
+      "family": "field",
+      "mass_scale": "neV to meV, model dependent",
+      "production": "Misalignment and topological defects",
+      "signatures": "Photon conversion in magnetic fields, spin precession",
+      "methods": ["Resonant cavities", "Helioscopes", "Quantum sensors"],
+      "status": "Targeted mass–coupling bands remain under active scan",
+      "source": "https://depts.washington.edu/admx/"
+    },
+    {
+      "id": "alp",
+      "name": "Axion-like particle",
+      "family": "field",
+      "mass_scale": "ultralight to GeV",
+      "production": "Model dependent",
+      "signatures": "Photon conversion, spectral features, stellar effects",
+      "methods": ["Haloscopes", "Helioscopes", "Astrophysical spectra"],
+      "status": "Large model-dependent coupling space remains",
+      "source": "https://cds.cern.ch/record/1560759"
+    },
+    {
+      "id": "sterile-neutrino",
+      "name": "Sterile-neutrino-like relic",
+      "family": "particle",
+      "mass_scale": "keV scale in warm-DM scenarios",
+      "production": "Oscillation or beyond-standard-model mechanisms",
+      "signatures": "Radiative-decay line and suppressed small-scale structure",
+      "methods": ["X-ray spectroscopy", "Structure formation"],
+      "status": "Candidate interpretations remain disputed and model dependent",
+      "source": "https://arxiv.org/abs/1602.04816"
+    },
+    {
+      "id": "sidm",
+      "name": "Self-interacting dark matter",
+      "family": "interaction",
+      "mass_scale": "Model dependent",
+      "production": "Hidden-sector thermal or non-thermal histories",
+      "signatures": "Halo cores, offsets or drag in merging systems",
+      "methods": ["Cluster collisions", "Halo populations", "Simulations"],
+      "status": "Cross-section constraints depend on velocity and merger geometry",
+      "source": "https://arxiv.org/abs/1503.07675"
+    },
+    {
+      "id": "fuzzy",
+      "name": "Ultralight wave dark matter",
+      "family": "field",
+      "mass_scale": "around 10⁻²² eV in benchmark models",
+      "production": "Coherent field production",
+      "signatures": "Wave-scale structure, soliton-like cores, timing effects",
+      "methods": ["Lyman-alpha forest", "Galaxy structure", "Precision timing"],
+      "status": "Benchmark masses face structure constraints; broader models remain",
+      "source": "https://arxiv.org/abs/1705.01443"
+    },
+    {
+      "id": "pbh",
+      "name": "Primordial black holes",
+      "family": "compact-object",
+      "mass_scale": "Asteroid to stellar and higher masses",
+      "production": "Early-universe density collapse",
+      "signatures": "Microlensing, accretion, gravitational waves, evaporation",
+      "methods": ["Microlensing", "CMB", "Gravitational waves"],
+      "status": "Allowed abundance is strongly mass-window dependent",
+      "source": "https://arxiv.org/abs/2002.12778"
+    },
+    {
+      "id": "hidden-sector",
+      "name": "Hidden-sector relic",
+      "family": "interaction",
+      "mass_scale": "sub-eV to multi-TeV",
+      "production": "Freeze-in, secluded freeze-out or asymmetric histories",
+      "signatures": "Dark photons, long-lived particles, electron recoils",
+      "methods": ["Accelerators", "Beam dumps", "Low-threshold detectors"],
+      "status": "Many portals and lifetime regimes remain experimentally open",
+      "source": "https://arxiv.org/abs/1311.0029"
+    }
+  ],
+  "experiments": [
+    {"name": "LZ", "channel": "Direct detection", "target": "Liquid xenon nuclear/electron recoils", "status": "Operating / published constraints", "source": "https://lz.lbl.gov/publications/"},
+    {"name": "XENONnT", "channel": "Direct detection", "target": "Liquid xenon rare events", "status": "Operating / published constraints", "source": "https://xenonexperiment.org/"},
+    {"name": "ADMX", "channel": "Axion haloscope", "target": "Resonant microwave photons", "status": "Scanning selected axion bands", "source": "https://depts.washington.edu/admx/"},
+    {"name": "CERN CAST / IAXO programme", "channel": "Solar axions", "target": "Magnet conversion to X-rays", "status": "CAST constraints / IAXO proposed", "source": "https://home.cern/science/experiments/cast"},
+    {"name": "ATLAS and CMS", "channel": "Collider", "target": "Missing transverse momentum and mediators", "status": "Model-dependent searches", "source": "https://home.cern/science/physics/dark-matter"},
+    {"name": "Fermi-LAT", "channel": "Indirect detection", "target": "Gamma-ray spectra and morphology", "status": "Survey constraints and anomaly tests", "source": "https://fermi.gsfc.nasa.gov/science/"},
+    {"name": "Euclid / Rubin / Roman", "channel": "Cosmic structure", "target": "Weak lensing and galaxy clustering", "status": "Survey inference, not particle capture", "source": "https://www.esa.int/Science_Exploration/Space_Science/Euclid"}
+  ]
+}

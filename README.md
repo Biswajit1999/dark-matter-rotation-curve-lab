@@ -70,8 +70,8 @@ active application now:
 | D | Population, BTFR and radial-acceleration laboratory | Complete |
 | E | Alternative-hypothesis residual and assumption laboratory | Complete |
 | F | Quantitative lensing and colliding-cluster laboratory | Complete |
-| G | Cosmology, particle-candidate and experiment landscape | Next |
-| H | Scale explorer, research frontier and constrained-futures laboratory | Pending |
+| G | Cosmology, particle-candidate and experiment landscape | Complete |
+| H | Scale explorer, research frontier and constrained-futures laboratory | Next |
 | I | Evidence graph, educator/research modes and publication polish | Pending |
 
 Overview imagery does not count as completion of a scientific module. A phase
@@ -170,6 +170,22 @@ its central mass peak. Interactive velocity dispersion is only an SIS scale
 proxy. It must not be interpreted as a fitted merger mass or a constraint on
 dark-matter self-interactions.
 
+## Cosmology and candidate landscape
+
+Phase G evaluates the background evolution of radiation, baryons, cold dark
+matter and a cosmological constant. The scale-factor control displays each
+component's fractional contribution to `H²`, matter–radiation equality and the
+baryon share of total matter. Present-day baryon and cold-dark-matter controls
+preserve flatness by assigning the remainder to ΩΛ. This is a background
+calculation, not a Boltzmann solver or Planck likelihood fit.
+
+The machine-readable candidate atlas deliberately spans particles, coherent
+fields, interaction frameworks and compact objects. It links each candidate to
+complementary observables and keeps “operating”, “constrained”, “proposed” and
+“no accepted detection” conceptually separate. Exclusion contours are not
+compressed into one misleading universal mass–cross-section plot because the
+relevant coupling and observable differ by model.
+
 ## Model equations
 
 At every radius the application uses SPARC's sign-preserving convention for
@@ -247,14 +263,17 @@ observations across all 175 systems.
 | `app.js` | UI state, high-DPI plotting, exports and Worker request ordering |
 | `rotationPhysics.js` | Tested halo profiles, SPARC decomposition and likelihood |
 | `lensingPhysics.js` | Tested lens geometry, critical density and SIS scale |
+| `cosmologyPhysics.js` | Tested background-density evolution and equality scale |
 | `physicsWorker.js` | Off-thread evaluation and deterministic grid fit |
 | `data/galaxies.json` | Complete SPARC catalogue with 175 galaxies and 3,391 observations |
 | `data/reference.json` | NGC 3198 compatibility fixture |
 | `data/cluster_systems.json` | Multi-cluster evidence records and schematic coordinates |
+| `data/dark_matter_candidates.json` | Candidate and experiment landscape with source links |
 | `assets/observations/` | Real Hubble, Chandra/Webb, Planck and Rubin imagery |
 | `scripts/import_sparc.mjs` | Checksum-pinned SPARC ingestion |
 | `tests/rotationPhysics.test.js` | Analytic, data and finite-output tests |
 | `tests/lensingPhysics.test.js` | Distance-geometry and cluster-contract tests |
+| `tests/cosmologyPhysics.test.js` | Component-closure and candidate-schema tests |
 
 ## Research boundaries
 

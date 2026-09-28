@@ -34,7 +34,11 @@ not establish.
     Cluster reference produces finite, plausible critical surface density,
     Einstein radius and angular scale;
 14. every colliding-cluster record links primary evidence and carries an
-    explicit schematic, geometry, reconstruction or dispute warning.
+    explicit schematic, geometry, reconstruction or dispute warning;
+15. cosmological component fractions close to unity from the radiation era to
+    today and recover finite matter–radiation equality and baryon share;
+16. the candidate and experiment atlases contain explicit search status,
+    methods and source links rather than implying a detection.
 
 ## Guarantees requiring future work
 

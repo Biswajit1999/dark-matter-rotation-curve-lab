@@ -8,6 +8,8 @@ const worker = fs.readFileSync('physicsWorker.js', 'utf8');
 const application = fs.readFileSync('app.js', 'utf8');
 const lensing = fs.readFileSync('lensingPhysics.js', 'utf8');
 const clusters = JSON.parse(fs.readFileSync('data/cluster_systems.json', 'utf8'));
+const cosmology = fs.readFileSync('cosmologyPhysics.js', 'utf8');
+const candidates = JSON.parse(fs.readFileSync('data/dark_matter_candidates.json', 'utf8'));
 
 for (const functionName of ['pseudoIsothermalVelocity', 'nfwVelocity', 'burkertVelocity', 'weightedStatistics', 'gridFit', 'posteriorPredictive', 'samplePosterior', 'rarAcceleration', 'simpleMondAcceleration', 'phenomenologicalVelocity']) {
   if (!physics.includes(`function ${functionName}`)) failures.push(`physics contract missing ${functionName}`);
@@ -26,6 +28,11 @@ for (const functionName of ['criticalSurfaceDensity', 'einsteinRadiusArcsec', 'a
 }
 if (clusters.systems?.length < 3 || clusters.systems.some(system => system.source_redshift <= system.redshift)) failures.push('colliding-cluster catalogue is incomplete or geometrically invalid');
 if (!application.includes('renderLensing') || !application.includes('drawClusterMap')) failures.push('quantitative lensing workspace is missing');
+for (const functionName of ['componentFractions', 'equalityRedshift', 'baryonFractionOfMatter']) {
+  if (!cosmology.includes(`function ${functionName}`)) failures.push(`cosmology contract missing ${functionName}`);
+}
+if (candidates.candidates?.length < 8 || candidates.experiments?.length < 7) failures.push('candidate or experiment landscape is incomplete');
+if (!application.includes('renderCosmology') || !application.includes('renderCandidates')) failures.push('cosmology or candidate workspace is missing');
 for (const galaxy of catalog.galaxies || []) {
   if (galaxy.points.some(point => !Object.hasOwn(point, 'v_gas') || !Object.hasOwn(point, 'v_disk'))) failures.push(`${galaxy.galaxy_id} baryonic components are missing`);
 }

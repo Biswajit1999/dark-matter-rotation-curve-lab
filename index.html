@@ -6,7 +6,7 @@
   <meta name="description" content="Explore all 175 SPARC galaxies, population scaling relations, cluster lensing, cosmology and the technology roadmap for identifying dark matter.">
   <meta name="theme-color" content="#07111f">
   <title>Dark Matter Evidence Lab — Galaxies to Detectors</title>
-  <link rel="stylesheet" href="styles.css?v=2.0.0-beta.5">
+  <link rel="stylesheet" href="styles.css?v=2.0.0-beta.6">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to analysis</a>
@@ -438,6 +438,69 @@
       </details>
     </section>
 
+    <section class="cosmology-section" aria-labelledby="cosmology-title">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">Phase G · early universe to experiments</p>
+          <h2 id="cosmology-title">Cosmology, candidate and experiment landscape</h2>
+        </div>
+        <p>Connect the cosmic matter budget to the very different instruments that test candidate particles, fields and compact objects. Null results constrain models; they are not evidence that dark matter is absent.</p>
+      </div>
+      <div class="cosmology-layout">
+        <form id="cosmologyForm" class="cosmology-controls">
+          <div class="range-field">
+            <div class="range-label"><label for="cosmicEpoch">Cosmic scale factor, log₁₀(a)</label><output id="cosmicEpochOutput" for="cosmicEpoch">0.00</output></div>
+            <input id="cosmicEpoch" type="range" min="-6" max="0" step="0.02" value="0">
+            <div class="range-bounds" aria-hidden="true"><span>early radiation era</span><span>today</span></div>
+          </div>
+          <div class="range-field">
+            <div class="range-label"><label for="cosmicBaryons">Ωb today</label><output id="cosmicBaryonsOutput" for="cosmicBaryons">0.049</output></div>
+            <input id="cosmicBaryons" type="range" min="0.01" max="0.15" step="0.001" value="0.0493">
+          </div>
+          <div class="range-field">
+            <div class="range-label"><label for="cosmicDarkMatter">Ωcdm today</label><output id="cosmicDarkMatterOutput" for="cosmicDarkMatter">0.264</output></div>
+            <input id="cosmicDarkMatter" type="range" min="0" max="0.5" step="0.002" value="0.264">
+          </div>
+          <button id="resetCosmology" class="secondary-button" type="button">Restore Planck-like reference</button>
+          <p class="method-note">This background-density explorer preserves spatial flatness by assigning the remaining present-day density to ΩΛ. It does not calculate the CMB angular power spectrum or fit Planck likelihoods.</p>
+        </form>
+        <div class="cosmology-chart-card">
+          <div class="cluster-canvas-heading">
+            <div><span class="epistemic-label">Calculated background</span><h3>Component fractions through expansion</h3></div>
+            <span class="axis-note">radiation · baryons · cold dark matter · Λ</span>
+          </div>
+          <canvas id="cosmologyCanvas" role="img" aria-describedby="cosmologySummary"></canvas>
+          <p id="cosmologySummary" class="sr-summary">Cosmological component evolution is loading.</p>
+        </div>
+      </div>
+      <div id="cosmologyMetrics" class="lensing-metrics" aria-live="polite"></div>
+      <div class="cosmology-logic">
+        <article><span class="epistemic-label">Independent baryon anchor</span><h3>Why “all matter is baryonic” fails</h3><p>Primordial nucleosynthesis and CMB acoustic structure constrain the baryon density. Replacing Ωcdm with baryons changes photon–baryon oscillations instead of reproducing the same sky.</p></article>
+        <article><span class="epistemic-label">Growth mechanism</span><h3>Why early clustering matters</h3><p>Before recombination, baryons are coupled to photons. A non-baryonic component can begin building gravitational wells without participating in that acoustic fluid.</p></article>
+        <article><span class="epistemic-label">Inference boundary</span><h3>What cosmology does not identify</h3><p>A fitted Ωcdm quantifies a gravitating component within a model. It does not specify mass, spin, couplings or a laboratory detection channel.</p></article>
+      </div>
+      <div class="candidate-heading">
+        <div><p class="kicker">Candidate atlas</p><h3>No single search covers “dark matter”</h3></div>
+        <div><label for="candidateFamily">Filter candidate family</label><select id="candidateFamily"><option value="all">All families</option><option value="particle">Particles</option><option value="field">Coherent fields</option><option value="interaction">Interaction frameworks</option><option value="compact-object">Compact objects</option></select></div>
+      </div>
+      <div id="candidateGrid" class="candidate-grid" aria-live="polite"></div>
+      <details>
+        <summary>Show experiment landscape and quantitative assumptions</summary>
+        <div class="table-wrap">
+          <table>
+            <caption>Complementary dark-matter search channels; status as recorded 28 September 2026</caption>
+            <thead><tr><th scope="col">Programme</th><th scope="col">Channel</th><th scope="col">Observable</th><th scope="col">Interpretive status</th><th scope="col">Source</th></tr></thead>
+            <tbody id="experimentRows"><tr><td colspan="5">Experiment records are loading.</td></tr></tbody>
+          </table>
+        </div>
+        <div class="cosmology-sources">
+          <a href="https://www.esa.int/Science_Exploration/Space_Science/Planck/Planck_science_highlights" target="_blank" rel="noopener noreferrer">ESA Planck science highlights</a>
+          <a href="https://wiki.cosmos.esa.int/planck-legacy-archive/index.php/Cosmological_Parameters" target="_blank" rel="noopener noreferrer">Planck Legacy Archive parameters</a>
+          <a href="https://pdg.lbl.gov/" target="_blank" rel="noopener noreferrer">Particle Data Group reviews</a>
+        </div>
+      </details>
+    </section>
+
     <section class="inference-section" aria-labelledby="inference-title">
       <div class="section-heading">
         <div>
@@ -572,8 +635,9 @@
       <a href="https://orcid.org/0009-0002-2411-1891" target="_blank" rel="noopener noreferrer">ORCID</a>
     </nav>
   </footer>
-  <script src="rotationPhysics.js?v=2.0.0-beta.5"></script>
-  <script src="lensingPhysics.js?v=2.0.0-beta.5"></script>
-  <script src="app.js?v=2.0.0-beta.5"></script>
+  <script src="rotationPhysics.js?v=2.0.0-beta.6"></script>
+  <script src="lensingPhysics.js?v=2.0.0-beta.6"></script>
+  <script src="cosmologyPhysics.js?v=2.0.0-beta.6"></script>
+  <script src="app.js?v=2.0.0-beta.6"></script>
 </body>
 </html>

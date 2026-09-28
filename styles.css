@@ -170,6 +170,7 @@ h2 {
 .population-section,
 .challenge-section,
 .lensing-section,
+.cosmology-section,
 .roadmap-section {
   margin-bottom: 28px;
   overflow: hidden;
@@ -811,6 +812,64 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
 .cluster-findings p strong { color: var(--text); }
 .cluster-findings div { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 3px; font-size: 0.73rem; font-weight: 700; }
 
+.cosmology-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.62fr) minmax(520px, 1.38fr);
+  gap: 1px;
+  border-block: 1px solid var(--border);
+  background: var(--border);
+}
+
+.cosmology-controls { display: grid; align-content: start; gap: 19px; padding: 20px; background: var(--surface-raised); }
+.cosmology-chart-card { min-width: 0; background: #07111f; }
+#cosmologyCanvas { width: 100%; height: 430px; display: block; }
+
+.cosmology-logic {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border-bottom: 1px solid var(--border);
+  background: var(--border);
+}
+
+.cosmology-logic article { min-width: 0; padding: 18px; background: var(--surface-raised); }
+.cosmology-logic h3 { margin: 10px 0 7px; font-size: 0.9rem; }
+.cosmology-logic p { margin: 0; color: var(--text-muted); font-size: 0.76rem; }
+
+.candidate-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.candidate-heading h3 { margin: 3px 0 0; font-size: 1rem; }
+.candidate-heading label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; }
+
+.candidate-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.candidate-grid article { min-width: 0; padding: 16px; background: var(--surface); }
+.candidate-grid h3 { margin: 7px 0 12px; font-size: 0.92rem; }
+.candidate-family { color: var(--accent); font: 700 0.62rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.candidate-grid dl { display: grid; gap: 8px; margin: 0; }
+.candidate-grid dl div { display: grid; gap: 2px; }
+.candidate-grid dt { color: var(--text-muted); font: 700 0.61rem var(--mono); text-transform: uppercase; }
+.candidate-grid dd { margin: 0; color: #d7e0eb; font-size: 0.73rem; }
+.candidate-grid p { color: var(--text-muted); font-size: 0.72rem; }
+.candidate-grid p strong { color: var(--text); }
+.candidate-grid > article > a { font-size: 0.7rem; font-weight: 700; }
+.candidate-methods { display: flex; flex-wrap: wrap; gap: 5px; }
+.candidate-methods span { border: 1px solid var(--border); border-radius: 999px; padding: 3px 7px; color: var(--accent-strong); font: 650 0.6rem var(--mono); }
+.cosmology-sources { display: flex; flex-wrap: wrap; gap: 10px 22px; padding: 14px 20px; font-size: 0.73rem; font-weight: 700; }
+
 .posterior-table-details { border-bottom: 0; }
 
 .roadmap-section { margin-top: 28px; }
@@ -896,6 +955,8 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
   .challenge-charts { grid-template-columns: 1fr; }
   .challenge-charts canvas { height: 330px; }
   .lensing-layout { grid-template-columns: minmax(250px, 0.65fr) minmax(500px, 1.35fr); }
+  .cosmology-layout { grid-template-columns: minmax(250px, 0.65fr) minmax(500px, 1.35fr); }
+  .candidate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 800px) {
@@ -930,10 +991,13 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
   .assumption-grid,
   .lensing-layout,
   .cluster-interpretation { grid-template-columns: 1fr; }
+  .cosmology-layout,
+  .cosmology-logic { grid-template-columns: 1fr; }
   .challenge-metrics { grid-template-columns: 1fr; }
   .lensing-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #clusterCanvas { height: 360px; }
   .cluster-canvas-heading { align-items: flex-start; flex-direction: column; }
+  .candidate-heading { align-items: flex-start; flex-direction: column; }
   .posterior-panel { min-height: 520px; }
   .model-check-note { grid-template-columns: 1fr; }
   .site-footer { align-items: flex-start; flex-direction: column; }
@@ -953,6 +1017,7 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
   .population-controls,
   .population-metrics,
   .lensing-metrics { grid-template-columns: 1fr; }
+  .candidate-grid { grid-template-columns: 1fr; }
   .population-actions { display: grid; grid-template-columns: 1fr 1fr; }
   .population-chart-card canvas { height: 360px; }
   .observation-card,
