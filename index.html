@@ -6,7 +6,7 @@
   <meta name="description" content="Explore all 175 SPARC galaxies, population scaling relations, cluster lensing, cosmology and the technology roadmap for identifying dark matter.">
   <meta name="theme-color" content="#07111f">
   <title>Dark Matter Evidence Lab — Galaxies to Detectors</title>
-  <link rel="stylesheet" href="styles.css?v=2.0.0-beta.6">
+  <link rel="stylesheet" href="styles.css?v=2.0.0-beta.7">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to analysis</a>
@@ -586,6 +586,56 @@
       </details>
     </section>
 
+    <section class="futures-section" aria-labelledby="futures-title">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">Phase H · scales, frontiers and constrained futures</p>
+          <h2 id="futures-title">From subnuclear interactions to the cosmic web</h2>
+        </div>
+        <p>Explore what changes with physical scale, calculate a deliberately simplified encounter rate and distinguish active engineering from conditional or speculative future capability.</p>
+      </div>
+      <div class="future-hero">
+        <figure>
+          <img src="assets/concepts/future-dark-matter-detection.png" width="1536" height="1024" alt="AI-generated two-panel scientific concept: a galaxy-cluster field with cyan reconstructed lensing contours, and a cutaway underground cryogenic detector with shielded sensor stages." loading="lazy">
+          <figcaption><strong>AI-generated scientific concept—not an observation.</strong> Left: a future mass-reconstruction display inferred from gravitational lensing, not visible dark matter. Right: a conditional cryogenic sensor concept; its final architecture would depend on the particle or field physics that remains viable. <span>Credit: OpenAI image generation for the Dark Matter Evidence Lab, 2026.</span></figcaption>
+        </figure>
+        <div class="future-hero-copy">
+          <span class="epistemic-label">What “seeing dark matter” could mean</span>
+          <h3>Translate an invisible cause into calibrated observables</h3>
+          <p>No physically honest camera can simply photograph dark matter as glowing fog. A defensible future visual would combine a measured signal—shear, recoil, conversion photon, phase shift or timing correlation—with a reconstruction and quantified uncertainty.</p>
+          <ul><li><strong>Sky:</strong> deeper source redshifts, stable point-spread functions and independent lensing pipelines.</li><li><strong>Laboratory:</strong> lower thresholds, radiopure materials, directional information and multiple target nuclei.</li><li><strong>Networks:</strong> clocks, interferometers or pulsars searching for correlated transient and oscillatory fields.</li></ul>
+        </div>
+      </div>
+      <div class="scale-explorer">
+        <div class="scale-control">
+          <div class="range-label"><label for="scaleRange">Physical scale</label><output id="scaleOutput" for="scaleRange">10¹⁹ m</output></div>
+          <input id="scaleRange" type="range" min="-18" max="26" step="1" value="19">
+          <div class="range-bounds" aria-hidden="true"><span>10⁻¹⁸ m</span><span>10²⁶ m</span></div>
+        </div>
+        <article id="scaleMilestone" aria-live="polite"><span class="epistemic-label">Galactic halo</span><h3>Which density profile and phase-space distribution fit multiple tracers?</h3><p>Dynamics, streams, microlensing and lensing</p></article>
+      </div>
+      <div class="future-calculator">
+        <form id="futureForm" class="future-controls">
+          <h3>Encounter-rate sandbox</h3>
+          <div class="range-field"><div class="range-label"><label for="futureMass">log₁₀ mass (GeV/c²)</label><output id="futureMassOutput" for="futureMass">2.0</output></div><input id="futureMass" type="range" min="-6" max="6" step="0.1" value="2"></div>
+          <div class="range-field"><div class="range-label"><label for="futureCrossSection">log₁₀ nucleon cross section (cm²)</label><output id="futureCrossSectionOutput" for="futureCrossSection">−46</output></div><input id="futureCrossSection" type="range" min="-50" max="-36" step="0.2" value="-46"></div>
+          <div class="range-field"><div class="range-label"><label for="futureDensity">Local density (GeV/cm³)</label><output id="futureDensityOutput" for="futureDensity">0.40</output></div><input id="futureDensity" type="range" min="0.1" max="1" step="0.01" value="0.4"></div>
+          <div class="range-field"><div class="range-label"><label for="futureEfficiency">Detection efficiency</label><output id="futureEfficiencyOutput" for="futureEfficiency">50%</output></div><input id="futureEfficiency" type="range" min="0.01" max="1" step="0.01" value="0.5"></div>
+          <p class="method-note">Fixed speed: 220 km/s. The displayed count treats every kilogram as free nucleons with one cross section. It omits nuclear coherence, form factors, thresholds, velocity distribution, shielding and backgrounds, so it is a scaling exercise—not an experiment forecast.</p>
+        </form>
+        <div>
+          <div id="futureMetrics" class="future-metrics" aria-live="polite"></div>
+          <div class="validity-panel"><span class="epistemic-label">Model boundary</span><h3 id="futureValidityTitle">Illustrative contact scale only</h3><p id="futureValidity">A real exclusion or sensitivity curve must specify an interaction operator, target response, detector exposure and statistical treatment.</p></div>
+        </div>
+      </div>
+      <div class="frontier-heading"><p class="kicker">Research Frontier</p><h3>What is known, unknown and decisive</h3></div>
+      <div id="frontierGrid" class="frontier-grid"></div>
+      <details>
+        <summary>Show technology horizons and falsification gates</summary>
+        <div class="table-wrap"><table><caption>Physics-constrained capability horizons, not discovery promises</caption><thead><tr><th scope="col">Horizon</th><th scope="col">Possible capability</th><th scope="col">Validation gate</th><th scope="col">Confidence</th></tr></thead><tbody id="futureTimelineRows"><tr><td colspan="4">Research-frontier data are loading.</td></tr></tbody></table></div>
+      </details>
+    </section>
+
     <section class="roadmap-section" aria-labelledby="roadmap-title">
       <div class="section-heading">
         <div>
@@ -635,9 +685,10 @@
       <a href="https://orcid.org/0009-0002-2411-1891" target="_blank" rel="noopener noreferrer">ORCID</a>
     </nav>
   </footer>
-  <script src="rotationPhysics.js?v=2.0.0-beta.6"></script>
-  <script src="lensingPhysics.js?v=2.0.0-beta.6"></script>
-  <script src="cosmologyPhysics.js?v=2.0.0-beta.6"></script>
-  <script src="app.js?v=2.0.0-beta.6"></script>
+  <script src="rotationPhysics.js?v=2.0.0-beta.7"></script>
+  <script src="lensingPhysics.js?v=2.0.0-beta.7"></script>
+  <script src="cosmologyPhysics.js?v=2.0.0-beta.7"></script>
+  <script src="futuresPhysics.js?v=2.0.0-beta.7"></script>
+  <script src="app.js?v=2.0.0-beta.7"></script>
 </body>
 </html>

@@ -13,14 +13,17 @@ const required = [
   'rotationPhysics.js',
   'lensingPhysics.js',
   'cosmologyPhysics.js',
+  'futuresPhysics.js',
   'data/galaxies.json',
   'data/reference.json',
   'data/cluster_systems.json',
   'data/dark_matter_candidates.json',
+  'data/research_frontier.json',
   'scripts/import_sparc.mjs',
   'tests/rotationPhysics.test.js',
   'tests/lensingPhysics.test.js',
-  'tests/cosmologyPhysics.test.js'
+  'tests/cosmologyPhysics.test.js',
+  'tests/futuresPhysics.test.js'
 ];
 const failures = [];
 
@@ -35,6 +38,7 @@ for (const image of [
 ]) {
   if (!fs.existsSync(image) || fs.statSync(image).size < 10_000) failures.push(`${image} is missing or invalid`);
 }
+if (!fs.existsSync('assets/concepts/future-dark-matter-detection.png') || fs.statSync('assets/concepts/future-dark-matter-detection.png').size < 100_000) failures.push('future detection concept image is missing or invalid');
 
 if (failures.length === 0) {
   const reference = JSON.parse(fs.readFileSync('data/reference.json', 'utf8'));
@@ -73,7 +77,7 @@ if (failures.length === 0) {
   }
 
   const html = fs.readFileSync('index.html', 'utf8');
-  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'id="populationSearch"', 'id="btfrCanvas"', 'id="rarCanvas"', 'id="challengeRelation"', 'id="challengeCurveCanvas"', 'id="challengeResidualCanvas"', 'id="challengeRows"', 'id="clusterSelect"', 'id="clusterCanvas"', 'id="clusterRows"', 'Schematic, not a dark-matter photograph', 'id="cosmologyCanvas"', 'id="candidateFamily"', 'id="candidateGrid"', 'id="experimentRows"', 'id="priorForm"', 'id="posteriorRows"', 'id="predictiveRows"', 'id="exportPredictive"', 'prefers-reduced-motion']) {
+  for (const pattern of ['class="skip-link"', '<table>', 'aria-describedby="curveSummary"', 'id="galaxySelect"', 'id="populationSearch"', 'id="btfrCanvas"', 'id="rarCanvas"', 'id="challengeRelation"', 'id="challengeCurveCanvas"', 'id="challengeResidualCanvas"', 'id="challengeRows"', 'id="clusterSelect"', 'id="clusterCanvas"', 'id="clusterRows"', 'Schematic, not a dark-matter photograph', 'id="cosmologyCanvas"', 'id="candidateFamily"', 'id="candidateGrid"', 'id="experimentRows"', 'AI-generated scientific concept—not an observation', 'id="scaleRange"', 'id="futureMetrics"', 'id="frontierGrid"', 'id="futureTimelineRows"', 'id="priorForm"', 'id="posteriorRows"', 'id="predictiveRows"', 'id="exportPredictive"', 'prefers-reduced-motion']) {
     const source = pattern === 'prefers-reduced-motion' ? fs.readFileSync('styles.css', 'utf8') : html;
     if (!source.includes(pattern)) failures.push(`accessibility contract missing: ${pattern}`);
   }

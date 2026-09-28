@@ -71,8 +71,8 @@ active application now:
 | E | Alternative-hypothesis residual and assumption laboratory | Complete |
 | F | Quantitative lensing and colliding-cluster laboratory | Complete |
 | G | Cosmology, particle-candidate and experiment landscape | Complete |
-| H | Scale explorer, research frontier and constrained-futures laboratory | Next |
-| I | Evidence graph, educator/research modes and publication polish | Pending |
+| H | Scale explorer, research frontier and constrained-futures laboratory | Complete |
+| I | Evidence graph, educator/research modes and publication polish | Next |
 
 Overview imagery does not count as completion of a scientific module. A phase
 is marked complete only when its data, computation, provenance, interface and
@@ -186,6 +186,24 @@ complementary observables and keeps “operating”, “constrained”, “propo
 compressed into one misleading universal mass–cross-section plot because the
 relevant coupling and observable differ by model.
 
+## Scale explorer and constrained futures
+
+Phase H links eight scale milestones from subnuclear interactions to the
+observable universe. Its encounter-rate sandbox derives number flux,
+de Broglie wavelength, mean spacing and a deliberately simplified nucleon
+contact-count scale from displayed assumptions. The interface explicitly
+states that the count omits nuclear response, thresholds, velocity structure,
+backgrounds and statistical inference. When the wavelength becomes macroscopic
+it warns that a coherent-field treatment is required.
+
+The future-technology visual is an AI-generated scientific concept saved at
+`assets/concepts/future-dark-matter-detection.png`. Its caption states that the
+left panel is a lensing reconstruction rather than visible dark matter and that
+the right detector architecture is conditional on future physics. The Research
+Frontier and horizon table separate known constraints, open questions,
+decisive tests and confidence labels through 1,000 years; only near-term active
+or planned capabilities are presented as engineering programmes.
+
 ## Model equations
 
 At every radius the application uses SPARC's sign-preserving convention for
@@ -264,16 +282,20 @@ observations across all 175 systems.
 | `rotationPhysics.js` | Tested halo profiles, SPARC decomposition and likelihood |
 | `lensingPhysics.js` | Tested lens geometry, critical density and SIS scale |
 | `cosmologyPhysics.js` | Tested background-density evolution and equality scale |
+| `futuresPhysics.js` | Tested local-flux, spacing, wavelength and contact scaling |
 | `physicsWorker.js` | Off-thread evaluation and deterministic grid fit |
 | `data/galaxies.json` | Complete SPARC catalogue with 175 galaxies and 3,391 observations |
 | `data/reference.json` | NGC 3198 compatibility fixture |
 | `data/cluster_systems.json` | Multi-cluster evidence records and schematic coordinates |
 | `data/dark_matter_candidates.json` | Candidate and experiment landscape with source links |
+| `data/research_frontier.json` | Scale milestones, decisive tests and labelled horizons |
 | `assets/observations/` | Real Hubble, Chandra/Webb, Planck and Rubin imagery |
+| `assets/concepts/` | Clearly labelled generated scientific concept art |
 | `scripts/import_sparc.mjs` | Checksum-pinned SPARC ingestion |
 | `tests/rotationPhysics.test.js` | Analytic, data and finite-output tests |
 | `tests/lensingPhysics.test.js` | Distance-geometry and cluster-contract tests |
 | `tests/cosmologyPhysics.test.js` | Component-closure and candidate-schema tests |
+| `tests/futuresPhysics.test.js` | Dimensional monotonicity and frontier-schema tests |
 
 ## Research boundaries
 

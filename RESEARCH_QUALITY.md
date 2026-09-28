@@ -38,7 +38,11 @@ not establish.
 15. cosmological component fractions close to unity from the radiation era to
     today and recover finite matter–radiation equality and baryon share;
 16. the candidate and experiment atlases contain explicit search status,
-    methods and source links rather than implying a detection.
+    methods and source links rather than implying a detection;
+17. local flux and illustrative contact rates scale monotonically with mass,
+    cross section and efficiency, while spacing and wavelength remain finite;
+18. every future horizon carries an active, planned, conditional, speculative
+    or unknown confidence label and every frontier names a decisive test.
 
 ## Guarantees requiring future work
 

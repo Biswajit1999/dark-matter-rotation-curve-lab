@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-09-28",
+  "scale_milestones": [
+    {"log10_metres": -18, "label": "Subnuclear interaction", "question": "Does a dark-sector state scatter, decay or convert?", "probe": "Accelerators and low-threshold detectors"},
+    {"log10_metres": -10, "label": "Atomic detector", "question": "Can a recoil, ionisation or spin transition be resolved above background?", "probe": "Cryogenic, noble-liquid and quantum sensors"},
+    {"log10_metres": 3, "label": "Laboratory baseline", "question": "Does direction, timing or target material identify a repeatable signal?", "probe": "Underground arrays and precision metrology"},
+    {"log10_metres": 11, "label": "Solar-system field", "question": "Can clocks, ephemerides or interferometers detect coherent structure?", "probe": "Distributed timing and astrometry"},
+    {"log10_metres": 19, "label": "Galactic halo", "question": "Which density profile and phase-space distribution fit multiple tracers?", "probe": "Dynamics, streams, microlensing and lensing"},
+    {"log10_metres": 22, "label": "Merging cluster", "question": "Does the gravitating component lag, scatter or stay collisionless?", "probe": "Weak lensing, X-rays and spectroscopy"},
+    {"log10_metres": 24, "label": "Cosmic web", "question": "How does unseen matter seed and assemble structure?", "probe": "Galaxy surveys, CMB lensing and simulations"},
+    {"log10_metres": 26, "label": "Observable universe", "question": "Which background model jointly explains expansion and primordial fluctuations?", "probe": "CMB, standard rulers and large-scale structure"}
+  ],
+  "frontiers": [
+    {"name": "Sub-GeV recoils", "known": "Electronic, phonon and molecular excitations can lower thresholds.", "unknown": "Background populations and signal yields at the few-quanta limit.", "decisive": "Repeatable target-scaled spectrum with calibrated response."},
+    {"name": "Directional detection", "known": "A Galactic-wind direction differs from most terrestrial backgrounds.", "unknown": "Whether scalable targets retain recoil direction at low energy.", "decisive": "Sidereal directional modulation reproduced in independent targets."},
+    {"name": "Axion and wave sensing", "known": "Coherent fields can convert or drive resonant responses.", "unknown": "The relevant mass/frequency and coupling, if any.", "decisive": "Frequency-coherent signal that tracks magnetic field or apparatus configuration."},
+    {"name": "Precision timing", "known": "Clocks, pulsars and interferometers test transient or oscillatory fields.", "unknown": "Noise correlations and realistic dark-structure encounter rates.", "decisive": "Correlated propagation pattern across separated instruments."},
+    {"name": "Survey-scale lensing", "known": "Gravity coherently distorts many background sources.", "unknown": "Baryonic feedback, redshift and shear-calibration degeneracies.", "decisive": "Consistent mass maps across surveys, wavelengths and pipelines."},
+    {"name": "Small-scale structure", "known": "Free streaming, waves and self-interactions alter halo populations.", "unknown": "How baryonic physics mimics or erases those signatures.", "decisive": "One microphysical model matching satellites, streams, lenses and clusters."}
+  ],
+  "timeline": [
+    {"horizon": "Now", "capability": "Cross-calibrated surveys and multi-tonne exposures", "gate": "Published blind analyses and open likelihood products", "certainty": "active"},
+    {"horizon": "+10 years", "capability": "Lower thresholds, directional prototypes and dense lensing maps", "gate": "Signals scale across target, time, direction or instrument", "certainty": "planned"},
+    {"horizon": "+25 years", "capability": "Background-limited observatories and networked quantum sensors", "gate": "Independent replication or parameter-space retirement", "certainty": "conditional"},
+    {"horizon": "+50 years", "capability": "Facilities optimised for the parameter space that survives", "gate": "One model explains laboratory and astrophysical observables", "certainty": "speculative"},
+    {"horizon": "+100–250 years", "capability": "Long-baseline clocks, interferometers and outer-system probes", "gate": "Technology and target remain physically motivated after earlier null results", "certainty": "speculative"},
+    {"horizon": "+1,000 years", "capability": "No defensible instrument forecast", "gate": "Preserve reproducible archives so future theories can retest present data", "certainty": "unknown"}
+  ]
+}

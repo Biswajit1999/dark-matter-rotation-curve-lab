@@ -1,6 +1,6 @@
 'use strict';
 
-const BUILD_VERSION = '2.0.0-beta.6';
+const BUILD_VERSION = '2.0.0-beta.7';
 
 const CONTROL_DEFINITIONS = [
   { key: 'massToLightDisk', label: 'Disc mass-to-light ratio', unit: 'M☉/L☉ at 3.6 μm', value: 0.5, min: 0.1, max: 1, step: 0.01 },
@@ -46,7 +46,8 @@ const state = {
     atlas: null,
     logScaleFactor: 0,
     parameters: { omegaRadiation: 0.00009, omegaBaryon: 0.0493, omegaDarkMatter: 0.264, omegaDarkEnergy: 0.68661 }
-  }
+  },
+  futures: { data: null, logScaleMetres: 19, logMassGev: 2, logCrossSectionCm2: -46, localDensity: 0.4, efficiency: 0.5, speedKms: 220 }
 };
 
 const $ = id => document.getElementById(id);
@@ -146,6 +147,13 @@ async function loadCandidateAtlas() {
   state.cosmology.atlas = await response.json();
   renderCosmology();
   renderCandidates();
+}
+
+async function loadResearchFrontier() {
+  const response = await fetch(`data/research_frontier.json?v=${BUILD_VERSION}`, { cache: 'no-cache' });
+  if (!response.ok) throw new Error(`Research-frontier request failed with HTTP ${response.status}.`);
+  state.futures.data = await response.json();
+  renderFutures();
 }
 
 function renderGalaxyOptions(query = '') {
@@ -1052,6 +1060,45 @@ function renderCandidates() {
   $('experimentRows').innerHTML = state.cosmology.atlas.experiments.map(experiment => `<tr><th scope="row">${experiment.name}</th><td>${experiment.channel}</td><td>${experiment.target}</td><td>${experiment.status}</td><td><a href="${experiment.source}" target="_blank" rel="noopener noreferrer">Programme source</a></td></tr>`).join('');
 }
 
+function superscriptInteger(value) {
+  const digits = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+  return String(value).split('').map(character => digits[character]).join('');
+}
+
+function nearestScaleMilestone() {
+  return state.futures.data.scale_milestones.reduce((best, milestone) => (
+    Math.abs(milestone.log10_metres - state.futures.logScaleMetres) < Math.abs(best.log10_metres - state.futures.logScaleMetres) ? milestone : best
+  ));
+}
+
+function renderFutures() {
+  if (!state.futures.data) return;
+  const milestone = nearestScaleMilestone();
+  $('scaleOutput').textContent = `10${superscriptInteger(state.futures.logScaleMetres)} m`;
+  $('scaleMilestone').innerHTML = `<span class="epistemic-label">${milestone.label}</span><h3>${milestone.question}</h3><p>${milestone.probe}</p><small>Nearest research scale: 10${superscriptInteger(milestone.log10_metres)} metres</small>`;
+
+  const mass = 10 ** state.futures.logMassGev;
+  const crossSection = 10 ** state.futures.logCrossSectionCm2;
+  const flux = FuturesPhysics.fluxCm2Second(state.futures.localDensity, mass, state.futures.speedKms);
+  const rate = FuturesPhysics.illustrativeEventsPerKgDay(state.futures.localDensity, mass, state.futures.speedKms, crossSection, state.futures.efficiency);
+  const spacingMetres = FuturesPhysics.meanSpacingAu(state.futures.localDensity, mass) * 1.495978707e11;
+  const wavelength = FuturesPhysics.deBroglieWavelengthMetres(mass, state.futures.speedKms);
+  $('futureMetrics').innerHTML = [
+    ['Number flux', `${flux.toExponential(2)} cm⁻² s⁻¹`, 'ρv/m'],
+    ['Contact-count scale', `${rate.toExponential(2)} kg⁻¹ day⁻¹`, 'not a detector rate'],
+    ['Mean particle spacing', `${spacingMetres.toExponential(2)} m`, 'homogeneous local density'],
+    ['de Broglie wavelength', `${wavelength.toExponential(2)} m`, 'non-relativistic estimate']
+  ].map(([label, value, note]) => `<div><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+  const waveLike = wavelength > 1;
+  $('futureValidityTitle').textContent = waveLike ? 'Coherent-field treatment required' : 'Illustrative particle-contact scale only';
+  $('futureValidity').textContent = waveLike
+    ? 'At this mass and speed the de Broglie wavelength exceeds one metre. Independent particle contacts are not a suitable physical picture; phase-coherent field or wave observables become relevant.'
+    : 'A real exclusion or sensitivity curve must specify an interaction operator, target nucleus, form factor, recoil threshold, exposure, background model and statistical treatment.';
+
+  $('frontierGrid').innerHTML = state.futures.data.frontiers.map(item => `<article><h3>${item.name}</h3><dl><div><dt>Known</dt><dd>${item.known}</dd></div><div><dt>Unknown</dt><dd>${item.unknown}</dd></div><div><dt>Decisive test</dt><dd>${item.decisive}</dd></div></dl></article>`).join('');
+  $('futureTimelineRows').innerHTML = state.futures.data.timeline.map(item => `<tr><th scope="row">${item.horizon}</th><td>${item.capability}</td><td>${item.gate}</td><td><span class="certainty-tag certainty-${item.certainty}">${item.certainty}</span></td></tr>`).join('');
+}
+
 function median(values) {
   if (!values.length) return NaN;
   const sorted = [...values].sort((a, b) => a - b);
@@ -1344,6 +1391,22 @@ $('resetCosmology').addEventListener('click', () => {
   renderCosmology();
 });
 $('candidateFamily').addEventListener('change', renderCandidates);
+$('scaleRange').addEventListener('input', event => {
+  state.futures.logScaleMetres = Number(event.currentTarget.value);
+  renderFutures();
+});
+for (const [id, stateKey, output, formatter] of [
+  ['futureMass', 'logMassGev', 'futureMassOutput', value => formatNumber(value, 1)],
+  ['futureCrossSection', 'logCrossSectionCm2', 'futureCrossSectionOutput', value => formatNumber(value, 1)],
+  ['futureDensity', 'localDensity', 'futureDensityOutput', value => formatNumber(value, 2)],
+  ['futureEfficiency', 'efficiency', 'futureEfficiencyOutput', value => `${formatNumber(value * 100, 0)}%`]
+]) {
+  $(id).addEventListener('input', event => {
+    state.futures[stateKey] = Number(event.currentTarget.value);
+    $(output).textContent = formatter(state.futures[stateKey]);
+    renderFutures();
+  });
+}
 for (const control of [$('populationSearch'), $('qualityFilter'), $('populationClass')]) {
   control.addEventListener(control.tagName === 'INPUT' ? 'input' : 'change', renderPopulation);
 }
@@ -1368,7 +1431,7 @@ for (const canvas of [$('btfrCanvas'), $('rarCanvas')]) {
 
 buildControls();
 drawPosterior();
-Promise.all([loadCatalog(), loadClusterCatalog(), loadCandidateAtlas()])
+Promise.all([loadCatalog(), loadClusterCatalog(), loadCandidateAtlas(), loadResearchFrontier()])
   .then(() => runModel())
   .catch(error => {
     $('workerStatus').textContent = 'Reference data unavailable';
