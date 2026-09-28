@@ -34,7 +34,7 @@ They are not the same thing.
 - **Dark matter** is the additional gravitating component inferred in the standard cosmological framework from independent observations including dynamics, lensing, the CMB and structure formation. Its microscopic identity is unknown.
 - **Dark energy** is the component or phenomenon used to describe late-time accelerated expansion. The reference model uses a cosmological constant, while evolving equations of state remain an active research question.
 
-The cosmic-budget graphic above is a **model-labelled reference**, not three substances directly weighed in a laboratory. The live site now includes a dedicated **Cosmic Inventory Mathematics** page that exposes the Planck-style physical-density inputs, the conversion \(\omega_i=\Omega_i h^2\), flat-universe closure arithmetic, and primary-source links behind the displayed percentages.
+The cosmic-budget graphic above is a **model-labelled reference**, not three substances directly weighed in a laboratory. The live site now includes a dedicated **Cosmic Inventory Mathematics** page that exposes the Planck-style physical-density inputs, the conversion $\omega_i=\Omega_i h^2$, flat-universe closure arithmetic, and primary-source links behind the displayed percentages.
 
 ## What is inside the lab?
 
@@ -69,36 +69,61 @@ The galaxy workbench lets the visitor build this reasoning in stages: observed v
 
 At radius r, the browser uses SPARC's sign-preserving baryonic convention:
 
-$
+$$
 v_{\rm bar}^2 =
-\operatorname{sign}(V_{\rm gas})V_{\rm gas}^2 +
-\Upsilon_{\rm disk}\operatorname{sign}(V_{\rm disk})V_{\rm disk}^2 +
-\Upsilon_{\rm bul}\operatorname{sign}(V_{\rm bul})V_{\rm bul}^2 .
-$
+\operatorname{sgn}(V_{\rm gas})V_{\rm gas}^2
++
+\Upsilon_{\rm disk}\operatorname{sgn}(V_{\rm disk})V_{\rm disk}^2
++
+\Upsilon_{\rm bul}\operatorname{sgn}(V_{\rm bul})V_{\rm bul}^2.
+
+$$
 
 The model is
 
-$
+$$
 v_{\rm model}^2 = v_{\rm bar}^2 + v_{\rm halo}^2.
-$
+$$
 
 Implemented halo families:
 
-    pISO:    v² = v∞² [1 - (rc/r) atan(r/rc)]
+**Pseudo-isothermal**
+$
+v_{\rm pISO}^2(r)
+=
+v_\infty^2
+\left[
+1-\frac{r_c}{r}\tan^{-1}\!\left(\frac{r}{r_c}\right)
+\right].
+$
 
-    NFW:     v² = vs² [ln(1+x) - x/(1+x)] / x
-             x = r/rs
+**NFW**
+$
+v_{\rm NFW}^2(r)
+=
+v_s^2\,
+\frac{\ln(1+x)-x/(1+x)}{x},
+\qquad
+x=\frac{r}{r_s}.
+$
 
-    Burkert: v² = vs² {ln[(1+x)²(1+x²)] - 2 atan(x)} / x
-             x = r/r0
+**Burkert**
+$
+v_{\rm Burkert}^2(r)
+=
+v_s^2\,
+\frac{\ln\!\left[(1+x)^2(1+x^2)\right]-2\tan^{-1}(x)}{x},
+\qquad
+x=\frac{r}{r_0}.
+$
 
 The default weighted likelihood assumes independent Gaussian quoted random errors:
 
-$
+$$
 \chi^2 = \sum_i \left[\frac{V_{{\rm obs},i}-V_{{\rm model},i}}{\sigma_i}\right]^2,
 \qquad
 \ln L = -\frac{1}{2}\chi^2 + {\rm constant}.
-$
+$$
 
 That independence assumption is part of the result. It does not represent a complete covariance model.
 
@@ -116,9 +141,9 @@ The population laboratory uses one normalized catalogue and supports filters for
 
 The BTFR illustration uses the explicit working assumption:
 
-$
+$$
 M_{\rm bar}=0.5\,L_{3.6}+1.33\,M_{\rm HI}.
-$
+$$
 
 SPARC is broad but is **not a volume-limited statistically complete survey**, so the active selection is always part of the interpretation.
 
@@ -128,7 +153,7 @@ SPARC is broad but is **not a volume-limited statistically complete survey**, so
 
 ![SPARC radial-acceleration plane](docs/figures/rar.svg)
 
-**Population figure — radial acceleration.** The 3,389 resolved points use the documented stellar mass-to-light assumptions. Marker shape/colour again encodes SPARC quality; the **grey dashed line** is Newtonian equality \(g_{\rm obs}=g_{\rm bar}\), while the **violet curve** is the empirical RAR reference with \(g_\dagger=1.2\times10^{-10}\,{\rm m\,s^{-2}}\). These curves are comparison references, not claims that one mechanism has been uniquely identified.
+**Population figure — radial acceleration.** The 3,389 resolved points use the documented stellar mass-to-light assumptions. Marker shape/colour again encodes SPARC quality; the **grey dashed line** is Newtonian equality $g_{\rm obs}=g_{\rm bar}$, while the **violet curve** is the empirical RAR reference with $g_\dagger=1.2\times10^{-10}\,{\rm m\,s^{-2}}$. These curves are comparison references, not claims that one mechanism has been uniquely identified.
 
 ### Figure legend and reading guide
 
@@ -149,9 +174,9 @@ The project does not hard-code "dark matter wins" into the interface. A selected
 
 The lensing laboratory implements angular-diameter geometry, critical surface density and an SIS scale:
 
-$
+$$
 \Sigma_{\rm crit} = \frac{c^2}{4\pi G}\frac{D_s}{D_lD_{ls}}.
-$
+$$
 
 The cluster catalogue includes the Bullet Cluster, MACS J0025.4-1222 and Abell 520 as a systematics/disagreement case. The Bullet Cluster record preserves both the classic separation of dominant X-ray gas from lensing-inferred total mass and the higher-resolution 2025 JWST reconstruction showing richer substructure.
 
@@ -161,9 +186,9 @@ The rendered layer map is an **educational reconstruction**. It is not a fresh i
 
 The cosmology module supports a CPL equation of state:
 
-$
+$$
 w(a)=w_0+w_a(1-a)
-$
+$$
 
 and computes component fractions, H(z), comoving distance, and educational BAO-style coordinates D_M/r_d and D_H/r_d. These are **background-model responses**, not a Planck or DESI likelihood and not a substitute for CLASS/CAMB.
 
@@ -195,9 +220,9 @@ identity -> coupling -> control -> capture -> confinement -> energy transfer -> 
 
 For local density rho_chi and relative speed v_chi, the futures module calculates mass flux, kinetic-power flux, momentum flux and an explicitly idealised rest-energy ceiling. A toy target column uses:
 
-$
+$$
 P_{\rm int}=1-e^{-\sigma N}.
-$
+$$
 
 That interaction term often makes the engineering scenario collapse: a huge geometric collector can still be almost transparent to a very weakly interacting component. The purpose is to discover **where an idea fails**, not to manufacture a futuristic result.
 
