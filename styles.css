@@ -913,7 +913,7 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
 
 .cosmology-controls { display: grid; align-content: start; gap: 19px; padding: 20px; background: var(--surface-raised); }
 .cosmology-chart-card { min-width: 0; background: #07111f; }
-#cosmologyCanvas { width: 100%; height: 430px; display: block; }
+#cosmologyCanvas { width: 100%; display: block; }
 
 .cosmology-logic {
   display: grid;
@@ -1624,11 +1624,76 @@ html[data-motion="reduced"] .inference-chain li { transform: none !important; op
 
 
 /* Phase 3: paired cosmology figures and dated experiment evidence */
-.cosmology-figures { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--border); }
-.cosmology-figures .cosmology-chart-card { background: var(--surface); }
-#baoCanvas { width: 100%; min-height: 330px; }
-.cosmology-metrics, .lensing-metrics { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
-@media (min-width: 1250px) { .cosmology-figures { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.cosmology-layout {
+  align-items: start;
+}
+
+.cosmology-figures {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: auto;
+  align-self: start;
+  align-items: start;
+  gap: 1px;
+  min-width: 0;
+  min-height: 0;
+  background: var(--border);
+}
+
+.cosmology-figures .cosmology-chart-card {
+  display: grid;
+  grid-template-rows: auto 380px;
+  align-self: start;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+#cosmologyCanvas,
+#baoCanvas {
+  width: 100%;
+  height: 380px;
+  min-height: 0;
+  max-height: 380px;
+  display: block;
+}
+
+.cosmology-metrics,
+.lensing-metrics {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+@media (min-width: 1250px) {
+  .cosmology-figures {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .cosmology-figures .cosmology-chart-card {
+    grid-template-rows: auto 300px;
+  }
+
+  #cosmologyCanvas,
+  #baoCanvas {
+    height: 300px;
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cosmology-figures .cosmology-chart-card {
+    grid-template-rows: auto 260px;
+  }
+
+  #cosmologyCanvas,
+  #baoCanvas {
+    height: 260px;
+    max-height: 260px;
+  }
+}
 
 
 .certainty-anomaly { border-color: var(--warm); color: var(--warm); }
