@@ -1,0 +1,199 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,tabularx}
+\usepackage{xcolor,hyperref}
+\usepackage[backend=biber,style=authoryear,maxcitenames=2]{biblatex}
+\addbibresource{references.bib}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=blue,urlcolor=blue,pdftitle={Dark Matter Evidence Lab},pdfauthor={Biswajit Jana}}
+
+\title{Dark Matter Evidence Lab:\\A Reproducible Interactive Investigation of Galaxy Dynamics, Gravitational Lensing, Cosmological Constraints, Particle Searches and Physics-Constrained Futures}
+\author{Biswajit Jana}
+\date{28 September 2026}
+
+\begin{document}
+\maketitle
+\begin{center}
+\textbf{Research Report / Technical Monograph}\\[0.5em]
+This document is not presented as an institutional thesis and does not claim a discovery of dark matter.
+\end{center}
+
+\begin{abstract}
+Dark matter is inferred across galaxy dynamics, gravitational lensing, cosmological structure and precision measurements, yet its microscopic identity remains unknown. This report documents Dark Matter Evidence Lab, an open computational laboratory designed to preserve the distinction between measured quantities, derived quantities, model-dependent inference, open questions and speculation. The software ingests the public SPARC rotation-curve sample of 175 galaxies and 3,391 resolved measurements, evaluates baryonic mass contributions and multiple halo profiles, performs transparent Bayesian diagnostics, connects galaxy results to cluster lensing and cosmology, records the current candidate and experiment landscape, and examines future technological claims through explicit energy, momentum and interaction-rate constraints. The project does not identify a dark-matter particle. Its objective is reproducibility: a numerical result should be traceable to a dataset, equation, assumption, software version and uncertainty statement.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Why this project exists}
+This project began from a deceptively simple question: if the matter that emits light does not account for all measured gravitational behaviour under the standard framework, how far can a transparent computational experiment follow the evidence before it reaches assumptions and unknown physics?
+
+The initial goal was not to build a static explanation. The goal was to expose the chain from observation to inference. A rotation curve should not appear as a finished dark-matter plot without the measured velocities, quoted uncertainties, baryonic decomposition, model assumptions and residuals that make the interpretation possible.
+
+A second question emerged later: if the microscopic nature of dark matter is eventually discovered, when does a scientific unknown become an engineering medium? That question is treated conditionally. Discovery alone does not imply capture, confinement, energy extraction, communication or propulsion.
+
+\section{Scope and epistemic contract}
+Every module is organised around a scientific status: observation, calibrated data product, derived quantity, robust inference, model-dependent inference, open question, hypothesis, anomaly, speculative technology, or science-fiction boundary.
+
+The project does not claim that a dark-matter particle has been directly identified, that one halo profile is uniquely true, that dark energy is known to be a material substance, that extra dimensions are required to explain dark matter, or that a practical dark-matter engine exists.
+
+\section{The dark universe}
+In a base flat $\Lambda$CDM description, Planck provides a precision reference for the physical baryon and cold-dark-matter densities \parencite{Planck2020}. The background expansion may be written
+\begin{equation}
+H^2(a)=H_0^2\left[\Omega_r a^{-4}+\Omega_m a^{-3}+\Omega_k a^{-2}+\Omega_{\rm DE}f_{\rm DE}(a)\right].
+\end{equation}
+For a cosmological constant, $f_{\rm DE}=1$. For the CPL form used by the educational response model,
+\begin{equation}
+w(a)=w_0+w_a(1-a),
+\end{equation}
+\begin{equation}
+f_{\rm DE}(a)=a^{-3(1+w_0+w_a)}\exp[3w_a(a-1)].
+\end{equation}
+Dark matter and dark energy are distinct open problems. Dark matter clusters and contributes attractive gravitation in the standard picture. Dark energy describes late-time accelerated expansion.
+
+\section{Galaxy dynamics and SPARC}
+For circular motion in a gravitational potential,
+\begin{equation}
+v_c^2(r)=r\frac{\partial\Phi}{\partial r}.
+\end{equation}
+Under a spherical approximation, $v_c^2(r)=GM(<r)/r$. The project uses the public SPARC galaxy sample and Newtonian mass models \parencite{Lelli2016}: 175 galaxies and 3,391 resolved measurements with observed velocity, random uncertainty, and published gas, disc and bulge contributions.
+
+The normalized ingestion records source URLs, pinned checksums, transformations and selection metadata. No interpolation or fitting is performed by the ingestion step.
+
+\subsection{Baryonic decomposition}
+At every resolved radius the browser uses the sign-preserving component convention
+\begin{equation}
+v_{\rm bar}^2={\rm sign}(V_{\rm gas})V_{\rm gas}^2+\Upsilon_d{\rm sign}(V_{\rm disk})V_{\rm disk}^2+\Upsilon_b{\rm sign}(V_{\rm bul})V_{\rm bul}^2.
+\end{equation}
+The total model is $v_{\rm model}^2=v_{\rm bar}^2+v_{\rm halo}^2$. Mass-to-light ratios are assumptions or nuisance parameters, not direct dark-matter measurements.
+
+\section{Halo models}
+The pseudo-isothermal velocity law is
+\begin{equation}
+v_{\rm pISO}^2=v_\infty^2\left[1-\frac{r_c}{r}\tan^{-1}\left(\frac{r}{r_c}\right)\right].
+\end{equation}
+For NFW with $x=r/r_s$,
+\begin{equation}
+v_{\rm NFW}^2=v_s^2\frac{\ln(1+x)-x/(1+x)}{x},\qquad v_s^2=4\pi G\rho_s r_s^2,
+\end{equation}
+following the standard cuspy halo family \parencite{NFW1996}. For Burkert with $x=r/r_0$,
+\begin{equation}
+v_{\rm B}^2=v_s^2\frac{\ln[(1+x)^2(1+x^2)]-2\tan^{-1}x}{x},\qquad v_s^2=\pi G\rho_0r_0^2,
+\end{equation}
+providing a cored comparison \parencite{Burkert1995}. A lower residual metric for one galaxy does not establish a uniquely true microscopic halo model.
+
+\section{Statistical and Bayesian inference}
+The default likelihood treats quoted random velocity errors as independent Gaussian uncertainties:
+\begin{equation}
+\chi^2=\sum_i\left[\frac{V_{{\rm obs},i}-V_{{\rm model},i}}{\sigma_i}\right]^2,\qquad \ln L=-\frac{1}{2}\chi^2+{\rm constant}.
+\end{equation}
+The workbench reports $\chi^2$, reduced $\chi^2$, weighted RMS, AIC and BIC. The browser posterior uses explicit uniform priors and deterministic adaptive Metropolis chains. Diagnostics include traces, autocorrelation, split $\hat R$, effective sample size, prior-predictive intervals and posterior-predictive intervals.
+
+Distance and inclination can be varied as explicit sensitivity transformations but are currently held fixed within one posterior run rather than marginalised as sampled nuisance dimensions. Convergence diagnostics test numerical mixing; they do not establish physical truth.
+
+\section{Galaxies as a population}
+The population laboratory exposes sample selection while exploring the baryonic Tully--Fisher relation and radial-acceleration behaviour. A working baryonic-mass approximation is
+\begin{equation}
+M_{\rm bar}=0.5L_{3.6}+1.33M_{\rm HI}.
+\end{equation}
+The radial-acceleration relation is treated as an empirical regularity, not a proof of one explanation \parencite{McGaugh2016}. SPARC is not a volume-limited statistically complete survey; quality, morphology, inclination, surface-brightness and resolved-point filters therefore belong to the interpretation.
+
+\section{Alternative dynamics}
+The project includes baryons-only and phenomenological acceleration mappings as a challenge-the-model exercise. A MOND-like galaxy mapping is not equivalent to a complete relativistic theory, and a successful halo fit does not identify particle microphysics. Comparisons must include assumptions, free parameters, residual patterns and observations outside galaxy rotation curves.
+
+\section{Gravitational lensing and colliding clusters}
+For lens and source angles, $\boldsymbol{\beta}=\boldsymbol{\theta}-\boldsymbol{\alpha}(\boldsymbol{\theta})$. The convergence is
+\begin{equation}
+\kappa=\frac{\Sigma}{\Sigma_{\rm crit}},\qquad \Sigma_{\rm crit}=\frac{c^2}{4\pi G}\frac{D_s}{D_lD_{ls}}.
+\end{equation}
+A mass map is a derived reconstruction, not a direct photograph of dark matter.
+
+The Bullet Cluster remains an important example because the dominant X-ray gas and lensing-inferred total mass are spatially separated \parencite{Clowe2006}. A 2025 JWST strong- and weak-lensing analysis found richer substructure than a two-blob cartoon \parencite{Cha2025}. The project therefore preserves both the classic tracer-separation result and the continuing refinement of the detailed mass reconstruction.
+
+\section{Cosmology and dark energy}
+The cosmology module calculates background expansion and distance response, not a Planck or DESI likelihood and not a Boltzmann solution. In the flat case implemented here,
+\begin{equation}
+D_M(z)=\frac{c}{H_0}\int_0^z\frac{dz'}{E(z')},\qquad D_H(z)=\frac{c}{H(z)}.
+\end{equation}
+The interface reports educational $D_M/r_d$ and $D_H/r_d$ coordinates. DESI DR2 motivates continuing tests of evolving dark-energy models, while the July 2026 Ly$\alpha$ full-shape update moved that probe's central result toward the Planck $\Lambda$CDM reference \parencite{DESI2026}. The project therefore uses the wording active model comparison, not discovery of evolving dark energy.
+
+\section{Candidate dark matter and experimental searches}
+The candidate atlas includes WIMP-like particles, QCD axions and ALPs, sterile-neutrino-like relics, ultralight fields, self-interacting dark matter, hidden sectors and primordial black holes. Different candidates require different physical axes and cannot be compressed into one universal mass-versus-cross-section plot.
+
+The September 2026 LZ analysis includes a high-energy nuclear-recoil-like event in a low-background region. The repository records the published local and global background-only tensions and classifies it as an anomaly, not a dark-matter discovery \parencite{LZ2026}.
+
+\section{Where dark matter is expected}
+Under standard Galactic halo models, a local dark-matter population is expected in the Solar neighbourhood. Cosmological abundance does not imply a uniform density or an easily harvested material. For particle mass $m_\chi$, a simple local number flux is
+\begin{equation}
+\Phi_\chi=\frac{\rho_\chi}{m_\chi}v_\chi.
+\end{equation}
+Direct-detection rates additionally depend on the velocity distribution, interaction operator, target response, thresholds, exposure and backgrounds.
+
+\section{Extra dimensions}
+No extra spatial dimension is required to make a particle optically dark. A state in ordinary $3+1$ dimensional spacetime can simply lack a useful electromagnetic coupling. Extra-dimensional, braneworld and Kaluza--Klein models are separate hypotheses that must produce distinguishable spectra, missing-energy signatures, force-law deviations or other model-specific observables.
+
+\section{Physics-constrained futures}
+A microscopic discovery would not automatically create an engineering material. The futures laboratory therefore asks, in sequence: is the identity known, does it couple to Standard Model matter, can the coupling be controlled, can the state be captured or confined, can energy be exchanged, and can momentum be directed?
+
+For local density $\rho_\chi$ and relative speed $v_\chi$,
+\begin{align}
+\frac{\dot m}{A}&=\rho_\chi v_\chi,\\
+\frac{P_{\rm kin}}{A}&=\frac{1}{2}\rho_\chi v_\chi^3,\\
+\frac{F}{A}&=\epsilon_p\rho_\chi v_\chi^2.
+\end{align}
+An explicitly idealised rest-energy ceiling is
+\begin{equation}
+\frac{P_{\rm rest}}{A}=\eta_{\rm cap}\eta_{\rm conv}\rho_\chi v_\chi c^2.
+\end{equation}
+This equation supplies no capture or conversion mechanism. A toy interaction column uses
+\begin{equation}
+P_{\rm int}=1-\exp(-\sigma N).
+\end{equation}
+For very small cross sections, even a huge geometric collector can be effectively transparent. A failed engine under known interaction strengths is a scientifically useful result.
+
+The most plausible early applications of a microscopic dark-sector discovery may be new sensing and astronomy rather than propulsion: directional mapping of local phase space, precision field searches, or new probes through environments opaque to electromagnetic radiation. Communication, energy and propulsion require additional controllable physics. Current evidence provides no mechanism for reactionless propulsion, gravity shielding, faster-than-light travel or wormholes.
+
+\section{Software as a scientific instrument}
+The repository separates source data and provenance, tested physics modules, worker computation, inference, visualisation and user state. SPARC ingestion is checksum-pinned. Important analyses can be exported with software version, selected galaxy, model parameters, priors and other state.
+
+An independent Python/SciPy implementation re-implements the fixed-distance, fixed-inclination rotation model instead of importing JavaScript. Its purpose is cross-language numerical comparison. Agreement can reveal coding discrepancies but cannot establish that the physical model is true.
+
+\section{Results supported by the project}
+The repository can reproducibly demonstrate individual SPARC mass discrepancies under stated baryonic assumptions; sensitivity of halo fits to model parameters; prior, posterior and predictive diagnostics; selected population relations; quantitative lensing geometry; background cosmological distance response; and interaction-limited engineering upper bounds. These are reproductions and computational analyses, not a new dark-matter discovery.
+
+\section{Limitations}
+The principal limitations are: quoted SPARC random errors are not a complete covariance model; distance and inclination are not yet marginalised in the browser posterior; mass-to-light priors remain simplified; the browser sampler is not a substitute for a peer-reviewed inference pipeline; the population layer is not a hierarchical survey likelihood; cluster layers do not reconstruct raw shear catalogues; the cosmology module is not CLASS/CAMB; experimental statuses are dated snapshots; and futures calculations contain explicitly hypothetical capture and conversion efficiencies.
+
+\section{Open problems and falsifiability}
+The machine-readable registry in \texttt{data/open\_problems.json} records questions about microscopic identity, small-scale halo structure, local phase space, self-interaction, extended dark sectors, extra dimensions, baryonic degeneracies, alternative gravity and technology gates. Each question stores equations, evidence, competing explanations, datasets, a discriminating measurement, falsification criteria, degeneracies and status.
+
+When evidence is insufficient, the correct project action is to update an open problem rather than manufacture an answer.
+
+\section{Future work}
+The highest-value next scientific steps are covariance-aware likelihoods, full nuisance-parameter marginalisation, repeated synthetic coverage calibration, hierarchical population inference, published shear-catalogue reconstruction, validated CLASS/CAMB template emulation, richer machine-readable experiment constraints, and archival releases with persistent identifiers.
+
+\section{Conclusion}
+Dark Matter Evidence Lab has not identified dark matter. It has built a reproducible framework for asking what is observed, what is inferred, what is assumed, what remains unknown, and what new physical properties would have to be discovered before the unknown could become technology.
+
+The intended long-term value is that a future researcher can replace one of today's assumptions with a new measurement and determine which conclusions survive.
+
+\appendix
+\section{Reproducibility commands}
+\begin{verbatim}
+npm ci
+npm run verify
+npm run data:refresh
+npm run docs:figures
+
+pip install -r validation/requirements.txt
+python validation/rotation_scipy.py --write
+\end{verbatim}
+
+\section{Archival and figure provenance}
+README figures are generated from repository data by \texttt{scripts/generate\_readme\_figures.mjs}. Observatory media, derived reconstructions and generated concept art are explicitly distinguished in the website. The source catalogues retain their own citation and licensing requirements.
+
+\printbibliography
+\end{document}
