@@ -1,8 +1,8 @@
 {
   "name": "dark-matter-evidence-lab",
-  "version": "3.0.0-beta.1",
+  "version": "3.0.0-beta.4",
   "private": true,
-  "description": "Evidence-first, reproducible dark-matter exploration across galaxy rotation curves, cluster lensing, cosmology and detector technology.",
+  "description": "Evidence-first, reproducible dark-matter laboratory spanning SPARC galaxy dynamics, lensing, cosmology, particle searches and physics-constrained futures.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -14,13 +14,15 @@
     "verify": "npm run check && npm test && npm run validate:research && npm run build"
   },
   "keywords": [
+    "dark-matter",
     "astrophysics",
-    "simulation",
-    "canvas",
-    "web-worker",
-    "rotation",
+    "cosmology",
+    "galaxy-rotation-curves",
+    "sparc",
     "gravitational-lensing",
-    "cosmology"
+    "bayesian-inference",
+    "scientific-visualization",
+    "open-science"
   ],
   "author": "Biswajit Jana",
   "license": "MIT",
