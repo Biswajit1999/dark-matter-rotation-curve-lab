@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-GB" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Interactive derivation of the reference cosmic inventory used by Dark Matter Evidence Lab.">
+  <meta name="theme-color" content="#09080b">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem("dm-theme")||"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
+  <title>Cosmic inventory mathematics · Dark Matter Evidence Lab</title>
+  <link rel="stylesheet" href="styles.css?v=3.0.0-beta.4">
+  <script src="themeController.js?v=3.0.0-beta.4" defer></script>
+</head>
+<body class="budget-page">
+  <header class="budget-topbar">
+    <a href="index.html#dark-universe-title" class="budget-back">← Evidence Lab</a>
+    <strong>Cosmic Inventory Mathematics</strong>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="true">
+      <span>Light</span><i aria-hidden="true"></i><span>Dark</span>
+    </button>
+  </header>
+
+  <main class="budget-shell">
+    <section class="budget-hero">
+      <p class="home-eyebrow">From model parameters to percentages</p>
+      <h1>How are the cosmic percentages calculated?</h1>
+      <p>The percentages on the homepage are not four direct meter readings. They are a compact representation of parameters inferred by fitting a cosmological model to observations. This page exposes the conversion from the commonly quoted physical densities <em>ω = Ωh²</em> to the fractional density parameters <em>Ω</em>.</p>
+      <div class="budget-caveat"><strong>Important:</strong> this calculator reproduces the parameter conversion and flat-universe closure arithmetic. It does not rerun the Planck likelihood, Boltzmann solver or CMB parameter inference.</div>
+    </section>
+
+    <section class="budget-calculator">
+      <div class="budget-heading">
+        <div><p class="home-eyebrow">Interactive reference</p><h2>Change the inputs</h2></div>
+        <p>Start from a Planck-2018-like base ΛCDM reference. Change H₀ or the physical densities and see how the fractions move.</p>
+      </div>
+
+      <div class="budget-controls">
+        <label>H₀ <output id="h0Value">67.4</output> km s⁻¹ Mpc⁻¹<input id="h0" type="range" min="60" max="75" step="0.1" value="67.4"></label>
+        <label>ωb = Ωb h² <output>0.0224</output><input id="omegaB" type="range" min="0.018" max="0.027" step="0.0001" value="0.0224"></label>
+        <label>ωcdm = Ωcdm h² <output>0.120</output><input id="omegaC" type="range" min="0.08" max="0.16" step="0.001" value="0.120"></label>
+        <label>ωr = Ωr h² <output>4.18×10⁻⁵</output><input id="omegaR" type="range" min="0.000030" max="0.000060" step="0.000001" value="0.0000418"></label>
+      </div>
+
+      <div class="budget-bar" aria-label="Calculated cosmic density fractions">
+        <span id="bar-radiation" class="budget-segment budget-rad" style="--share:.01%"></span>
+        <span id="bar-baryons" class="budget-segment budget-baryon" style="--share:4.9%"></span>
+        <span id="bar-cdm" class="budget-segment budget-cdm" style="--share:26.4%"></span>
+        <span id="bar-darkEnergy" class="budget-segment budget-de" style="--share:68.7%"></span>
+      </div>
+
+      <div class="budget-legend">
+        <div><i class="budget-rad"></i><span>Radiation</span><strong id="out-radiation">0.01%</strong></div>
+        <div><i class="budget-baryon"></i><span>Ordinary matter</span><strong id="out-baryons">4.9%</strong></div>
+        <div><i class="budget-cdm"></i><span>Cold dark matter</span><strong id="out-cdm">26.4%</strong></div>
+        <div><i class="budget-de"></i><span>Dark energy / closure term</span><strong id="out-darkEnergy">68.7%</strong></div>
+      </div>
+    </section>
+
+    <section class="budget-maths">
+      <article>
+        <span>Step 1</span><h2>Convert H₀ into h</h2>
+        <p>Cosmological tables often quote the dimensionless Hubble parameter:</p>
+        <div class="budget-equation">h = H₀ / 100</div>
+        <code>h = <strong id="hValue">0.674</strong></code>
+      </article>
+      <article>
+        <span>Step 2</span><h2>Convert physical densities</h2>
+        <p>Planck-style tables quote ωb and ωcdm. The corresponding fractional densities are Ω = ω/h².</p>
+        <div class="budget-equation">Ωb = ωb / h²</div><code id="eqBaryon"></code>
+        <div class="budget-equation">Ωcdm = ωcdm / h²</div><code id="eqCdm"></code>
+        <div class="budget-equation">Ωr = ωr / h²</div><code id="eqRadiation"></code>
+      </article>
+      <article>
+        <span>Step 3</span><h2>Use flat-universe closure</h2>
+        <p>For the simplified flat reference used on the homepage, the remaining budget is assigned to the cosmological-constant term.</p>
+        <div class="budget-equation">ΩΛ = 1 − Ωb − Ωcdm − Ωr</div><code id="eqDarkEnergy"></code>
+        <p>Closure check: <strong id="closureValue">1.000000</strong></p>
+      </article>
+    </section>
+
+    <section class="budget-sources">
+      <div><p class="home-eyebrow">Sources and provenance</p><h2>Where do the fitted inputs come from?</h2></div>
+      <p>The numerical inputs are representative of the final Planck 2018 base-ΛCDM cosmological-parameter analysis. The exact posterior values depend on the dataset combination and neutrino convention; the homepage intentionally displays rounded pedagogical buckets.</p>
+      <div class="budget-source-grid">
+        <a href="https://doi.org/10.1051/0004-6361/201833910" target="_blank" rel="noopener noreferrer"><strong>Planck Collaboration VI (2020)</strong><span>Cosmological parameters · A&A 641, A6</span></a>
+        <a href="https://wiki.cosmos.esa.int/planck-legacy-archive/index.php/Cosmological_Parameters" target="_blank" rel="noopener noreferrer"><strong>Planck Legacy Archive</strong><span>Published parameter tables and likelihood products</span></a>
+        <a href="index.html#cosmology-title"><strong>Back to the live cosmology lab</strong><span>Explore Ω, w₀–wₐ, H(z) and BAO-style distances</span></a>
+      </div>
+    </section>
+  </main>
+
+  <script src="cosmicBudget.js?v=3.0.0-beta.4" defer></script>
+</body>
+</html>
