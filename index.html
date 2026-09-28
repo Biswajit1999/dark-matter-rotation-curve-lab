@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Follow the evidence for unseen gravitation through 175 SPARC galaxies, lensing, cosmology, particle searches and physics-constrained futures.">
-  <meta name="theme-color" content="#f4efe6">
+  <meta name="theme-color" content="#09080b"><script>try{document.documentElement.dataset.theme=localStorage.getItem("dm-theme")||"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
   <meta name="author" content="Biswajit Jana">
   <meta property="og:title" content="Dark Matter Evidence Lab">
   <meta property="og:description" content="An open computational investigation of the observations, equations and experiments behind the dark-matter problem.">
@@ -16,100 +16,172 @@
 <body class="mode-research">
   <a class="skip-link" href="#main-content">Skip to analysis</a>
   <div class="reading-progress" aria-hidden="true"></div>
-  <header class="topbar">
-    <div class="brand-block">
-      <p class="eyebrow">Open computational monograph · release 3</p>
-      <h1>Dark Matter Evidence Lab</h1>
-      <p class="subtitle">Galaxies · Lensing · Cosmology · Particle Searches · Open Questions · Futures</p>
+  <header class="site-header">
+    <a class="site-brand" href="#opening-title" aria-label="Dark Matter Evidence Lab home">
+      <span class="brand-orbit" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span><strong>Dark Matter</strong><small>Evidence Lab</small></span>
+    </a>
+    <nav class="section-nav" aria-label="Evidence laboratory sections">
+      <a href="#opening-title">Home</a>
+      <a href="#dark-universe-title">Science</a>
+      <a href="#workbench-title">Research</a>
+      <a href="#futures-title">Applications</a>
+      <a href="#evidence-graph-title">Open Questions</a>
+    </nav>
+    <div class="header-tools">
+      <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="true" aria-label="Switch colour theme">
+        <span>Light</span><i aria-hidden="true"></i><span>Dark</span>
+      </button>
+      <div class="mode-switch compact-mode" role="group" aria-label="Interface depth">
+        <button id="modeEducator" type="button" aria-pressed="false">Guide</button>
+        <button id="modeResearch" type="button" aria-pressed="true">Lab</button>
+        <span id="modeStatus" class="sr-summary" aria-live="polite">Research mode active.</span>
+      </div>
+      <button id="motionToggle" class="motion-toggle" type="button" aria-pressed="false">Motion: full</button>
+      <div class="sr-only" role="status" aria-live="polite"><span id="workerStatus">Loading the galaxy catalogue</span><strong id="fitStatus">No fit yet</strong></div>
     </div>
-    <div class="status-card" role="status" aria-live="polite">
-      <span id="workerStatus">Loading the galaxy catalogue</span>
-      <strong id="fitStatus">No fit yet</strong>
-    </div>
-    <div class="mode-switch" role="group" aria-label="Interface depth">
-      <button id="modeEducator" type="button" aria-pressed="false">Educator</button>
-      <button id="modeResearch" type="button" aria-pressed="true">Research</button>
-      <span id="modeStatus" class="sr-summary" aria-live="polite">Research mode active.</span>
-    </div>
-    <button id="motionToggle" class="motion-toggle" type="button" aria-pressed="false">Motion: full</button>
   </header>
 
-  <nav class="section-nav" aria-label="Evidence laboratory sections">
-    <a href="#opening-title">Question</a>
-    <a href="#dark-universe-title">What is it?</a>
-    <a href="#workbench-title">Galaxy evidence</a>
-    <a href="#lensing-title">Across scales</a>
-    <a href="#cosmology-title">Particle & cosmos</a>
-    <a href="#futures-title">Applications</a>
-    <a href="#evidence-graph-title">Open questions</a>
-  </nav>
-
   <main id="main-content" class="shell" tabindex="-1">
-    <section class="opening-sequence" aria-labelledby="opening-title">
-      <div class="hero-copy">
-        <p class="hero-index">01 / THE QUESTION</p>
-        <h2 id="opening-title" class="hero-statement"><span>We see the light.</span><span>Gravity reveals more.</span></h2>
-        <p class="hero-deck">Dark Matter Evidence Lab is an open computational investigation of the observations, equations and experiments behind one of physics' major unsolved problems.</p>
-        <div class="hero-actions">
-          <a class="primary-button" href="#dark-universe-title">Follow the evidence</a>
-          <a class="text-action" href="#workbench-title">Open the galaxy lab <span aria-hidden="true">→</span></a>
+    <section class="home-hero depth-scene" aria-labelledby="opening-title">
+      <div class="hero-media" aria-hidden="true">
+        <img src="assets/observations/bullet-cluster-lensing.jpg" alt="">
+        <div class="hero-lensing-glow"></div>
+        <div class="hero-grid-overlay"></div>
+      </div>
+      <div class="home-hero-copy reveal">
+        <p class="hero-kicker">Exploration · Evidence · A deeper universe</p>
+        <h2 id="opening-title">Dark Matter<br><span>Evidence Lab</span></h2>
+        <p>Investigating invisible mass through galaxy rotation curves, gravitational lensing, clusters and cosmology.</p>
+        <div class="home-hero-actions">
+          <a class="hero-primary" href="#workbench-title">Explore the research <span aria-hidden="true">→</span></a>
+          <a class="hero-secondary" href="#dark-universe-title">Start with the basics</a>
+        </div>
+        <div class="home-hero-stats" aria-label="Project scope">
+          <div><strong>175</strong><span>SPARC galaxies</span></div>
+          <div><strong>3,391</strong><span>resolved velocities</span></div>
+          <div><strong>4</strong><span>evidence scales</span></div>
         </div>
       </div>
-      <aside class="hero-thesis" aria-label="Scientific thesis">
-        <p><span class="status-mark status-observed">Observed</span> We measure light, motion, distortion and cosmic structure.</p>
-        <p><span class="status-mark status-inferred">Inferred</span> The standard framework requires additional gravitating matter.</p>
-        <p><span class="status-mark status-open">Open question</span> Its microscopic identity remains unknown.</p>
+      <aside class="hero-caption reveal">
+        <span>Observed + inferred</span>
+        <strong>Gravitational lensing reveals where total mass is concentrated.</strong>
+        <small>Background: Bullet Cluster composite · NASA/ESA/CSA/STScI + Chandra</small>
       </aside>
     </section>
 
-    <section class="dark-universe" aria-labelledby="dark-universe-title">
-      <header class="editorial-heading">
-        <p class="chapter-number">02</p>
-        <div><p class="kicker">What is the dark universe?</p><h2 id="dark-universe-title">Three different entries in a modelled cosmic ledger</h2></div>
-        <p>The shared word <em>dark</em> does not make dark matter and dark energy the same substance. These present-day fractions are inferred within a base flat ΛCDM cosmology.</p>
+    <section class="dark-universe home-basics" aria-labelledby="dark-universe-title">
+      <header class="home-section-heading reveal">
+        <div>
+          <p class="home-eyebrow">Start here</p>
+          <h2 id="dark-universe-title">In simple words</h2>
+        </div>
+        <p>You do not need a cosmology textbook to enter the project. These two ideas are related only because both are still physically unexplained.</p>
       </header>
 
-      <div class="cosmic-ledger" data-epoch="today">
-        <div class="epoch-switch" role="group" aria-label="Cosmic epoch">
-          <button id="epochToday" type="button" aria-pressed="true">Today</button>
-          <button id="epochEarly" type="button" aria-pressed="false">Early universe</button>
-        </div>
-        <div class="ledger-scale" aria-label="Reference present-day cosmic composition: 4.9 percent baryonic matter, 26.4 percent cold dark matter and 68.7 percent dark energy">
-          <div class="ledger-segment ledger-radiation" id="ledgerRadiation" style="--share: 0%"><span id="ledgerRadiationValue">0.01%</span><strong>Radiation</strong><small>Ωr · photons + relativistic species</small></div>
-          <div class="ledger-segment ledger-baryon" id="ledgerBaryons" style="--share: 4.9%"><span id="ledgerBaryonValue">4.9%</span><strong>Ordinary matter</strong><small>Ωb · atoms, gas, stars</small></div>
-          <div class="ledger-segment ledger-dark-matter" id="ledgerDarkMatter" style="--share: 26.4%"><span id="ledgerDarkMatterValue">26.4%</span><strong>Cold dark matter</strong><small>Ωcdm · gravitating component</small></div>
-          <div class="ledger-segment ledger-dark-energy" id="ledgerDarkEnergy" style="--share: 68.7%"><span id="ledgerDarkEnergyValue">68.7%</span><strong>Dark energy</strong><small>ΩΛ · late-time expansion term</small></div>
-        </div>
-        <div class="ledger-key" aria-label="Cosmic composition values">
-          <div class="ledger-key-item ledger-key-radiation"><span>Radiation</span><strong id="ledgerRadiationKeyValue">0.01%</strong><small>Ωr · photons + relativistic species</small></div>
-          <div class="ledger-key-item ledger-key-baryon"><span>Ordinary matter</span><strong id="ledgerBaryonKeyValue">4.9%</strong><small>Ωb · atoms, gas, stars</small></div>
-          <div class="ledger-key-item ledger-key-dark-matter"><span>Cold dark matter</span><strong id="ledgerDarkMatterKeyValue">26.4%</strong><small>Ωcdm · gravitating component</small></div>
-          <div class="ledger-key-item ledger-key-dark-energy"><span>Dark energy</span><strong id="ledgerDarkEnergyKeyValue">68.7%</strong><small>ΩΛ · late-time expansion term</small></div>
-        </div>
-        <div class="ledger-note"><span id="ledgerEpochNote">Today · a = 1</span><span>Reference: base flat ΛCDM cosmology · Planck 2018 parameter baseline</span></div>
+      <div class="simple-definition-grid">
+        <article class="simple-card depth-card reveal">
+          <img src="assets/observations/hubble-m51.webp" alt="Hubble image of the Whirlpool Galaxy M51." loading="lazy">
+          <div>
+            <span>Dark matter</span>
+            <h3>Mass we cannot see with light.</h3>
+            <p>Galaxies and clusters behave as if extra gravitating mass is present. We infer it from motion, lensing and cosmic structure—but we still do not know what it is made of.</p>
+            <dl><div><dt>We can measure</dt><dd>its gravitational effects</dd></div><div><dt>We still do not know</dt><dd>its microscopic identity</dd></div></dl>
+          </div>
+        </article>
+        <article class="simple-card depth-card reveal">
+          <img src="assets/observations/planck-cmb.jpg" alt="Planck all-sky view of the cosmic microwave background." loading="lazy">
+          <div>
+            <span>Dark energy</span>
+            <h3>The name for accelerated cosmic expansion.</h3>
+            <p>The universe is not only expanding; its expansion is accelerating. Dark energy is the label for whatever drives that late-time behaviour in our models.</p>
+            <dl><div><dt>We can measure</dt><dd>the expansion history</dd></div><div><dt>We still do not know</dt><dd>the underlying physics</dd></div></dl>
+          </div>
+        </article>
       </div>
 
-      <div class="equation-band">
-        <p class="equation" aria-label="H squared of a equals H nought squared times radiation density a to the minus four plus matter density a to the minus three plus curvature density a to the minus two plus dark energy density">H²(a) = H₀² [ Ω<sub>r</sub>a<sup>−4</sup> + Ω<sub>m</sub>a<sup>−3</sup> + Ω<sub>k</sub>a<sup>−2</sup> + Ω<sub>Λ</sub> ]</p>
-        <p>Radiation dilutes fastest; matter follows volume; a cosmological constant remains constant. The interactive cosmology laboratory below lets you move through this history.</p>
-      </div>
+      <div class="cosmic-inventory reveal">
+        <div class="inventory-heading">
+          <div><p class="home-eyebrow">The universe today</p><h3>A cosmic inventory</h3></div>
+          <p>In a Planck-like base flat ΛCDM reference model, ordinary matter is only a small fraction of the total cosmic energy budget.</p>
+        </div>
 
-      <div class="dark-comparison" aria-label="Dark matter and dark energy comparison">
-        <article>
-          <span class="comparison-label">Clusters and adds gravitating mass</span>
-          <h3>Dark matter</h3>
-          <p>Inferred from dynamics, gravitational lensing, the CMB, structure formation and complementary astrophysical probes.</p>
-          <dl><div><dt>Microscopic identity</dt><dd>Unknown</dd></div><div><dt>Baseline behaviour</dt><dd>Attractive gravity; approximately collisionless and cold on large scales</dd></div></dl>
-        </article>
-        <article>
-          <span class="comparison-label">Changes late-time expansion</span>
-          <h3>Dark energy</h3>
-          <p>Constrained through distance-redshift relations, BAO, supernovae, the CMB and large-scale structure.</p>
-          <dl><div><dt>Physical identity</dt><dd>Unknown</dd></div><div><dt>Reference model</dt><dd>ΛCDM with w = −1; evolving models remain an active research question</dd></div></dl>
-        </article>
+        <div class="cosmic-ledger" data-epoch="today">
+          <div class="epoch-switch" role="group" aria-label="Cosmic epoch">
+            <button id="epochToday" type="button" aria-pressed="true">Today</button>
+            <button id="epochEarly" type="button" aria-pressed="false">Early universe</button>
+          </div>
+          <div class="inventory-track" aria-hidden="true">
+            <div class="inventory-fill ledger-radiation" id="ledgerRadiation" style="--share:0%"><span id="ledgerRadiationValue">0.01%</span></div>
+            <div class="inventory-fill ledger-baryon" id="ledgerBaryons" style="--share:4.9%"><span id="ledgerBaryonValue">4.9%</span></div>
+            <div class="inventory-fill ledger-dark-matter" id="ledgerDarkMatter" style="--share:26.4%"><span id="ledgerDarkMatterValue">26.4%</span></div>
+            <div class="inventory-fill ledger-dark-energy" id="ledgerDarkEnergy" style="--share:68.7%"><span id="ledgerDarkEnergyValue">68.7%</span></div>
+          </div>
+          <div class="ledger-key inventory-key" aria-label="Cosmic composition values">
+            <div class="ledger-key-item ledger-key-radiation"><span>Radiation</span><strong id="ledgerRadiationKeyValue">0.01%</strong><small>photons + relativistic species</small></div>
+            <div class="ledger-key-item ledger-key-baryon"><span>Ordinary matter</span><strong id="ledgerBaryonKeyValue">4.9%</strong><small>atoms, gas and stars</small></div>
+            <div class="ledger-key-item ledger-key-dark-matter"><span>Cold dark matter</span><strong id="ledgerDarkMatterKeyValue">26.4%</strong><small>gravitating component</small></div>
+            <div class="ledger-key-item ledger-key-dark-energy"><span>Dark energy</span><strong id="ledgerDarkEnergyKeyValue">68.7%</strong><small>late-time expansion term</small></div>
+          </div>
+          <div class="ledger-note"><span id="ledgerEpochNote">Today · a = 1</span><span>Reference: base flat ΛCDM · Planck 2018 parameter baseline</span></div>
+        </div>
+
+        <details class="home-deep-note">
+          <summary>Why do the fractions change with cosmic time?</summary>
+          <div class="equation-band">
+            <p class="equation">H²(a) = H₀² [ Ω<sub>r</sub>a<sup>−4</sup> + Ω<sub>m</sub>a<sup>−3</sup> + Ω<sub>k</sub>a<sup>−2</sup> + Ω<sub>Λ</sub> ]</p>
+            <p>Radiation dilutes fastest; matter follows volume; a cosmological constant remains constant. The quantitative cosmology laboratory later in the page lets you move through this history.</p>
+          </div>
+        </details>
       </div>
     </section>
 
+    <section class="home-areas" aria-labelledby="home-areas-title">
+      <div class="home-section-heading reveal">
+        <div><p class="home-eyebrow">Key areas</p><h2 id="home-areas-title">From evidence to new possibilities</h2></div>
+        <p>Four visual entry points into the project. Each opens into a quantitative section below.</p>
+      </div>
+      <div class="home-area-grid">
+        <a class="home-area-card depth-card reveal" href="#lensing-title">
+          <img src="assets/observations/bullet-cluster-lensing.jpg" alt="Bullet Cluster composite showing gas and lensing mass maps.">
+          <span>Cluster-scale inference</span>
+          <strong>Map total mass with gravitational lensing.</strong>
+          <small>Observation → reconstruction → mass distribution</small>
+        </a>
+        <a class="home-area-card depth-card reveal" href="#workbench-title">
+          <img src="assets/observations/hubble-m51.webp" alt="Hubble image of a spiral galaxy.">
+          <span>Galaxy dynamics</span>
+          <strong>Compare visible matter with measured rotation.</strong>
+          <small>175 galaxies · published SPARC data</small>
+        </a>
+        <a class="home-area-card depth-card reveal" href="#cosmology-title">
+          <img src="assets/observations/planck-cmb.jpg" alt="Planck all-sky cosmic microwave background map.">
+          <span>Early-universe constraints</span>
+          <strong>Ask why all gravitating matter cannot simply be baryonic.</strong>
+          <small>CMB · BAO · expansion history</small>
+        </a>
+        <a class="home-area-card depth-card reveal" href="#futures-title">
+          <img src="assets/observations/rubin-lsst-camera.jpg" alt="Rubin Observatory LSST camera in a cleanroom.">
+          <span>Scientific leap</span>
+          <strong>Turn a future microscopic discovery into measurable engineering questions.</strong>
+          <small>sensing · astronomy · energy · propulsion gates</small>
+        </a>
+      </div>
+    </section>
+
+    <section class="home-frontier depth-scene reveal" aria-labelledby="home-frontier-title">
+      <img src="assets/observations/bullet-cluster-lensing.jpg" alt="" aria-hidden="true">
+      <div>
+        <p class="home-eyebrow">The research frontier</p>
+        <h2 id="home-frontier-title">A fundamental question remains.</h2>
+        <p>We can map where unseen gravity acts. We can constrain how the dark component behaves. We still do not know what it is—and that is precisely where the open research begins.</p>
+        <a href="#evidence-graph-title">Explore the open questions <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <details class="research-depth-block">
+      <summary><span>How do scientists infer something they cannot see?</span><small>Open the observation → inference primer</small></summary>
+      <div class="research-depth-content">
     <section class="measurement-bridge" aria-labelledby="measurement-bridge-title">
       <header class="editorial-heading">
         <p class="chapter-number">03</p>
@@ -143,7 +215,7 @@
         <p>Dark matter is inferred through different measurements. These credited images are context—not substitutes for the quantitative data below.</p>
       </div>
       <div class="observation-grid">
-        <figure class="observation-card observation-card-wide">
+        <figure class="observation-card depth-card reveal observation-card-wide">
           <img src="assets/observations/bullet-cluster-lensing.jpg" width="850" height="436" alt="Webb and Chandra composite of the Bullet Cluster, with pink X-ray gas and blue gravitational-lensing mass maps separated across the collision." fetchpriority="high">
           <figcaption>
             <span class="evidence-tag">Merging cluster · lensing + X-ray</span>
@@ -153,7 +225,7 @@
           </figcaption>
         </figure>
 
-        <figure class="observation-card">
+        <figure class="observation-card depth-card reveal">
           <img src="assets/observations/hubble-m51.webp" width="594" height="800" alt="Hubble image of the face-on Whirlpool Galaxy M51, showing its bright core, dust lanes and spiral arms." loading="lazy">
           <figcaption>
             <span class="evidence-tag">Galaxy · visible structure</span>
@@ -163,7 +235,7 @@
           </figcaption>
         </figure>
 
-        <figure class="observation-card">
+        <figure class="observation-card depth-card reveal">
           <img src="assets/observations/planck-cmb.jpg" width="1920" height="2534" alt="Planck all-sky maps comparing large-scale cosmic microwave background temperature signal plus noise with instrument noise." loading="lazy">
           <figcaption>
             <span class="evidence-tag">Cosmology · early universe</span>
@@ -173,7 +245,7 @@
           </figcaption>
         </figure>
 
-        <figure class="observation-card">
+        <figure class="observation-card depth-card reveal">
           <img src="assets/observations/rubin-lsst-camera.jpg" width="1200" height="667" alt="Real photograph of Rubin Observatory's LSST Camera in a cleanroom, with a technician standing beside its large front opening." loading="lazy">
           <figcaption>
             <span class="evidence-tag">Technology · wide-field survey</span>
@@ -185,6 +257,9 @@
       </div>
       <p class="image-credit-note">Every image is a real mission or observatory product. Full credits and primary-source links appear directly on each image.</p>
     </section>
+
+      </div>
+    </details>
 
     <section class="workbench-heading" aria-labelledby="workbench-title">
       <div>
@@ -852,19 +927,19 @@
         </div>
         <div class="application-visual-grid">
           <article>
-            <img src="assets/concepts/dark-matter-sensing.svg" alt="Directional dark-matter sensing concept showing a detector and inferred incoming stream." loading="lazy">
+            <img src="assets/observations/rubin-lsst-camera.jpg" alt="Rubin Observatory camera representing future high-sensitivity survey instrumentation." loading="lazy">
             <div><span class="certainty-tag certainty-conditional">first plausible application</span><h4>Directional sensing</h4><p>Use a reproducible interaction to map local phase space, streams or substructure in a channel independent of ordinary light.</p></div>
           </article>
           <article>
-            <img src="assets/concepts/dark-matter-communication.svg" alt="Hypothetical communication concept showing a weakly interacting channel passing through a planet." loading="lazy">
+            <img src="assets/observations/planck-cmb.jpg" alt="Planck microwave sky used here as visual context for information carried by weak signals across the cosmos." loading="lazy">
             <div><span class="certainty-tag certainty-speculative">conditional</span><h4>Through-obstacle communication</h4><p>Penetrating matter is useful only if a dark-sector state can also be produced, modulated and detected with a realistic link budget.</p></div>
           </article>
           <article>
-            <img src="assets/concepts/dark-matter-energy.svg" alt="Energy upper-bound concept showing an ambient stream, collector and interaction bottleneck." loading="lazy">
+            <img src="assets/observations/hubble-m51.webp" alt="Galaxy image used as visual context for ambient dark-matter environments." loading="lazy">
             <div><span class="certainty-tag certainty-speculative">upper bound</span><h4>Energy extraction</h4><p>Ambient mass flux is not usable power by itself. Interaction, capture and conversion efficiency dominate the practical result.</p></div>
           </article>
           <article>
-            <img src="assets/concepts/dark-matter-propulsion.svg" alt="Propulsion feasibility concept showing a spacecraft collector, incoming stream and thrust direction." loading="lazy">
+            <img src="assets/observations/bullet-cluster-lensing.jpg" alt="Cluster lensing map used as visual context for momentum and mass-distribution reasoning." loading="lazy">
             <div><span class="certainty-tag certainty-speculative">physics gate</span><h4>Propulsion</h4><p>An engine must close the momentum ledger. No reactionless propulsion follows from current dark-matter evidence.</p></div>
           </article>
         </div>
