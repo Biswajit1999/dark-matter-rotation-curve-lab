@@ -1653,28 +1653,79 @@ function populationPointColour(galaxy) {
 function drawBtfr(galaxies) {
   const canvas = $('btfrCanvas');
   const { context, width, height } = prepareCanvas(canvas);
-  const data = galaxies.filter(galaxy => galaxy.flat_velocity_kms > 0 && galaxy.derived.baryonic_mass_1e9_msun_at_ml_0p5 > 0).map(galaxy => ({
-    galaxy,
-    x: Math.log10(galaxy.flat_velocity_kms),
-    y: Math.log10(galaxy.derived.baryonic_mass_1e9_msun_at_ml_0p5 * 1e9)
-  }));
+  const data = galaxies
+    .filter(galaxy => galaxy.flat_velocity_kms > 0 && galaxy.derived.baryonic_mass_1e9_msun_at_ml_0p5 > 0)
+    .map(galaxy => ({
+      galaxy,
+      x: Math.log10(galaxy.flat_velocity_kms),
+      y: Math.log10(galaxy.derived.baryonic_mass_1e9_msun_at_ml_0p5 * 1e9)
+    }));
+
   const bounds = { minX: 1.3, maxX: 2.6, minY: 7, maxY: 12 };
-  const scales = drawPopulationAxes(context, width, height, bounds, { x: 'log₁₀ Vflat [km/s]', y: 'log₁₀ Mbar [M☉]' });
+  const scales = drawPopulationAxes(context, width, height, bounds, {
+    x: 'log₁₀ Vflat [km/s]',
+    y: 'log₁₀ Mbar [M☉]'
+  });
+
   state.population.plotPoints.btfrCanvas = [];
+
+  // Descriptive OLS guide in the conventional BTFR orientation: log Mbar versus log Vflat.
+  let fit = null;
+  if (data.length >= 3) {
+    const mx = data.reduce((sum, point) => sum + point.x, 0) / data.length;
+    const my = data.reduce((sum, point) => sum + point.y, 0) / data.length;
+    const sxx = data.reduce((sum, point) => sum + (point.x - mx) ** 2, 0);
+    const sxy = data.reduce((sum, point) => sum + (point.x - mx) * (point.y - my), 0);
+    const slope = sxx > 0 ? sxy / sxx : 0;
+    const intercept = my - slope * mx;
+    fit = { slope, intercept };
+
+    context.save();
+    context.strokeStyle = '#f0a24a';
+    context.lineWidth = 2.2;
+    context.setLineDash([8, 5]);
+    context.beginPath();
+    const x0 = bounds.minX;
+    const x1 = bounds.maxX;
+    context.moveTo(scales.x(x0), scales.y(intercept + slope * x0));
+    context.lineTo(scales.x(x1), scales.y(intercept + slope * x1));
+    context.stroke();
+    context.restore();
+  }
+
   for (const point of data) {
     const x = scales.x(point.x);
     const y = scales.y(point.y);
     const highlighted = point.galaxy.galaxy_id === state.population.highlightedGalaxyId;
     context.fillStyle = populationPointColour(point.galaxy);
-    context.globalAlpha = highlighted ? 1 : 0.72;
-    context.beginPath(); context.arc(x, y, highlighted ? 6 : point.galaxy.quality_flag === 1 ? 3.3 : 2.4, 0, Math.PI * 2); context.fill();
-    if (highlighted) { context.strokeStyle = '#ffffff'; context.lineWidth = 2; context.stroke(); }
+    context.globalAlpha = highlighted ? 1 : 0.76;
+    context.beginPath();
+    context.arc(x, y, highlighted ? 6 : point.galaxy.quality_flag === 1 ? 3.3 : 2.4, 0, Math.PI * 2);
+    context.fill();
+    if (highlighted) {
+      context.strokeStyle = '#ffffff';
+      context.lineWidth = 2;
+      context.stroke();
+    }
     state.population.plotPoints.btfrCanvas.push({ x, y, galaxyId: point.galaxy.galaxy_id });
   }
   context.globalAlpha = 1;
-  context.fillStyle = '#d7e0eb'; context.font = '11px ui-monospace, monospace'; context.textAlign = 'left';
-  context.fillText(`N = ${data.length}; amber = gas dominated`, scales.plot.left + 8, scales.plot.top + 12);
-  $('btfrSummary').textContent = `${data.length} filtered galaxies with published positive flat velocities are shown. Baryonic masses assume a fixed 3.6-micron stellar mass-to-light ratio of 0.5 and the SPARC helium correction.`;
+
+  const legendY = scales.plot.top + 13;
+  context.font = '11px ui-monospace, monospace';
+  context.textAlign = 'left';
+  context.fillStyle = '#d7e0eb';
+  context.fillText(`N = ${data.length}`, scales.plot.left + 8, legendY);
+  context.fillStyle = '#d45f3b';
+  context.fillText('● stellar-dominated', scales.plot.left + 68, legendY);
+  context.fillStyle = '#e4a33a';
+  context.fillText('● gas-dominated', scales.plot.left + 196, legendY);
+  if (fit) {
+    context.fillStyle = '#f0a24a';
+    context.fillText(`┄ OLS slope ${fit.slope.toFixed(2)}`, scales.plot.left + 304, legendY);
+  }
+
+  $('btfrSummary').textContent = `${data.length} filtered galaxies with published positive flat velocities are shown. The dashed line is a descriptive OLS fit in the conventional log baryonic-mass versus log flat-velocity orientation. Baryonic masses assume a fixed 3.6-micron stellar mass-to-light ratio of 0.5 and the SPARC helium correction.`;
 }
 
 function drawRar(galaxies) {
@@ -1682,41 +1733,79 @@ function drawRar(galaxies) {
   const { context, width, height } = prepareCanvas(canvas);
   const accelerationFactor = 3.240779289e-14;
   const data = [];
+
   for (const galaxy of galaxies) {
     for (const point of galaxy.points) {
       const baryonicVelocitySquared = point.v_gas * Math.abs(point.v_gas) + 0.5 * point.v_disk ** 2 + 0.7 * point.v_bulge ** 2;
       const observedAcceleration = point.y ** 2 / point.x * accelerationFactor;
       const baryonicAcceleration = baryonicVelocitySquared / point.x * accelerationFactor;
-      if (observedAcceleration > 0 && baryonicAcceleration > 0) data.push({
-        galaxy, x: Math.log10(baryonicAcceleration), y: Math.log10(observedAcceleration)
-      });
+      if (observedAcceleration > 0 && baryonicAcceleration > 0) {
+        data.push({
+          galaxy,
+          x: Math.log10(baryonicAcceleration),
+          y: Math.log10(observedAcceleration)
+        });
+      }
     }
   }
+
   const bounds = { minX: -13.5, maxX: -8, minY: -13.5, maxY: -8 };
-  const scales = drawPopulationAxes(context, width, height, bounds, { x: 'log₁₀ gbar [m/s²]', y: 'log₁₀ gobs [m/s²]' });
+  const scales = drawPopulationAxes(context, width, height, bounds, {
+    x: 'log₁₀ gbar [m/s²]',
+    y: 'log₁₀ gobs [m/s²]'
+  });
+
+  // Newtonian equality reference.
+  context.save();
+  context.strokeStyle = 'rgba(215,224,235,0.55)';
+  context.lineWidth = 1.5;
+  context.setLineDash([5, 5]);
+  context.beginPath();
+  context.moveTo(scales.x(bounds.minX), scales.y(bounds.minX));
+  context.lineTo(scales.x(bounds.maxX), scales.y(bounds.maxX));
+  context.stroke();
+  context.restore();
+
+  // Empirical RAR reference.
   const gDagger = 1.2e-10;
-  context.strokeStyle = '#a77a52'; context.lineWidth = 2; context.beginPath();
-  for (let index = 0; index <= 120; index += 1) {
-    const logBaryonic = bounds.minX + (bounds.maxX - bounds.minX) * index / 120;
+  context.save();
+  context.strokeStyle = '#a06be7';
+  context.lineWidth = 2.2;
+  context.beginPath();
+  for (let index = 0; index <= 140; index += 1) {
+    const logBaryonic = bounds.minX + (bounds.maxX - bounds.minX) * index / 140;
     const gBar = 10 ** logBaryonic;
     const predicted = gBar / (1 - Math.exp(-Math.sqrt(gBar / gDagger)));
-    const x = scales.x(logBaryonic); const y = scales.y(Math.log10(predicted));
+    const x = scales.x(logBaryonic);
+    const y = scales.y(Math.log10(predicted));
     if (index) context.lineTo(x, y); else context.moveTo(x, y);
   }
   context.stroke();
+  context.restore();
+
   state.population.plotPoints.rarCanvas = [];
   for (const point of data) {
-    const x = scales.x(point.x); const y = scales.y(point.y);
+    const x = scales.x(point.x);
+    const y = scales.y(point.y);
     const highlighted = point.galaxy.galaxy_id === state.population.highlightedGalaxyId;
     context.fillStyle = populationPointColour(point.galaxy);
-    context.globalAlpha = highlighted ? 0.95 : 0.35;
+    context.globalAlpha = highlighted ? 0.95 : 0.32;
     context.fillRect(x - (highlighted ? 2.5 : 1), y - (highlighted ? 2.5 : 1), highlighted ? 5 : 2, highlighted ? 5 : 2);
     state.population.plotPoints.rarCanvas.push({ x, y, galaxyId: point.galaxy.galaxy_id });
   }
   context.globalAlpha = 1;
-  context.fillStyle = '#d7e0eb'; context.font = '11px ui-monospace, monospace'; context.textAlign = 'left';
-  context.fillText(`N = ${data.length} radii; violet = g† reference`, scales.plot.left + 8, scales.plot.top + 12);
-  $('rarSummary').textContent = `${data.length} resolved radii from ${galaxies.length} filtered galaxies are shown against the empirical acceleration-relation reference with g-dagger equal to 1.2 times 10 to the minus 10 metres per second squared.`;
+
+  const legendY = scales.plot.top + 13;
+  context.font = '11px ui-monospace, monospace';
+  context.textAlign = 'left';
+  context.fillStyle = '#d7e0eb';
+  context.fillText(`N = ${data.length} radii`, scales.plot.left + 8, legendY);
+  context.fillStyle = '#a06be7';
+  context.fillText('━ empirical RAR', scales.plot.left + 116, legendY);
+  context.fillStyle = '#c7cbd4';
+  context.fillText('┄ gobs = gbar', scales.plot.left + 234, legendY);
+
+  $('rarSummary').textContent = `${data.length} resolved radii from ${galaxies.length} filtered galaxies are shown. The violet curve is the empirical acceleration-relation reference with g-dagger equal to 1.2 × 10⁻¹⁰ metres per second squared; the grey dashed line marks Newtonian equality gobs = gbar.`;
 }
 
 function renderPopulationTable(galaxies) {
