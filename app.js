@@ -60,7 +60,21 @@ const state = {
     soundHorizonMpc: 147.09,
     parameters: { omegaRadiation: 0.00009, omegaBaryon: 0.0493, omegaDarkMatter: 0.264, omegaDarkEnergy: 0.68661, w0: -1, wa: 0 }
   },
-  futures: { data: null, logScaleMetres: 19, logMassGev: 2, logCrossSectionCm2: -46, localDensity: 0.4, efficiency: 0.5, speedKms: 220 },
+  futures: {
+    data: null,
+    logScaleMetres: 19,
+    logMassGev: 2,
+    logCrossSectionCm2: -46,
+    localDensity: 0.4,
+    efficiency: 0.5,
+    speedKms: 220,
+    logCollectorAreaM2: 6,
+    logSpacecraftMassKg: 5,
+    logTargetColumnCm2: 30,
+    captureEfficiency: 1,
+    conversionEfficiency: 1,
+    momentumTransferFactor: 1
+  },
   evidence: { graph: null, selectedId: null }
 };
 
@@ -1374,6 +1388,37 @@ function renderFutures() {
     ? 'At this mass and speed the de Broglie wavelength exceeds one metre. Independent particle contacts are not a suitable physical picture; phase-coherent field or wave observables become relevant.'
     : 'A real exclusion or sensitivity curve must specify an interaction operator, target nucleus, form factor, recoil threshold, exposure, background model and statistical treatment.';
 
+  const engine = FuturesPhysics.engineScenario({
+    localDensityGevCm3: state.futures.localDensity,
+    speedKms: state.futures.speedKms,
+    collectorAreaM2: 10 ** state.futures.logCollectorAreaM2,
+    spacecraftMassKg: 10 ** state.futures.logSpacecraftMassKg,
+    captureEfficiency: state.futures.captureEfficiency,
+    conversionEfficiency: state.futures.conversionEfficiency,
+    momentumTransferFactor: state.futures.momentumTransferFactor,
+    crossSectionCm2: crossSection,
+    targetColumnPerCm2: 10 ** state.futures.logTargetColumnCm2
+  });
+  const idealMassFlux = FuturesPhysics.massFluxKgM2Second(state.futures.localDensity, state.futures.speedKms);
+  const idealKineticFlux = FuturesPhysics.kineticPowerFluxWm2(state.futures.localDensity, state.futures.speedKms);
+  const idealMomentumFlux = FuturesPhysics.momentumFluxPa(state.futures.localDensity, state.futures.speedKms, 1);
+  const idealRestFlux = FuturesPhysics.restMassPowerFluxWm2(state.futures.localDensity, state.futures.speedKms, 1, 1);
+  $('engineMetrics').innerHTML = [
+    ['Ambient mass flux', `${idealMassFlux.toExponential(2)} kg m⁻² s⁻¹`, 'depends on local density, not cosmic abundance'],
+    ['Kinetic-power ceiling', `${idealKineticFlux.toExponential(2)} W m⁻²`, '100% kinetic capture'],
+    ['Momentum-flux ceiling', `${idealMomentumFlux.toExponential(2)} N m⁻²`, 'perfect absorption'],
+    ['Rest-energy ceiling', `${idealRestFlux.toExponential(2)} W m⁻²`, '100% capture + mc² conversion'],
+    ['Interaction probability', engine.interactionProbability < 1e-3 ? engine.interactionProbability.toExponential(2) : formatNumber(engine.interactionProbability, 4), 'toy column model: 1 − exp(−σN)'],
+    ['Effective capture', engine.effectiveCapture < 1e-3 ? engine.effectiveCapture.toExponential(2) : `${formatNumber(engine.effectiveCapture * 100, 3)}%`, 'interaction × engineering capture'],
+    ['Predicted thrust', `${engine.thrustN.toExponential(2)} N`, 'momentum conservation enforced'],
+    ['Δv after 1 year', `${engine.deltaVOneYearMps.toExponential(2)} m/s`, 'constant local conditions, no trajectory model'],
+    ['Usable rest-power', `${engine.restMassPowerW.toExponential(2)} W`, 'requires unknown capture + conversion physics']
+  ].map(([label,value,note]) => `<div><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+  $('engineVerdict').innerHTML = engine.interactionProbability < 1e-12
+    ? '<strong>Known-interaction lesson:</strong> the chosen cross section makes the collector effectively transparent. A large geometric area does not imply useful capture.'
+    : '<strong>Conditional scenario:</strong> this toy column interacts appreciably. That does not establish a real material, confinement scheme, reaction channel or engine.';
+  $('engineSummary').textContent = `The engine thought experiment encounters ${engine.encounteredMassRateKgS.toExponential(2)} kilograms per second geometrically, but the toy interaction probability is ${engine.interactionProbability.toExponential(2)}. The resulting thrust is ${engine.thrustN.toExponential(2)} newtons. The rest-mass power figure is an upper-bound calculation contingent on capture and conversion physics that is not known to exist.`;
+
   $('frontierGrid').innerHTML = state.futures.data.frontiers.map(item => `<article><h3>${item.name}</h3><dl><div><dt>Known</dt><dd>${item.known}</dd></div><div><dt>Unknown</dt><dd>${item.unknown}</dd></div><div><dt>Decisive test</dt><dd>${item.decisive}</dd></div></dl></article>`).join('');
   $('futureTimelineRows').innerHTML = state.futures.data.timeline.map(item => `<tr><th scope="row">${item.horizon}</th><td>${item.capability}</td><td>${item.gate}</td><td><span class="certainty-tag certainty-${item.certainty}">${item.certainty}</span></td></tr>`).join('');
 }
@@ -1902,7 +1947,13 @@ for (const [id, stateKey, output, formatter] of [
   ['futureMass', 'logMassGev', 'futureMassOutput', value => formatNumber(value, 1)],
   ['futureCrossSection', 'logCrossSectionCm2', 'futureCrossSectionOutput', value => formatNumber(value, 1)],
   ['futureDensity', 'localDensity', 'futureDensityOutput', value => formatNumber(value, 2)],
-  ['futureEfficiency', 'efficiency', 'futureEfficiencyOutput', value => `${formatNumber(value * 100, 0)}%`]
+  ['futureEfficiency', 'efficiency', 'futureEfficiencyOutput', value => `${formatNumber(value * 100, 0)}%`],
+  ['engineArea', 'logCollectorAreaM2', 'engineAreaOutput', value => `10${superscriptInteger(Math.round(value))} m²`],
+  ['engineMass', 'logSpacecraftMassKg', 'engineMassOutput', value => `10${superscriptInteger(Math.round(value))} kg`],
+  ['engineColumn', 'logTargetColumnCm2', 'engineColumnOutput', value => `10${superscriptInteger(Math.round(value))} cm⁻²`],
+  ['engineCapture', 'captureEfficiency', 'engineCaptureOutput', value => `${formatNumber(value * 100, 0)}%`],
+  ['engineConversion', 'conversionEfficiency', 'engineConversionOutput', value => `${formatNumber(value * 100, 0)}%`],
+  ['engineMomentum', 'momentumTransferFactor', 'engineMomentumOutput', value => formatNumber(value, 2)]
 ]) {
   $(id).addEventListener('input', event => {
     state.futures[stateKey] = Number(event.currentTarget.value);
