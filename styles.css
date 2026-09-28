@@ -168,6 +168,7 @@ h2 {
 .observation-panel,
 .inference-section,
 .population-section,
+.challenge-section,
 .roadmap-section {
   margin-bottom: 28px;
   overflow: hidden;
@@ -468,7 +469,34 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
 .citation-note { margin: 0; padding: 13px 16px 16px; color: var(--text-muted); font-size: 0.76rem; }
 
 .population-section,
+.challenge-section,
 .inference-section { margin-top: 28px; }
+
+.challenge-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.65fr) minmax(640px, 1.8fr);
+  gap: 1px;
+  border-block: 1px solid var(--border);
+  background: var(--border);
+}
+
+.challenge-controls { min-width: 0; padding: 18px; background: var(--surface); }
+.challenge-controls > div:first-child label { display: block; color: var(--text); font-size: 0.78rem; font-weight: 700; }
+.challenge-controls .challenge-range { padding-inline: 0; }
+.challenge-controls button { width: 100%; margin-top: 18px; }
+.challenge-controls .method-note { padding: 0; }
+.challenge-charts { min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--border); }
+.challenge-charts article { min-width: 0; background: #091725; }
+.challenge-charts canvas { height: 390px; }
+.challenge-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--border); }
+.challenge-metric { min-width: 0; padding: 13px 16px; background: var(--surface); }
+.challenge-metric span,
+.challenge-metric small { display: block; color: var(--text-muted); font-size: 0.68rem; }
+.challenge-metric strong { display: block; margin: 5px 0 2px; color: var(--accent-strong); font: 650 1.08rem var(--mono); }
+.assumption-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; border-top: 1px solid var(--border); background: var(--border); }
+.assumption-grid article { padding: 18px; background: var(--surface-raised); }
+.assumption-grid h3 { margin: 11px 0 6px; font-size: 0.9rem; }
+.assumption-grid p { margin: 0; color: var(--text-muted); font-size: 0.76rem; }
 
 .population-controls {
   display: grid;
@@ -753,6 +781,9 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
   .provenance-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .inference-layout { grid-template-columns: minmax(280px, 0.8fr) minmax(440px, 1.2fr); }
   .population-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .challenge-layout { grid-template-columns: minmax(250px, 0.65fr) minmax(500px, 1.4fr); }
+  .challenge-charts { grid-template-columns: 1fr; }
+  .challenge-charts canvas { height: 330px; }
 }
 
 @media (max-width: 800px) {
@@ -782,6 +813,10 @@ tbody tr:hover { background: rgba(84, 184, 234, 0.07); }
   .population-method { grid-template-columns: 1fr; }
   .population-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .population-citation { align-items: flex-start; flex-direction: column; }
+  .challenge-layout,
+  .challenge-charts,
+  .assumption-grid { grid-template-columns: 1fr; }
+  .challenge-metrics { grid-template-columns: 1fr; }
   .posterior-panel { min-height: 520px; }
   .model-check-note { grid-template-columns: 1fr; }
   .site-footer { align-items: flex-start; flex-direction: column; }

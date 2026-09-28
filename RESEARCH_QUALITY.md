@@ -27,7 +27,9 @@ not establish.
 10. a deterministic noisy synthetic galaxy recovers its known disc and halo
     parameters within two 68% posterior interval half-widths;
 11. normalized population metadata retain original fields and quality flags,
-    while resolved acceleration transforms remain finite for all radii.
+    while resolved acceleration transforms remain finite for all radii;
+12. empirical-RAR and simple-ν acceleration mappings recover their Newtonian
+    and deep-acceleration asymptotic limits.
 
 ## Guarantees requiring future work
 

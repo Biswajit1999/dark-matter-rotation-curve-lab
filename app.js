@@ -1,6 +1,6 @@
 'use strict';
 
-const BUILD_VERSION = '2.0.0-beta.3';
+const BUILD_VERSION = '2.0.0-beta.4';
 
 const CONTROL_DEFINITIONS = [
   { key: 'massToLightDisk', label: 'Disc mass-to-light ratio', unit: 'M☉/L☉ at 3.6 μm', value: 0.5, min: 0.1, max: 1, step: 0.01 },
@@ -39,7 +39,8 @@ const state = {
   worker: null,
   requestId: 0,
   pendingFrame: null,
-  population: { galaxies: [], highlightedGalaxyId: null, plotPoints: { btfrCanvas: [], rarCanvas: [] } }
+  population: { galaxies: [], highlightedGalaxyId: null, plotPoints: { btfrCanvas: [], rarCanvas: [] } },
+  challenge: { relation: 'rar', accelerationScale: 1.2e-10, massToLightDisk: 0.5, rows: [] }
 };
 
 const $ = id => document.getElementById(id);
@@ -491,6 +492,7 @@ function renderAll() {
   drawHeatmap();
   renderMetrics();
   renderTable();
+  renderChallenge();
 }
 
 function drawPosterior() {
@@ -702,6 +704,112 @@ function exportSvg() {
   const observations = points.map(point => `<g><line x1="${x(point.radius)}" x2="${x(point.radius)}" y1="${y(point.observed - point.uncertainty)}" y2="${y(point.observed + point.uncertainty)}" stroke="#f4b860"/><circle cx="${x(point.radius)}" cy="${y(point.observed)}" r="3" fill="#f4b860"/></g>`).join('');
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><title>${escape(state.reference.galaxy)} rotation-curve decomposition</title><desc>Observed SPARC velocities with gas, stellar disc, ${escape(state.params.haloModel)} halo and total model.</desc><rect width="100%" height="100%" fill="#0d1b2a"/><line x1="${left}" y1="${top}" x2="${left}" y2="${bottom}" stroke="#8290a6"/><line x1="${left}" y1="${bottom}" x2="${right}" y2="${bottom}" stroke="#8290a6"/>${paths}${observations}<text x="600" y="620" fill="#f4f7fb" text-anchor="middle">Galactocentric radius [kpc]</text><text x="28" y="320" fill="#f4f7fb" text-anchor="middle" transform="rotate(-90 28 320)">Circular velocity [km/s]</text></svg>`;
   download(`${state.reference.galaxy_id.toLowerCase()}-${state.params.haloModel}-fit.svg`, 'image/svg+xml;charset=utf-8', svg);
+}
+
+function challengeEvaluation() {
+  if (!state.reference || !state.result || typeof RotationPhysics === 'undefined') return [];
+  return state.reference.points.map((point, index) => {
+    const gBar = RotationPhysics.baryonicAcceleration(point, state.challenge.massToLightDisk, state.params.massToLightBulge);
+    const baryonic = RotationPhysics.accelerationToVelocity(gBar, point.x);
+    const phenomenological = RotationPhysics.phenomenologicalVelocity(
+      point,
+      state.challenge.relation,
+      state.challenge.massToLightDisk,
+      state.params.massToLightBulge,
+      state.challenge.accelerationScale
+    );
+    const halo = state.result.observed[index].total;
+    return {
+      radius: point.x,
+      observed: point.y,
+      uncertainty: point.y_err,
+      baryonic,
+      phenomenological,
+      halo,
+      phenomenologicalResidual: (point.y - phenomenological) / point.y_err,
+      haloResidual: (point.y - halo) / point.y_err
+    };
+  }).filter(row => Object.values(row).every(Number.isFinite));
+}
+
+function drawChallengeCurve(rows) {
+  const { context, width, height } = prepareCanvas($('challengeCurveCanvas'));
+  if (!rows.length) return;
+  const maxY = Math.ceil(Math.max(...rows.flatMap(row => [row.observed + row.uncertainty, row.baryonic, row.phenomenological, row.halo])) / 20) * 20;
+  const scales = drawAxes(context, { width, height }, { minX: 0, maxX: rows.at(-1).radius, minY: 0, maxY }, { x: 'Radius [kpc]', y: 'Circular velocity [km/s]' });
+  const series = [
+    { key: 'baryonic', colour: '#9bdcf7', dash: [5, 5], label: 'Baryons only' },
+    { key: 'phenomenological', colour: '#b1a7ff', dash: [], label: state.challenge.relation === 'rar' ? 'Empirical RAR' : 'Simple ν' },
+    { key: 'halo', colour: '#54b8ea', dash: [], label: `Current ${state.params.haloModel.toUpperCase()} halo` }
+  ];
+  for (const item of series) {
+    context.beginPath(); context.strokeStyle = item.colour; context.lineWidth = item.key === 'phenomenological' ? 2.7 : 1.8; context.setLineDash(item.dash);
+    rows.forEach((row, index) => { const x = scales.scaleX(row.radius); const y = scales.scaleY(row[item.key]); if (index) context.lineTo(x, y); else context.moveTo(x, y); });
+    context.stroke();
+  }
+  context.setLineDash([]);
+  for (const row of rows) {
+    const x = scales.scaleX(row.radius); const y = scales.scaleY(row.observed);
+    context.strokeStyle = '#f4b860'; context.lineWidth = 1; context.beginPath();
+    context.moveTo(x, scales.scaleY(row.observed - row.uncertainty)); context.lineTo(x, scales.scaleY(row.observed + row.uncertainty)); context.stroke();
+    context.fillStyle = '#f4b860'; context.beginPath(); context.arc(x, y, 2.5, 0, Math.PI * 2); context.fill();
+  }
+  context.font = '11px ui-monospace, monospace'; context.textAlign = 'left';
+  series.forEach((item, index) => { context.fillStyle = item.colour; context.fillText(`${item.key === 'baryonic' ? '– –' : '━━'} ${item.label}`, scales.plot.left + 8, scales.plot.top + 12 + index * 16); });
+  context.fillStyle = '#f4b860'; context.fillText('● Observed ± σ', scales.plot.left + 8, scales.plot.top + 60);
+}
+
+function drawChallengeResiduals(rows) {
+  const { context, width, height } = prepareCanvas($('challengeResidualCanvas'));
+  if (!rows.length) return;
+  const maximum = Math.max(5, Math.ceil(Math.max(...rows.flatMap(row => [Math.abs(row.phenomenologicalResidual), Math.abs(row.haloResidual)]))));
+  const scales = drawAxes(context, { width, height }, { minX: 0, maxX: rows.at(-1).radius, minY: -maximum, maxY: maximum }, { x: 'Radius [kpc]', y: 'Standardised residual' });
+  context.strokeStyle = '#d7e0eb'; context.lineWidth = 1; context.beginPath();
+  context.moveTo(scales.plot.left, scales.scaleY(0)); context.lineTo(scales.plot.right, scales.scaleY(0)); context.stroke();
+  for (const row of rows) {
+    const x = scales.scaleX(row.radius);
+    context.fillStyle = '#b1a7ff'; context.beginPath(); context.arc(x, scales.scaleY(row.phenomenologicalResidual), 3, 0, Math.PI * 2); context.fill();
+    context.fillStyle = '#54b8ea'; context.fillRect(x - 2.5, scales.scaleY(row.haloResidual) - 2.5, 5, 5);
+  }
+  context.font = '11px ui-monospace, monospace'; context.textAlign = 'left';
+  context.fillStyle = '#b1a7ff'; context.fillText('● Phenomenological', scales.plot.left + 8, scales.plot.top + 12);
+  context.fillStyle = '#54b8ea'; context.fillText('■ Current halo', scales.plot.left + 8, scales.plot.top + 28);
+}
+
+function comparisonMetrics(rows, key) {
+  const residuals = rows.map(row => row.observed - row[key]);
+  return {
+    chiSquared: rows.reduce((sum, row) => sum + ((row.observed - row[key]) / row.uncertainty) ** 2, 0),
+    rms: Math.sqrt(residuals.reduce((sum, value) => sum + value ** 2, 0) / Math.max(1, rows.length)),
+    outliers: rows.filter(row => Math.abs((row.observed - row[key]) / row.uncertainty) > 3).length
+  };
+}
+
+function renderChallenge() {
+  const rows = challengeEvaluation();
+  state.challenge.rows = rows;
+  if (!rows.length) return;
+  const baryonic = comparisonMetrics(rows, 'baryonic');
+  const phenomenological = comparisonMetrics(rows, 'phenomenological');
+  const halo = comparisonMetrics(rows, 'halo');
+  const relationLabel = state.challenge.relation === 'rar' ? 'Empirical RAR' : 'Simple ν';
+  $('challengeMetrics').innerHTML = [
+    ['Baryons-only χ²', baryonic.chiSquared, `${baryonic.outliers} |residual| > 3σ`],
+    [`${relationLabel} χ²`, phenomenological.chiSquared, `${phenomenological.outliers} |residual| > 3σ · RMS ${formatNumber(phenomenological.rms, 2)} km/s`],
+    [`Current ${state.params.haloModel.toUpperCase()} χ²`, halo.chiSquared, `${halo.outliers} |residual| > 3σ · RMS ${formatNumber(halo.rms, 2)} km/s`]
+  ].map(([label, value, note]) => `<div class="challenge-metric"><span>${label}</span><strong>${formatNumber(value, 2)}</strong><small>${note}</small></div>`).join('');
+  $('challengeRows').innerHTML = rows.map(row => `<tr><td>${formatNumber(row.radius, 3)}</td><td>${formatNumber(row.observed, 2)}</td><td>${formatNumber(row.uncertainty, 2)}</td><td>${formatNumber(row.baryonic, 2)}</td><td>${formatNumber(row.phenomenological, 2)}</td><td>${formatNumber(row.halo, 2)}</td><td>${formatNumber(row.phenomenologicalResidual, 2)}</td><td>${formatNumber(row.haloResidual, 2)}</td></tr>`).join('');
+  $('challengeCaption').textContent = `${state.reference.galaxy}: baryonic, ${relationLabel}, and current ${state.params.haloModel.toUpperCase()} predictions`;
+  $('challengeCurveSummary').textContent = `${state.reference.galaxy} comparison across ${rows.length} radii. The ${relationLabel} prediction has chi-squared ${formatNumber(phenomenological.chiSquared, 2)} at the displayed assumptions; the current ${state.params.haloModel.toUpperCase()} configuration has chi-squared ${formatNumber(halo.chiSquared, 2)}.`;
+  $('challengeResidualSummary').textContent = `${relationLabel} has ${phenomenological.outliers} residuals and the current halo configuration has ${halo.outliers} residuals beyond three quoted random uncertainties. This comparison does not include correlated, distance, or inclination systematics.`;
+  drawChallengeCurve(rows);
+  drawChallengeResiduals(rows);
+}
+
+function exportChallenge() {
+  const header = ['radius_kpc', 'observed_kms', 'uncertainty_kms', 'baryonic_kms', 'phenomenological_kms', 'current_halo_kms', 'phenomenological_standardised_residual', 'halo_standardised_residual'];
+  const values = state.challenge.rows.map(row => [row.radius, row.observed, row.uncertainty, row.baryonic, row.phenomenological, row.halo, row.phenomenologicalResidual, row.haloResidual]);
+  download(`${state.reference.galaxy_id.toLowerCase()}-alternative-comparison.csv`, 'text/csv;charset=utf-8', [header, ...values].map(row => row.join(',')).join('\n'));
 }
 
 function median(values) {
@@ -945,6 +1053,21 @@ $('exportCsv').addEventListener('click', exportCsv);
 $('exportSvg').addEventListener('click', exportSvg);
 $('exportPopulationCsv').addEventListener('click', exportPopulationCsv);
 $('exportPopulationJson').addEventListener('click', exportPopulationJson);
+$('exportChallenge').addEventListener('click', exportChallenge);
+$('challengeRelation').addEventListener('change', event => {
+  state.challenge.relation = event.currentTarget.value;
+  renderChallenge();
+});
+$('challengeScale').addEventListener('input', event => {
+  state.challenge.accelerationScale = Number(event.currentTarget.value) * 1e-10;
+  $('challengeScaleOutput').textContent = `${formatNumber(event.currentTarget.value, 2)} × 10⁻¹⁰ m/s²`;
+  renderChallenge();
+});
+$('challengeMl').addEventListener('input', event => {
+  state.challenge.massToLightDisk = Number(event.currentTarget.value);
+  $('challengeMlOutput').textContent = `${formatNumber(event.currentTarget.value, 2)} M☉/L☉`;
+  renderChallenge();
+});
 for (const control of [$('populationSearch'), $('qualityFilter'), $('populationClass')]) {
   control.addEventListener(control.tagName === 'INPUT' ? 'input' : 'change', renderPopulation);
 }

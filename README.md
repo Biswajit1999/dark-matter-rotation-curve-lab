@@ -40,6 +40,9 @@ active application now:
   and source references in a normalized, checksum-pinned schema;
 - adds a linked Population Lab with name, quality, surface-brightness and
   gas-dominance filters, BTFR and RAR views, accessible data and CSV/JSON export;
+- adds a galaxy-level “Challenge the model” laboratory comparing baryons-only,
+  the current halo configuration, the empirical RAR form and a MOND-like simple
+  interpolation function with explicit acceleration-scale and M/L assumptions;
 - replaces generic generated-looking hero media with credited Hubble, Webb,
   Chandra, Planck and Rubin products stored in the repository;
 - adds a 2026–2076 capability roadmap with explicit validation gates and labels
@@ -60,8 +63,8 @@ active application now:
 | B | Complete 175-galaxy SPARC workbench and normalized catalogue | Complete |
 | C | Bayesian inference workspace | Complete |
 | D | Population, BTFR and radial-acceleration laboratory | Complete |
-| E | Alternative-hypothesis residual and assumption laboratory | Next |
-| F | Quantitative lensing, Bullet Cluster and archive infrastructure | Pending |
+| E | Alternative-hypothesis residual and assumption laboratory | Complete |
+| F | Quantitative lensing, Bullet Cluster and archive infrastructure | Next |
 | G | CMB, particle-search and future-sensitivity laboratories | Pending |
 | H | Scale explorer, research frontier and constrained-futures laboratory | Pending |
 | I | Evidence graph, educator/research modes and publication polish | Pending |
@@ -128,6 +131,22 @@ phenomenological relation with `g† = 1.2e-10 m/s²`. Neither panel performs a
 hierarchical fit or propagates all distance, inclination and stellar-population
 systematics. The interface labels these assumptions and does not interpret a
 correlation as proof of a unique physical cause.
+
+## Challenge the model
+
+The selected galaxy can also be evaluated without adding a halo contribution.
+The laboratory compares baryons alone with two explicit acceleration mappings:
+
+```text
+Empirical RAR: gpred = gbar / [1 - exp(-sqrt(gbar/g†))]
+Simple ν:      gpred = [1/2 + sqrt(1/4 + a0/gbar)] gbar
+```
+
+The browser exposes the acceleration scale and disc mass-to-light ratio, then
+reports velocity curves, standardised residuals, χ², RMS and outlier counts at
+the displayed parameter values. These are phenomenological tests under fixed
+assumptions—not evidence that one framework is true. Relativistic completion,
+the MOND external-field effect and non-galaxy constraints are not implemented.
 
 ## Model equations
 

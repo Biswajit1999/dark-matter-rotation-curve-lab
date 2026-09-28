@@ -6,7 +6,7 @@
   <meta name="description" content="Explore all 175 SPARC galaxies, population scaling relations, cluster lensing, cosmology and the technology roadmap for identifying dark matter.">
   <meta name="theme-color" content="#07111f">
   <title>Dark Matter Evidence Lab — Galaxies to Detectors</title>
-  <link rel="stylesheet" href="styles.css?v=2.0.0-beta.3">
+  <link rel="stylesheet" href="styles.css?v=2.0.0-beta.4">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to analysis</a>
@@ -302,6 +302,72 @@
       </div>
     </section>
 
+    <section class="challenge-section" aria-labelledby="challenge-title">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">Phase E · challenge the model</p>
+          <h2 id="challenge-title">Alternative dynamics under explicit assumptions</h2>
+        </div>
+        <p>Compare the selected halo configuration with baryons alone and two acceleration-based phenomenological relationships. This tests predictions; it does not declare a winning theory.</p>
+      </div>
+      <div class="challenge-layout">
+        <form id="challengeForm" class="challenge-controls">
+          <div>
+            <label for="challengeRelation">Phenomenological relation</label>
+            <select id="challengeRelation">
+              <option value="rar">Empirical RAR exponential form</option>
+              <option value="mond-simple">MOND-like simple ν function</option>
+            </select>
+          </div>
+          <div class="range-field challenge-range">
+            <div class="range-label"><label for="challengeScale">Acceleration scale</label><output id="challengeScaleOutput" for="challengeScale">1.2 × 10⁻¹⁰ m/s²</output></div>
+            <input id="challengeScale" type="range" min="0.3" max="3" step="0.05" value="1.2">
+            <div class="range-bounds" aria-hidden="true"><span>0.3</span><span>3.0 × 10⁻¹⁰ m/s²</span></div>
+          </div>
+          <div class="range-field challenge-range">
+            <div class="range-label"><label for="challengeMl">Disc M/L at 3.6 μm</label><output id="challengeMlOutput" for="challengeMl">0.5 M☉/L☉</output></div>
+            <input id="challengeMl" type="range" min="0.1" max="1" step="0.01" value="0.5">
+            <div class="range-bounds" aria-hidden="true"><span>0.1</span><span>1.0</span></div>
+          </div>
+          <button id="exportChallenge" class="secondary-button" type="button">Export comparison CSV</button>
+          <p class="method-note">Bulge M/L is fixed at 0.7. The acceleration scale and disc M/L are displayed assumptions, not automatically fitted values. Distance, inclination, external-field effects and covariance are omitted.</p>
+        </form>
+        <div class="challenge-charts">
+          <article>
+            <div class="population-chart-heading"><div><span class="epistemic-label">Model comparison</span><h3>Velocity predictions</h3></div><span>same observed radii</span></div>
+            <canvas id="challengeCurveCanvas" role="img" aria-describedby="challengeCurveSummary"></canvas>
+            <p id="challengeCurveSummary" class="sr-summary">Alternative-model velocity comparison is loading.</p>
+          </article>
+          <article>
+            <div class="population-chart-heading"><div><span class="epistemic-label">Diagnostic</span><h3>Standardised residual structure</h3></div><span>(observed − predicted) / σ</span></div>
+            <canvas id="challengeResidualCanvas" role="img" aria-describedby="challengeResidualSummary"></canvas>
+            <p id="challengeResidualSummary" class="sr-summary">Alternative-model residual comparison is loading.</p>
+          </article>
+        </div>
+      </div>
+      <div id="challengeMetrics" class="challenge-metrics" aria-live="polite"></div>
+      <div class="assumption-grid">
+        <article><span class="epistemic-label">Established observation</span><h3>What is measured</h3><p>Radius, circular velocity, random velocity uncertainty and photometric/gas contributions from SPARC.</p></article>
+        <article><span class="epistemic-label">Model-dependent inference</span><h3>What is assumed</h3><p>Stellar mass-to-light ratios, axisymmetric circular motion and the selected functional relationship between baryonic and observed acceleration.</p></article>
+        <article><span class="epistemic-label">Discriminating evidence</span><h3>What would help</h3><p>Independent distance and inclination constraints, vertical dynamics, lensing, satellites, clusters and cosmology test whether one galaxy-scale relation generalises.</p></article>
+      </div>
+      <details>
+        <summary>Show equations and accessible comparison table</summary>
+        <div class="population-method">
+          <p><strong>Empirical RAR:</strong> gpred = gbar / [1 − exp(−√(gbar/g†))]. It compactly describes a galaxy-scale regularity but is not itself a microscopic theory.</p>
+          <p><strong>Simple ν:</strong> gpred = [½ + √(¼ + a₀/gbar)]gbar. This is a MOND-like phenomenological interpolation; relativistic completion and external-field assumptions are outside this calculation.</p>
+          <p><strong>Comparison:</strong> χ² values use only quoted independent random velocity errors. Lower residuals under these settings do not establish physical truth or account for model flexibility and systematics.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <caption id="challengeCaption">Alternative-dynamics comparison at each measured radius</caption>
+            <thead><tr><th scope="col">Radius (kpc)</th><th scope="col">Observed</th><th scope="col">σ</th><th scope="col">Baryonic</th><th scope="col">Phenomenological</th><th scope="col">Current halo</th><th scope="col">Phen. residual/σ</th><th scope="col">Halo residual/σ</th></tr></thead>
+            <tbody id="challengeRows"><tr><td colspan="8">Comparison data are loading.</td></tr></tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
     <section class="inference-section" aria-labelledby="inference-title">
       <div class="section-heading">
         <div>
@@ -436,6 +502,7 @@
       <a href="https://orcid.org/0009-0002-2411-1891" target="_blank" rel="noopener noreferrer">ORCID</a>
     </nav>
   </footer>
-  <script src="app.js?v=2.0.0-beta.3"></script>
+  <script src="rotationPhysics.js?v=2.0.0-beta.4"></script>
+  <script src="app.js?v=2.0.0-beta.4"></script>
 </body>
 </html>

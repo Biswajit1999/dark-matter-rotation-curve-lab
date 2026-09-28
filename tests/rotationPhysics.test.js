@@ -116,6 +116,22 @@ test('population metadata and acceleration transforms are finite and traceable',
   }
 });
 
+test('RAR and simple-nu phenomenology recover Newtonian and deep-acceleration limits', () => {
+  const scale = 1.2e-10;
+  const high = 1e-7;
+  const low = 1e-14;
+  assert.ok(Math.abs(physics.rarAcceleration(high, scale) / high - 1) < 0.01);
+  assert.ok(Math.abs(physics.simpleMondAcceleration(high, scale) / high - 1) < 0.01);
+  const deepLimit = Math.sqrt(low * scale);
+  assert.ok(Math.abs(physics.rarAcceleration(low, scale) / deepLimit - 1) < 0.01);
+  assert.ok(Math.abs(physics.simpleMondAcceleration(low, scale) / deepLimit - 1) < 0.01);
+  const point = reference.points[10];
+  for (const relation of ['rar', 'mond-simple']) {
+    const velocity = physics.phenomenologicalVelocity(point, relation, 0.5, 0.7, scale);
+    assert.ok(Number.isFinite(velocity) && velocity > 0);
+  }
+});
+
 test('synthetic known-truth galaxy is recovered within two posterior interval widths', () => {
   const truth = {
     ...defaultParams,

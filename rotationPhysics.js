@@ -6,6 +6,7 @@
   'use strict';
 
   const EPSILON_RADIUS_KPC = 1e-6;
+  const KMS2_PER_KPC_TO_MPS2 = 3.240779289e-14;
 
   function clamp(value, minimum, maximum) {
     return Math.min(maximum, Math.max(minimum, value));
@@ -18,6 +19,45 @@
 
   function signedSquare(value) {
     return Math.sign(value) * value * value;
+  }
+
+  function baryonicAcceleration(point, massToLightDisk = 0.5, massToLightBulge = 0.7) {
+    const velocitySquared = signedSquare(point.v_gas)
+      + Number(massToLightDisk) * signedSquare(point.v_disk)
+      + Number(massToLightBulge) * signedSquare(point.v_bulge);
+    return velocitySquared / Math.max(Number(point.x), EPSILON_RADIUS_KPC) * KMS2_PER_KPC_TO_MPS2;
+  }
+
+  function observedAcceleration(point) {
+    return Number(point.y) ** 2 / Math.max(Number(point.x), EPSILON_RADIUS_KPC) * KMS2_PER_KPC_TO_MPS2;
+  }
+
+  function rarAcceleration(baryonicAccelerationMps2, accelerationScaleMps2 = 1.2e-10) {
+    const gBar = Number(baryonicAccelerationMps2);
+    const scale = Math.max(Number(accelerationScaleMps2), Number.MIN_VALUE);
+    if (!(gBar > 0)) return NaN;
+    return gBar / -Math.expm1(-Math.sqrt(gBar / scale));
+  }
+
+  function simpleMondAcceleration(baryonicAccelerationMps2, accelerationScaleMps2 = 1.2e-10) {
+    const gBar = Number(baryonicAccelerationMps2);
+    const scale = Math.max(Number(accelerationScaleMps2), Number.MIN_VALUE);
+    if (!(gBar > 0)) return NaN;
+    const nu = 0.5 + Math.sqrt(0.25 + scale / gBar);
+    return nu * gBar;
+  }
+
+  function accelerationToVelocity(accelerationMps2, radiusKpc) {
+    const velocitySquared = Number(accelerationMps2) * Math.max(Number(radiusKpc), EPSILON_RADIUS_KPC) / KMS2_PER_KPC_TO_MPS2;
+    return Math.sqrt(Math.max(0, velocitySquared));
+  }
+
+  function phenomenologicalVelocity(point, relation = 'rar', massToLightDisk = 0.5, massToLightBulge = 0.7, accelerationScaleMps2 = 1.2e-10) {
+    const gBar = baryonicAcceleration(point, massToLightDisk, massToLightBulge);
+    const predictedAcceleration = relation === 'mond-simple'
+      ? simpleMondAcceleration(gBar, accelerationScaleMps2)
+      : rarAcceleration(gBar, accelerationScaleMps2);
+    return accelerationToVelocity(predictedAcceleration, point.x);
   }
 
   function pseudoIsothermalVelocity(radiusKpc, velocityInfinityKmS, coreRadiusKpc) {
@@ -468,15 +508,21 @@
   }
 
   return {
+    accelerationToVelocity,
+    baryonicAcceleration,
     burkertVelocity,
     componentsAt,
     evaluate,
     gridFit,
     haloVelocity,
     nfwVelocity,
+    observedAcceleration,
+    phenomenologicalVelocity,
     pseudoIsothermalVelocity,
+    rarAcceleration,
     posteriorPredictive,
     samplePosterior,
+    simpleMondAcceleration,
     signedSquare,
     weightedStatistics
   };
