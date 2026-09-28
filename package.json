@@ -11,8 +11,9 @@
     "test": "node --test tests/rotationPhysics.test.js tests/lensingPhysics.test.js tests/cosmologyPhysics.test.js tests/futuresPhysics.test.js tests/evidenceGraph.test.js",
     "validate:research": "node scripts/validate_repository.mjs",
     "data:refresh": "node scripts/import_sparc.mjs",
-    "verify": "npm run docs:figures && npm run check && npm test && npm run validate:research && npm run build",
-    "docs:figures": "node scripts/generate_readme_figures.mjs && node scripts/generate_population_figures.mjs"
+    "verify": "npm run docs:check && npm run check && npm test && npm run validate:research && npm run build",
+    "docs:figures": "node scripts/generate_readme_figures.mjs && node scripts/generate_population_figures.mjs",
+    "docs:check": "npm run docs:figures && git diff --exit-code -- docs/figures"
   },
   "keywords": [
     "dark-matter",
