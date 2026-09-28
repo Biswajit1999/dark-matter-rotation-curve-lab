@@ -1,0 +1,41 @@
+name: Build research monograph
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "docs/thesis/**"
+      - "docs/figures/**"
+      - ".github/workflows/build-monograph.yml"
+  push:
+    branches: [main]
+    paths:
+      - "docs/thesis/**"
+      - "docs/figures/**"
+      - ".github/workflows/build-monograph.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-monograph:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Install LaTeX and Biber
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y latexmk texlive-latex-extra texlive-fonts-recommended texlive-bibtex-extra biber
+      - name: Compile technical monograph
+        working-directory: docs/thesis
+        run: latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+      - name: Rename PDF
+        run: cp docs/thesis/main.pdf docs/thesis/dark-matter-evidence-lab.pdf
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dark-matter-evidence-lab-monograph
+          path: docs/thesis/dark-matter-evidence-lab.pdf
+          if-no-files-found: error
