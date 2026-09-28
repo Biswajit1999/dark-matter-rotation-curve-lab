@@ -1,6 +1,6 @@
 'use strict';
 
-const BUILD_VERSION = '3.0.0-beta.2';
+const BUILD_VERSION = '3.0.0-beta.4';
 const INITIAL_QUERY = new URLSearchParams(window.location.search);
 
 function queryNumber(name, fallback, minimum = -Infinity, maximum = Infinity) {
