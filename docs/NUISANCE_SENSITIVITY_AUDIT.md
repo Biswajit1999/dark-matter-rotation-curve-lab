@@ -39,3 +39,8 @@ This is a numerical robustness experiment, not identification of a dark
 matter particle, selection-corrected galaxy inference, or a full correlated
 systematics analysis. Follow `RESEARCH_QUALITY.md` and existing SPARC
 provenance/citation requirements when sharing results.
+
+The runner reports Gauss–Hermite orders 5–33 and a **heuristic** 25-to-33
+log-likelihood change threshold of 0.05. If it fails, the conditional
+likelihood is numerically unresolved and must not support model selection.
+Even a pass does not establish an absolute integration error bound.

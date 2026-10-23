@@ -52,10 +52,19 @@ def main() -> None:
     residual = points["y"] - predict(theta, points, best["model"])
     covariance = {str(tau): common_mode_loglike(residual, points["y_err"], tau)
                   for tau in (0.0, 1.0, 3.0)}
+    quadrature_orders = (5, 9, 13, 17, 25, 33)
     nuisance = {str(order): conditional_nuisance_loglike(theta, points, best["model"],
         reference_distance_mpc=distance, distance_sigma_mpc=distance_sigma,
         reference_inclination_deg=inclination, inclination_sigma_deg=inclination_sigma,
-        common_sigma_kms=1.0, quadrature_order=order) for order in (5, 9, 13)}
+        common_sigma_kms=1.0, quadrature_order=order) for order in quadrature_orders}
+    final_quadrature_delta = abs(nuisance["33"] - nuisance["25"])
+    quadrature_convergence = {
+        "last_two_orders": [25, 33],
+        "absolute_loglike_change": final_quadrature_delta,
+        "tolerance_loglike": 0.05,
+        "passes_tolerance": bool(final_quadrature_delta < 0.05),
+        "warning": "A passing order comparison is a heuristic, not an integration error bound."
+    }
     blocks = radial_block_sensitivity(points, best["model"], blocks=5)
     report = {
         "dataset": label, "provenance": provenance,
@@ -66,6 +75,7 @@ def main() -> None:
         "fit_comparison": fits, "selected_model_by_diagonal_chi2": best["model"],
         "common_mode_loglike_at_fixed_theta": covariance,
         "conditional_nuisance_loglike_by_quadrature_order": nuisance,
+        "quadrature_convergence": quadrature_convergence,
         "radial_block_sensitivity": blocks,
         "limitations": ["Nuisance integration is conditional on fixed halo parameters, not evidence",
                         "No correlated SPARC covariance supplied", "No selection-corrected population inference",
