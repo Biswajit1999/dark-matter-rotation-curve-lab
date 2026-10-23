@@ -36,6 +36,10 @@ jobs:
         run: python -m pip install -r validation/requirements.txt
       - name: Run independent NGC 3198 fits
         run: python validation/rotation_scipy.py --write
+      - name: Install research regression test runner
+        run: python -m pip install "pytest>=8,<10"
+      - name: Run SPARC nuisance robustness regression tests
+        run: python -m pytest -q tests/test_nuisance_diagnostics.py
       - name: Upload fit snapshot
         uses: actions/upload-artifact@v4
         with:
