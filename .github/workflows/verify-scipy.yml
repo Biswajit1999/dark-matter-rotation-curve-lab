@@ -40,9 +40,13 @@ jobs:
         run: python -m pip install "pytest>=8,<10"
       - name: Run SPARC nuisance robustness regression tests
         run: python -m pytest -q tests/test_nuisance_diagnostics.py
+      - name: Run pinned NGC 3198 nuisance audit
+        run: python validation/run_nuisance_audit.py --output validation/ngc3198_nuisance_audit.json
       - name: Upload fit snapshot
         uses: actions/upload-artifact@v4
         with:
           name: scipy-reference-fit
-          path: validation/scipy_reference_fit.json
+          path: |
+            validation/scipy_reference_fit.json
+            validation/ngc3198_nuisance_audit.json
           if-no-files-found: error
