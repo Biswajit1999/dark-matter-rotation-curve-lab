@@ -16,6 +16,9 @@ Release history: [CHANGELOG.md](CHANGELOG.md)
 
 ## Research evidence and downloads
 
+
+- Start with [Cluster systems](data/cluster_systems.json), [Dark matter candidates](data/dark_matter_candidates.json), [Evidence graph](data/evidence_graph.json).
+
 [Open the evidence browser](https://biswajit1999.github.io/dark-matter-rotation-curve-lab/evidence.html) for 7 selected files, including [`cluster_systems.json`](data/cluster_systems.json). Each file has a download link and SHA-256 digest.
 
 Rebuild the inventory and browser with `python scripts/evidence_catalog.py` and `python scripts/render_evidence_page.py`.
