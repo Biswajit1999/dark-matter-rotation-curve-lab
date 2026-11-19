@@ -14,6 +14,12 @@ Research contract: [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md)
 Open questions: [OPEN_PROBLEMS.md](OPEN_PROBLEMS.md)  
 Release history: [CHANGELOG.md](CHANGELOG.md)
 
+## Research evidence and downloads
+
+[Open the evidence browser](https://biswajit1999.github.io/dark-matter-rotation-curve-lab/evidence.html) for 7 selected files, including [`cluster_systems.json`](data/cluster_systems.json). Each file has a download link and SHA-256 digest.
+
+Rebuild the inventory and browser with `python scripts/evidence_catalog.py` and `python scripts/render_evidence_page.py`.
+
 ## The question
 
 The project began from a simple question:

@@ -1,0 +1,41 @@
+{
+  "project": "Dark Matter Evidence Lab",
+  "repository": "https://github.com/Biswajit1999/dark-matter-rotation-curve-lab",
+  "files": [
+    {
+      "label": "Cluster systems",
+      "path": "data/cluster_systems.json",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Dark matter candidates",
+      "path": "data/dark_matter_candidates.json",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Evidence graph",
+      "path": "data/evidence_graph.json",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Galaxies",
+      "path": "data/galaxies.json",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Open problems",
+      "path": "data/open_problems.json",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Reference",
+      "path": "data/reference.json",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Research frontier",
+      "path": "data/research_frontier.json",
+      "role": "Data and provenance"
+    }
+  ]
+}

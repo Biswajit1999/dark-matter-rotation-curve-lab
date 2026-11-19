@@ -1,0 +1,151 @@
+{
+  "schema": 1,
+  "project": "Dark Matter Evidence Lab",
+  "repository": "https://github.com/Biswajit1999/dark-matter-rotation-curve-lab",
+  "files": [
+    {
+      "label": "Cluster systems",
+      "path": "data/cluster_systems.json",
+      "role": "Data and provenance",
+      "bytes": 4182,
+      "sha256": "779b3b5d6a3c61ed2cef710a150608e76ed12fb4fbd9190abd7fbd5e3f47175a",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "schema_version",
+        "updated",
+        "calculation_contract",
+        "systems"
+      ],
+      "arrays": {
+        "systems": 3
+      }
+    },
+    {
+      "label": "Dark matter candidates",
+      "path": "data/dark_matter_candidates.json",
+      "role": "Data and provenance",
+      "bytes": 8049,
+      "sha256": "04b5c89626e06cf32cc66e6216025da5c167149d59d5d76d4ed4908dfcd24521",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "schema_version",
+        "status_as_of",
+        "status_note",
+        "candidates",
+        "experiments"
+      ],
+      "arrays": {
+        "candidates": 8,
+        "experiments": 7
+      }
+    },
+    {
+      "label": "Evidence graph",
+      "path": "data/evidence_graph.json",
+      "role": "Data and provenance",
+      "bytes": 4661,
+      "sha256": "0fe7b8ec8bb6bd4677bf0ce467de5540dda47bc134c07904a1b64073ce633175",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "schema_version",
+        "updated",
+        "nodes",
+        "edges"
+      ],
+      "arrays": {
+        "nodes": 12,
+        "edges": 11
+      }
+    },
+    {
+      "label": "Galaxies",
+      "path": "data/galaxies.json",
+      "role": "Data and provenance",
+      "bytes": 1019851,
+      "sha256": "441aadcf7b6cc7373e687c17f604992cd1a66e700296a834c02148a31d9a8b5d",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "schema_version",
+        "source",
+        "source_url",
+        "citation",
+        "columns",
+        "metadata_columns",
+        "provenance"
+      ],
+      "arrays": {
+        "requiredCitations": 2,
+        "featured_galaxy_ids": 10,
+        "galaxies": 175
+      }
+    },
+    {
+      "label": "Open problems",
+      "path": "data/open_problems.json",
+      "role": "Data and provenance",
+      "bytes": 12219,
+      "sha256": "8a601ba6af32d020146b8f2cebe42e08371ca0725659b690844322e87cceca47",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "schema_version",
+        "updated",
+        "epistemic_contract",
+        "questions"
+      ],
+      "arrays": {
+        "questions": 9
+      }
+    },
+    {
+      "label": "Reference",
+      "path": "data/reference.json",
+      "role": "Data and provenance",
+      "bytes": 11321,
+      "sha256": "731a64e51425f70c6f2150912af3bde2647cb27d37f867396bf11752412facce",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "schema_version",
+        "source",
+        "source_url",
+        "citation",
+        "columns",
+        "metadata_columns",
+        "provenance"
+      ],
+      "arrays": {
+        "requiredCitations": 2,
+        "points": 43
+      }
+    },
+    {
+      "label": "Research frontier",
+      "path": "data/research_frontier.json",
+      "role": "Data and provenance",
+      "bytes": 9079,
+      "sha256": "f7e5a8440964903a2e85be9e36dc77f7310ba0c8469545278d10965f5bd23477",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "schema_version",
+        "updated",
+        "scale_milestones",
+        "frontiers",
+        "timeline",
+        "timeline_contract",
+        "technology_gates"
+      ],
+      "arrays": {
+        "scale_milestones": 8,
+        "frontiers": 6,
+        "timeline": 7,
+        "technology_gates": 7
+      }
+    }
+  ]
+}
